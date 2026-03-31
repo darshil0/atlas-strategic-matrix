@@ -30,34 +30,56 @@ export class MissionControl {
     context: AgentExecutionContext = {}
   ): Promise<MissionResult> {
     const builder = new UIBuilder(context.sessionId);
-
-    // Step 1: Strategist Generation
     const strategist = AgentFactory.getOrCreate(AgentPersona.STRATEGIST);
-    const initialPlan = await strategist.execute<Plan>(goal, context);
-
-    // Step 2: Analyst Feasibility Review
-    const analyst = AgentFactory.getOrCreate(AgentPersona.ANALYST);
-    const analysis = await analyst.execute<AnalystResult>(goal, { ...context, plan: initialPlan });
-
-    // Step 3: Critic Validation + Graph Hardening
     const critic = AgentFactory.getOrCreate(AgentPersona.CRITIC);
-    const review = await critic.execute<CriticResult>(goal, { ...context, plan: initialPlan, analysis });
+    const analyst = AgentFactory.getOrCreate(AgentPersona.ANALYST);
+
+    // Phase 1: Strategist generates initial plan
+    let currentPlan = await strategist.execute<Plan>(goal, context);
+
+    // Initial analysis and review
+    let analysis = await analyst.execute<AnalystResult>(goal, { ...context, plan: currentPlan });
+    let review = await critic.execute<CriticResult>(goal, { ...context, plan: currentPlan, analysis });
+
+    // Phase 2: Iterative refinement via Critic feedback (up to 3 iterations)
+    let iterations = 1;
+    const maxIterations = 3;
+    const scoreThreshold = 85;
+
+    while (iterations < maxIterations && review.score < scoreThreshold) {
+      iterations++;
+      // Feed feedback back to strategist for refinement
+      const feedbackPrompt = `Refine the strategic roadmap for: "${goal}".
+      Analyst Feasibility: ${analysis.feasibility}/100. Risks: ${analysis.risks.join("; ")}.
+      Critic Feedback (Score: ${review.score}): ${review.issues.map(i => i.description).join(", ")}.
+      Suggested Optimizations: ${review.optimizations.join(", ")}.`;
+
+      currentPlan = await strategist.execute<Plan>(feedbackPrompt, {
+        ...context,
+        plan: currentPlan,
+        criticFeedback: review,
+        analysis
+      });
+
+      analysis = await analyst.execute<AnalystResult>(goal, { ...context, plan: currentPlan });
+      review = await critic.execute<CriticResult>(goal, { ...context, plan: currentPlan, analysis });
+    }
 
     // Final Synthesis
-    const q1HighCount = initialPlan.tasks.filter(t =>
+    const q1HighCount = currentPlan.tasks.filter(t =>
       t.priority === Priority.HIGH && t.category?.includes("Q1")
     ).length;
 
     const summaryUI = builder
-      .missionControlStatus(review.score, 0, q1HighCount)
+      .missionControlStatus(review.score, iterations, q1HighCount)
       .build();
 
     return {
-      text: `Strategic plan synthesized for: ${goal}`,
+      text: `Strategic plan synthesized for: ${goal}. Refined across ${iterations} iterations.`,
       a2ui: summaryUI,
-      plan: initialPlan,
+      plan: currentPlan,
       validation: {
-        iterations: 1,
+        iterations,
         finalScore: review.score,
         graphReady: review.graphValid,
         q1HighCount

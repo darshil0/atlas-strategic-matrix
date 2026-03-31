@@ -8,16 +8,14 @@ import { BaseAgent } from "./types";
 import {
   A2UIMessage,
   AGUIEvent,
-  TaskStatus,
-  Priority,
-  SubTask,
   Plan,
+  Priority,
   AgentExecutionContext,
   AnalystResult,
   CriticResult
 } from "@types";
 import { ENV } from "@config";
-import { TASK_BANK } from "@data/taskBank";
+import { AtlasService } from "@services/geminiService";
 
 /**
  * Strategist Agent - Hierarchical Goal Decomposition
@@ -50,28 +48,13 @@ export class StrategistAgent extends BaseAgent {
   }
 
   async execute<R = Plan>(
-    _prompt: string,
+    prompt: string,
     _context: AgentExecutionContext = {}
   ): Promise<R> {
-    const plan: Plan = {
-      projectName: "Atlas Strategic 2026",
-      goal: _prompt,
-      tasks: TASK_BANK
-        .filter(task => task.priority === Priority.HIGH && task.category === "2026 Q1")
-        .slice(0, 8)
-        .map(task => ({
-          id: task.id,
-          description: task.description,
-          status: TaskStatus.PENDING,
-          priority: task.priority,
-          category: task.category,
-          theme: task.theme,
-          dependencies: [],
-        })) as SubTask[],
-    };
+    const plan = await AtlasService.generatePlan(prompt);
 
     if (ENV.DEBUG_MODE) {
-      console.log(`🧠 [Strategist] Generated roadmap for: ${_prompt}`);
+      console.log(`🧠 [Strategist] Generated roadmap for: ${prompt}`);
     }
 
     return plan as unknown as R;

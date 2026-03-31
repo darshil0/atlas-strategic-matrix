@@ -119,6 +119,15 @@ vi.mock('@services/persistenceService', () => ({
   },
 }));
 
+// Mock AtlasService
+vi.mock('@services/geminiService', () => ({
+  AtlasService: {
+    generatePlan: vi.fn().mockImplementation(async () => ATLAS_TEST_UTILS.createMockPlan()),
+    executeSubtask: vi.fn().mockResolvedValue({ text: 'Subtask executed' }),
+    summarizeMission: vi.fn().mockResolvedValue('Mission summary'),
+  },
+}));
+
 // Mock sync services
 vi.mock('@services', () => ({
   githubService: {
