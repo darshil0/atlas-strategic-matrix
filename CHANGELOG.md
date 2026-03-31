@@ -4,6 +4,33 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.3.0] - 2026-03-31
+
+### 🏛️ Strategic Repository Reorganization & Cleanup
+
+This major structural update categorizes the component library into a logical hierarchy, removes years of architectural drift (dead code), and solidifies the build pipeline for enterprise-scale development.
+
+### Added
+- **Categorized Component Architecture**: Introduced a three-tier component hierarchy:
+  - `src/components/ui/`: Generic, low-level A2UI glassmorphic primitives.
+  - `src/components/views/`: High-level dashboard modules (Timeline, Graph, TaskBank).
+  - `src/components/cards/`: Specialized mission-logic cards (TaskCard).
+
+### Changed
+- **Directory Normalization**: Migrated 7+ core components from a flat `src/components` structure to categorized subdirectories.
+- **Import Optimization**: Normalized all internal import paths and path aliases to match the new architecture.
+
+### Fixed
+- **Architectural Debt**:
+  - Deleted redundant root-level `components/` directory.
+  - Removed duplicate `postcss.config.cjs` (consolidated into ESM `.js` version).
+  - Resolved "ghost" import warnings by aligning file locations with `tsconfig.json` path aliases.
+
+### Verified
+- **Full System Audit**: Successfully executed global type-checking (`tsc --noEmit`) and enterprise linting (`eslint .`) with a 100% pass rate post-reorganization.
+
+---
+
 ## [3.2.7] - 2026-03-31
 
 ### 🚀 Dependency Modernization & Protocol Refinement
@@ -13,7 +40,7 @@ This release focuses on achieving 100% type safety in the core ADK, establishing
 ### Added
 - **Strongly-Typed Contracts**: Introduced `AnalystResult` and `CriticResult` interfaces across the agent swarm. Replaced all `any` usage in `BaseAgent` generics with `unknown`.
 - **Type-Safe Service Layer**: Redesigned `GithubService` and `JiraService` to use strict result interfaces (`GithubSyncResult`, `JiraSyncResult`).
-- **Identity Sync**: Unified system instructions with platform versioning. The agent core now operates with full awareness of v3.2.7 constraints.
+- **Identity Sync**: Unified system instructions with platform versioning. The agent core now operates with full awareness of v3.3.0 constraints.
 - **Enhanced Refinement Loop**: Formalized the `Strategist → Critic → Analyst` pipeline in `MissionControl` with multi-step optimization cycles.
 - **Styling & UI**: Full migration to Tailwind CSS v4 using CSS-first configuration via `@theme` and `@utility` directives in `src/index.css`.
 
@@ -262,6 +289,15 @@ For issues, questions, or contributions:
 ---
 
 ## Migration Guides
+
+### Upgrading from 3.2.7 to 3.3.0
+
+**Structural Changes**:
+- Components have moved from `src/components/*` to `src/components/[ui|views|cards]/*`.
+
+**Action Required**: 
+- Update custom imports if you are extending Atlas through external modules.
+- The core `App.tsx` has been automatically updated to reflect these changes.
 
 ### Upgrading from 3.2.6 to 3.2.7
 

@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@lib/utils";
 import { Plan, SubTask } from "@types";
-import TaskCard from "./TaskCard";
+import TaskCard from "../cards/TaskCard";
 import DependencyGraph from "./DependencyGraph";
 import TimelineView from "./TimelineView";
 
