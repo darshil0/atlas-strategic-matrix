@@ -34,7 +34,6 @@ This release focuses on updating the entire dependency stack to their latest ver
   - Resolved TypeScript 6.0 baseUrl deprecation warnings with proper configuration flag
   - Updated Vite `manualChunks` configuration to use functional API (fixes Rollup compatibility)
   - Migrated Lucide React `Github` icon to `GitBranch` (Github icon removed in lucide-react 1.7.0)
-  
 - **Orchestration Logic**: Refined the `MissionControl` synthesis report to accurately display the number of optimization cycles (iterations - 1)
 - **Test Infrastructure**: Resolved all missing dependencies ensuring Vitest suite compatibility with latest React testing library
 - **Security Audit**: Eliminated all high and moderate security vulnerabilities via dependency updates
@@ -344,7 +343,37 @@ For issues, questions, or contributions:
 
 ---
 
+## Migration Guides
 
+### Upgrading from 3.3.x to 3.4.0
+
+**Action Required**:
+- Run `npm install` to update local dependencies and `package-lock.json`
+- TypeScript 6.0+ users: baseUrl deprecation warnings are now automatically suppressed
+- Verify lucide-react icon imports if you've customized the icon system
+
+**Breaking Changes**: None - fully backward compatible
+
+### Upgrading from 3.2.7 to 3.3.0
+
+**Structural Changes**:
+- Components have moved from `src/components/*` to `src/components/[ui|views|cards]/*`
+
+**Action Required**: 
+- Update custom imports if you are extending Atlas through external modules
+- The core `App.tsx` has been automatically updated to reflect these changes
+
+### Upgrading from 3.2.6 to 3.2.7
+
+No breaking changes. This release is a maintenance update for dependencies and documentation.
+
+**Action Required**: Run `npm install` to synchronize your local node_modules with the updated `package-lock.json`
+
+---
+
+<div align="center">
+
+**Atlas Strategic Agent** - Transforming executive vision into executable reality
 
 *Powered by Google Gemini 2.0 Flash*
 
