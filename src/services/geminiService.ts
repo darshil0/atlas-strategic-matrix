@@ -1,5 +1,5 @@
 /**
- * Atlas Gemini Service Layer (v3.2.7) - Glassmorphic Enterprise LLM
+ * Atlas Gemini Service Layer (v3.4.0) - Glassmorphic Enterprise LLM
  * Production Gemini 2.0 integration for MissionControl → Agent swarm
  * JSON schema enforcement + A2UI extraction + TaskBank aware planning
  */

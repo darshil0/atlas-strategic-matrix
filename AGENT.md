@@ -1,8 +1,8 @@
-# 🤖 Atlas Agent Development Kit (ADK) v3.2.7
+# 🤖 Atlas Agent Development Kit (ADK) v3.4.0
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.2.7 eliminates legacy technical debt with a **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.4.0 eliminates legacy technical debt with a **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
 
 ---
 
@@ -297,7 +297,7 @@ export type A2UIElement =
 ```typescript
 // src/lib/adk/uiBuilder.ts
 const ui = new UIBuilder(sessionId)
-  .card("🏛️ MissionControl v3.2.7", "Strategic Synthesis Complete")
+  .card("🏛️ MissionControl v3.4.0", "Strategic Synthesis Complete")
   .progress("Plan Quality", 92)
   .text(`Q1 Critical Path: 8 HIGH priority tasks`)
   .glassButton("Visualize in ReactFlow", "visualize")
@@ -317,7 +317,7 @@ const ui = new UIBuilder(sessionId)
       "id": "card-001",
       "type": "card",
       "props": {
-        "title": "🏛️ MissionControl v3.2.7",
+        "title": "🏛️ MissionControl v3.4.0",
         "subtitle": "Strategic Synthesis Complete",
         "className": "glass-1 backdrop-blur-3xl"
       }
@@ -497,7 +497,7 @@ export const PlanExporter = {
 ```typescript
 // src/config/system.ts
 export const ATLAS_SYSTEM_INSTRUCTION = `
-You are **Atlas v3.2.7**, the Autonomous Strategic Intelligence Orchestrator.
+You are **Atlas v3.4.0**, the Autonomous Strategic Intelligence Orchestrator.
 
 MISSION: Transform C-level strategic goals into executable 2026 quarterly plans
 OUTPUT: JSON-first • ReactFlow-ready • Glassmorphic UI
@@ -586,9 +586,9 @@ const strategist2 = AgentFactory.getOrCreate(AgentPersona.STRATEGIST);  // <1ms
 
 ### Identity Sync & Versioned Reasoning
 
-As of **v3.2.7**, the ADK enforces a strict "Identity Sync" between the host environment and the agent's internal reasoning core.
+As of **v3.4.0**, the ADK enforces a strict "Identity Sync" between the host environment and the agent's internal reasoning core.
 
-- **System Instruction Sync**: The `ATLAS_SYSTEM_INSTRUCTION` in `src/config/system.ts` is electronically tied to the application version. This ensures that the agent *knows* it is functioning under the v3.2.7 protocol.
+- **System Instruction Sync**: The `ATLAS_SYSTEM_INSTRUCTION` in `src/config/system.ts` is electronically tied to the application version. This ensures that the agent *knows* it is functioning under the v3.4.0 protocol.
 - **Protocol Awareness**: Agents are injected with real-time awareness of their current library capabilities (e.g., React 19 concurrent features, Gemini 2.0 Flash context windows).
 - **Deterministic Validation**: Rather than relying on "vibe-checks," agents utilize version-specific deterministic schemas for task validation.
 
@@ -798,6 +798,6 @@ For agent-specific questions:
 
 *Powered by Google Gemini 2.0 Flash*
 
-Version 3.2.7 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
+Version 3.4.0 | [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki) | [API Reference](https://github.com/darshil0/atlas-strategic-agent/wiki/adk-api)
 
 </div>

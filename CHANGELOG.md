@@ -4,6 +4,33 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.4.0] - 2026-03-31
+
+### 🚀 Dependency Modernization & Version Unification
+
+This release focuses on updating the entire dependency stack to their latest versions, resolving security vulnerabilities, and unifying the application version across the entire codebase and documentation.
+
+### Changed
+- **Version Unification**: Synchronized application version to **v3.4.0** across 20+ files, including `package.json`, `index.html`, `AGENT.md`, `README.md`, and all core source modules.
+- **Dependency Modernization**: Updated all project dependencies to their latest major/minor versions:
+  - TypeScript 6.0.2+ (with `ignoreDeprecations` for `baseUrl`).
+  - Vite 8.0.3+ / Vitest 4.1.2+.
+  - Lucide React 1.7.0+ (migrated `Github` icon to `GitBranch` due to upstream removal).
+  - Framer Motion 12.38.0+.
+  - Tailwind CSS 4.2.2+.
+- **User-Agent Update**: Updated service layer `USER_AGENT` strings to `Atlas-Strategic-Agent/3.4.0` for accurate platform telemetry.
+
+### Fixed
+- **Orchestration Logic**: Refined the `MissionControl` synthesis report to accurately display the number of optimization cycles (iterations - 1).
+- **Vite Build API**: Updated `manualChunks` configuration in `vite.config.ts` to comply with the latest Rollup/Vite functional API.
+- **Test Infrastructure**: Resolved missing `@testing-library/dom` dependency to ensure Vitest suite compatibility with latest React testing library.
+- **Security Audit**: Eliminated all high and moderate security vulnerabilities via `npm audit fix`.
+
+### Verified
+- **Full System Audit**: 100% pass rate on `npm run lint`, `npm run type-check`, and `npm test` following dependency upgrades.
+
+---
+
 ## [3.3.0] - 2026-03-31
 
 ### 🏛️ Strategic Repository Reorganization & Cleanup
@@ -40,7 +67,7 @@ This release focuses on achieving 100% type safety in the core ADK, establishing
 ### Added
 - **Strongly-Typed Contracts**: Introduced `AnalystResult` and `CriticResult` interfaces across the agent swarm. Replaced all `any` usage in `BaseAgent` generics with `unknown`.
 - **Type-Safe Service Layer**: Redesigned `GithubService` and `JiraService` to use strict result interfaces (`GithubSyncResult`, `JiraSyncResult`).
-- **Identity Sync**: Unified system instructions with platform versioning. The agent core now operates with full awareness of v3.3.0 constraints.
+- **Identity Sync**: Unified system instructions with platform versioning. The agent core now operates with full awareness of v3.4.0 constraints.
 - **Enhanced Refinement Loop**: Formalized the `Strategist → Critic → Analyst` pipeline in `MissionControl` with multi-step optimization cycles.
 - **Styling & UI**: Full migration to Tailwind CSS v4 using CSS-first configuration via `@theme` and `@utility` directives in `src/index.css`.
 
@@ -289,6 +316,13 @@ For issues, questions, or contributions:
 ---
 
 ## Migration Guides
+
+### Upgrading from 3.3.x to 3.4.0
+
+**No breaking changes.** This release is a maintenance update for dependencies and version unification.
+
+**Action Required**:
+- Run `npm install` to update local dependencies and `package-lock.json`.
 
 ### Upgrading from 3.2.7 to 3.3.0
 

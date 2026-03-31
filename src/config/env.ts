@@ -56,7 +56,7 @@ export const ENV: EnvConfig = {
   JIRA_EMAIL: getEnvVar("VITE_JIRA_EMAIL"),
   JIRA_TOKEN: getEnvVar("VITE_JIRA_TOKEN"),
   DEBUG_MODE: getEnvVar("VITE_DEBUG_MODE") === "true",
-  APP_VERSION: getEnvVar("VITE_APP_VERSION") ?? "3.2.7",
+  APP_VERSION: getEnvVar("VITE_APP_VERSION") ?? "3.4.0",
   APP_NAME: "Atlas AI Planner",
   TASKBANK_SIZE: getEnvVar("VITE_TASKBANK_SIZE") ?? "92",
 } as const;
@@ -121,7 +121,7 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 # DEVELOPMENT
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.2.7
+VITE_APP_VERSION=3.4.0
 VITE_TASKBANK_SIZE=92
 
 # SECURITY: VITE_* vars visible in browser DevTools

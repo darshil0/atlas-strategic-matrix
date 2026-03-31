@@ -1,5 +1,5 @@
 /**
- * ATLAS v3.2.7 - Production Entry Point
+ * ATLAS v3.4.0 - Production Entry Point
  * Glassmorphic MissionControl dashboard with error boundaries + loading states
  * Enterprise-ready React 18 + Vite + Tailwind + TypeScript stack
  */
@@ -37,7 +37,7 @@ const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children 
               Emergency Reboot
             </button>
             <p className="text-[11px] strat-label mt-6 text-slate-600">
-              ATLAS v{ENV.APP_VERSION || "3.2.7"}
+              ATLAS v{ENV.APP_VERSION || "3.4.0"}
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
           </h1>
           <div className="flex items-center justify-center gap-2 text-sm font-black uppercase tracking-[0.3em] text-blue-400">
             <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            v{ENV.APP_VERSION || "3.2.7"}
+            v{ENV.APP_VERSION || "3.4.0"}
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           </div>
           <p className="text-xs strat-label text-slate-600 font-mono">Neural Core Initializing</p>
@@ -207,10 +207,10 @@ const initAtlas = async () => {
 
   // Production performance monitoring
   if (ENV.DEBUG_MODE) {
-    console.group("🏛️ ATLAS v3.2.7 BOOT SEQUENCE");
+    console.group("🏛️ ATLAS v3.4.0 BOOT SEQUENCE");
     console.log("• React:", React.version);
     console.log("• Environment:", import.meta.env.MODE);
-    console.log("• App Version:", ENV.APP_VERSION || "3.2.7");
+    console.log("• App Version:", ENV.APP_VERSION || "3.4.0");
     console.groupEnd();
   }
 
@@ -277,7 +277,7 @@ initAtlas().catch((error) => {
 
 // Remove strict mode warnings in production
 if (import.meta.env.PROD) {
-  console.groupCollapsed("🏛️ ATLAS v3.2.7 • Production Build");
+  console.groupCollapsed("🏛️ ATLAS v3.4.0 • Production Build");
   console.log("• Status: Neural core online");
   console.log("• Tasks: 92+ enterprise objectives loaded");
   console.log("• Agents: Strategist + Analyst + Critic ready");

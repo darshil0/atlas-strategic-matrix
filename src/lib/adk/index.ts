@@ -1,5 +1,5 @@
 /**
- * Atlas Development Kit (ADK) Core Barrel (v3.2.7)
+ * Atlas Development Kit (ADK) Core Barrel (v3.4.0)
  * Production-ready agent orchestration for glassmorphic 2026 strategic planning
  */
 
@@ -34,7 +34,7 @@ export const bootstrapADK = async (): Promise<boolean> => {
     AgentFactory.warmPool();
 
     if (ENV.DEBUG_MODE) {
-      console.group("🏛️ ATLAS ADK v3.2.7 BOOTSTRAP");
+      console.group("🏛️ ATLAS ADK v3.4.0 BOOTSTRAP");
       console.log("✅ MissionControl ready");
       console.log("✅ AgentFactory pool warmed");
       console.log("✅ A2UI Renderer glassmorphic");

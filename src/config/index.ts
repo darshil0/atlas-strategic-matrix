@@ -1,11 +1,15 @@
 /**
- * Atlas Core Configuration Barrel (v3.2.7)
+ * Atlas Core Configuration Barrel (v3.4.0)
  * Centralized exports for your glassmorphic AI planning system
  * 
  * 🏗️  Architecture: Monorepo-style config organization
  * 🔧  Path aliases: `@/config/*` → `src/config/*`
  * 🎨  Design system: Glassmorphic + atlas-blue theming
  */
+
+import { initializeEnv } from "./env";
+import "./system";
+import "./ui";
 
 export * from "./env";           // 🌐 Environment (Gemini, GitHub, Jira)
 export * from "./system";       // ⚙️  System constants (tasks, priorities)  
@@ -17,16 +21,9 @@ export * from "./ui";           // 🎨 UI components + design tokens
 export const bootstrapConfig = async (): Promise<boolean> => {
   try {
     // Validate environment first (critical)
-    const { initializeEnv } = await import("./env");
     const envValid = await initializeEnv();
     
     if (!envValid) return false;
-    
-    // Lazy check UI/system (non-blocking)
-    await Promise.allSettled([
-      import("./ui"),
-      import("./system")
-    ]);
     
     return true;
   } catch (error) {

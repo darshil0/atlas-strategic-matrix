@@ -1,5 +1,5 @@
 /**
- * MissionControl v3.2.7 - Glassmorphic Swarm Orchestrator
+ * MissionControl v3.4.0 - Glassmorphic Swarm Orchestrator
  * High-performance state machine for Strategist → Analyst → Critic pipeline
  */
 
@@ -75,7 +75,7 @@ export class MissionControl {
       .build();
 
     return {
-      text: `Strategic plan synthesized for: ${goal}. Refined across ${iterations} iterations.`,
+      text: `Strategic plan synthesized for: ${goal}. Refined across ${iterations - 1} optimization cycles.`,
       a2ui: summaryUI,
       plan: currentPlan,
       validation: {
