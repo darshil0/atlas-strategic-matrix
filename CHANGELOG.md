@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
-## [3.2.7] - 2026-01-28
+## [3.2.7] - 2026-03-31
 
 ### 🚀 Dependency Modernization & Protocol Refinement
 
@@ -15,6 +15,7 @@ This release focuses on achieving 100% type safety in the core ADK, establishing
 - **Type-Safe Service Layer**: Redesigned `GithubService` and `JiraService` to use strict result interfaces (`GithubSyncResult`, `JiraSyncResult`).
 - **Identity Sync**: Unified system instructions with platform versioning. The agent core now operates with full awareness of v3.2.7 constraints.
 - **Enhanced Refinement Loop**: Formalized the `Strategist → Critic → Analyst` pipeline in `MissionControl` with multi-step optimization cycles.
+- **Styling & UI**: Full migration to Tailwind CSS v4 using CSS-first configuration via `@theme` and `@utility` directives in `src/index.css`.
 
 ### Fixed
 - **Enterprise-Grade Linting**: Resolved 40+ linting warnings across the project, including unused variables in `App.tsx` and `geminiService.ts`.
@@ -22,6 +23,9 @@ This release focuses on achieving 100% type safety in the core ADK, establishing
 - **Dependency Resolution**: Fixed "Cannot find module" errors in `smoke.test.ts` by aligning vitest configurations.
 - **Agent Generics**: Corrected type inference in `AgentSwarm` and `AgentFactory` to ensure strict contract enforcement during collaborative synthesis.
 - **Library Modernization**: Updated 25+ dependencies to their latest versions, including React 19.2.4+, Vitest 4.0.18+, and Vite 7.3.1+.
+- **Test Infrastructure**:
+  - Optimized Vitest coverage thresholds with nested configuration in `vitest.config.ts`.
+  - Implemented mocks for `Element.prototype.scrollIntoView` and `crypto.randomUUID` in `src/test/setup.ts` for robust component testing.
 
 ### [3.2.6] - 2026-01-28
 
