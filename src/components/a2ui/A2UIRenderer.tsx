@@ -307,13 +307,13 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
               <p className="text-2xl font-black text-white font-display">
                 {(props.value as string | number) || 0}
               </p>
-              {props.trend && (
+              {(props.trend as string) && (
                 <span className={cn(
                   "text-[10px] font-bold px-1.5 py-0.5 rounded-md",
-                  props.trend === "up" ? "text-emerald-400 bg-emerald-500/10" :
-                  props.trend === "down" ? "text-rose-400 bg-rose-500/10" : "text-slate-400 bg-slate-500/10"
+                  (props.trend as string) === "up" ? "text-emerald-400 bg-emerald-500/10" :
+                  (props.trend as string) === "down" ? "text-rose-400 bg-rose-500/10" : "text-slate-400 bg-slate-500/10"
                 )}>
-                  {props.trend === "up" ? "↑" : props.trend === "down" ? "↓" : "→"}
+                  {(props.trend as string) === "up" ? "↑" : (props.trend as string) === "down" ? "↓" : "→"}
                 </span>
               )}
             </div>

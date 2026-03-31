@@ -109,7 +109,8 @@ vi.mock('@services/persistenceService', () => ({
     saveWorkflow: vi.fn(),
     getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002 }),
     clearAll: vi.fn(() => { mockState.plan = null; mockState.secrets = {}; }),
-    getGithubApiKey: vi.fn(),
+    getGithubApiKey: vi.fn(() => mockState.secrets["github_api_key_enc_v3.2"]),
+    saveGithubApiKey: vi.fn((key) => { mockState.secrets["github_api_key_enc_v3.2"] = key; }),
     getJiraDomain: vi.fn(),
     getJiraEmail: vi.fn(),
     getJiraApiKey: vi.fn(),
@@ -238,9 +239,10 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock crypto.randomUUID for consistent test IDs
+let uuidCounter = 0;
 vi.stubGlobal('crypto', {
   getRandomValues: vi.fn(() => new Uint8Array(32)),
-  randomUUID: vi.fn(() => '12345678-1234-1234-1234-123456789012'),
+  randomUUID: vi.fn(() => `12345678-1234-1234-1234-12345678901${uuidCounter++ % 10}`),
 });
 
 // Vitest snapshot serializer for A2UI messages
