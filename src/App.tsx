@@ -102,12 +102,16 @@ const App: React.FC = () => {
 
     try {
       if (!currentPlan) {
-        const plan = await AtlasService.generatePlan(text);
-        setCurrentPlan(plan);
-        addMessage("assistant", `Strategizing roadmap for: ${text}`);
+        const result = await missionControl.processCollaborativeInput(text);
+        setCurrentPlan(result.plan || null);
+        addMessage("assistant", result.text, result.a2ui);
       } else {
+        const taskToExecute = activeTaskId
+          ? currentPlan.tasks.find(t => t.id === activeTaskId) || currentPlan.tasks[0]
+          : currentPlan.tasks[0];
+
         const response = await AtlasService.executeSubtask(
-          currentPlan.tasks[0], // Simulated for now
+          taskToExecute,
           currentPlan,
           messages.map((m) => `${m.role}: ${m.content}`).join("\n")
         );
@@ -173,15 +177,18 @@ const App: React.FC = () => {
         [taskId]: { ...prev[taskId], [type]: "pending" }
       }));
 
+      let exportUrl = "";
       if (type === "github") {
-        await githubService.createIssue(task);
+        const result = await githubService.createIssue(task);
+        exportUrl = result.htmlUrl;
       } else {
-        await jiraService.createTicket(task);
+        const result = await jiraService.createTicket(task);
+        exportUrl = result.webUrl || "";
       }
 
       setExportedTasks((prev: Record<string, { github?: string; jira?: string }>) => ({
         ...prev,
-        [taskId]: { ...prev[taskId], [type]: "https://github.com" }
+        [taskId]: { ...prev[taskId], [type]: exportUrl }
       }));
       addMessage("assistant", `🚀 Successfully exported ${taskId} to ${type}`);
     } catch {
