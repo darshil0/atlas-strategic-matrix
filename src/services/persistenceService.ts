@@ -1,5 +1,5 @@
 /**
- * Atlas Persistence Service (v3.2.7) - Glassmorphic Enterprise Storage
+ * Atlas Persistence Service (v3.4.0) - Glassmorphic Enterprise Storage
  * Type-safe localStorage wrapper with quota management + API key encryption
  * Powers MissionControl state + GitHub/Jira sync + ReactFlow persistence
  * 

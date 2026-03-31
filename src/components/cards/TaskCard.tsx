@@ -11,7 +11,7 @@ import {
   ChevronUp,
   Link as LinkIcon,
   Clock,
-  Github,
+  GitBranch as Github,
   Ticket,
   Activity,
 } from "lucide-react";

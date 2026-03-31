@@ -36,10 +36,20 @@ export default defineConfig(({ mode }) => {
       sourcemap: mode !== "production",
       rollupOptions: {
         output: {
-          manualChunks: {
-            "vendor-react": ["react", "react-dom"],
-            "vendor-viz": ["@xyflow/react", "framer-motion"],
-            "vendor-ai": ["@google/generative-ai"],
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("react") || id.includes("react-dom")) {
+                return "vendor-react";
+              }
+              if (id.includes("@xyflow/react") || id.includes("framer-motion")) {
+                return "vendor-viz";
+              }
+              if (id.includes("@google/generative-ai")) {
+                return "vendor-ai";
+              }
+              return "vendor";
+            }
+            return undefined;
           },
         },
       },

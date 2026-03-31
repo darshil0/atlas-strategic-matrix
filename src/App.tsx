@@ -1,5 +1,5 @@
 /**
- * ATLAS App (v3.2.7) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v3.4.0) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  */
 

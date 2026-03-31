@@ -1,5 +1,5 @@
 /**
- * Atlas TypeScript Declarations (v3.2.7) - Production Type Definitions
+ * Atlas TypeScript Declarations (v3.4.0) - Production Type Definitions
  * Comprehensive typing for MissionControl ADK, Glassmorphic A2UI, ReactFlow
  * Centralized types for @types/plan.types → @lib/adk/* → @services/*
  */

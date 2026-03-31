@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.3.0
+# 🌌 Atlas Strategic Agent v3.4.0
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -209,7 +209,7 @@ VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # OPTIONAL: Development
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.3.0
+VITE_APP_VERSION=3.4.0
 ```
 
 **Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.
@@ -233,8 +233,8 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
-- [x] **V3.3.0** - Strategic Repository Reorganization: Categorized component hierarchy (`ui`, `views`, `cards`), architectural cleanup (dead code removal), and consolidated build pipeline.
-- [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety across ADK & Services, and dependency modernization (React 19.2.4+).
+- [x] **V3.4.0** - Strategic Repository Reorganization: Categorized component hierarchy (`ui`, `views`, `cards`), architectural cleanup (dead code removal), and consolidated build pipeline.
+- [x] **V3.4.0** - Zero-warning linting pipeline, 100% type safety across ADK & Services, and dependency modernization (React 19.2.4+).
 - [x] **V3.2.6** - Hardened JSON parsing logic, multi-agent property mapping, and iterative refinement loops
 - [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol, ReactFlow graphs
 - [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization
