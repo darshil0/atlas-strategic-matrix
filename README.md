@@ -2,9 +2,9 @@
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
-![Tailwind](https://img.shields.io/badge/Tailwind-4.1-38B2AC?style=for-the-badge&logo=tailwind-css)
-![Vite](https://img.shields.io/badge/Vite-7.3-646CFF?style=for-the-badge&logo=vite)
-![Vitest](https://img.shields.io/badge/Vitest-4.0-6E9F18?style=for-the-badge&logo=vitest)
+![Tailwind](https://img.shields.io/badge/Tailwind-4.2-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?style=for-the-badge&logo=vite)
+![Vitest](https://img.shields.io/badge/Vitest-4.1-6E9F18?style=for-the-badge&logo=vitest)
 
 ### *Executive Vision → Executable Enterprise Roadmaps*
 
@@ -18,7 +18,7 @@
 - **A2UI Protocol v1.1** - Stream glassmorphic UI components directly from LLM reasoning
 - **What-If Simulations** - Model failure cascades and timeline risk propagation
 - **Enterprise-Ready** - Direct GitHub Issues API v3 and Jira Cloud REST API integration
-- **Premium UX** - Glassmorphic interface with Framer Motion 12 and Tailwind CSS 4.1
+- **Premium UX** - Glassmorphic interface with Framer Motion 12 and Tailwind CSS 4.2
 
 ---
 
@@ -43,7 +43,7 @@ Atlas facilitates **collaborative synthesis** between specialized AI agents. For
 | **A2UI Protocol** | Real-time streaming of glassmorphic UI from LLM responses | React 19 + Framer Motion 12 |
 | **What-If Simulation** | Failure cascade modeling with risk scoring | Custom dependency graph analysis |
 | **Enterprise Sync** | Bidirectional sync with GitHub Issues and Jira tickets | REST API v3 + ADF formatting |
-| **Glassmorphic UI** | Premium backdrop-blur design system | Tailwind CSS 4.1 + Lucide React |
+| **Glassmorphic UI** | Premium backdrop-blur design system | Tailwind CSS 4.2 + Lucide React |
 | **Multi-Model AI** | Gemini 2.0 Flash with JSON schema enforcement | Google Generative AI SDK |
 | **Persistent State** | Encrypted localStorage with Base64 obfuscation | Custom PersistenceService |
 | **TaskBank** | 90+ pre-calculated 2026 strategic objectives | AI, Cyber, ESG, Global, Infra, People themes |
@@ -104,7 +104,7 @@ npm run coverage         # Generate coverage report (85% threshold)
 
 ### Code Quality Standards
 
-- **TypeScript** - Strict mode with comprehensive type safety
+- **TypeScript** - Strict mode with comprehensive type safety (TypeScript 6.0.2+)
 - **ESLint** - Modern flat config with TypeScript integration; Zero Warning Baseline
 - **Prettier** - Automated formatting (80 char width, 2 space tabs)
 - **Vitest** - 85% coverage requirement across all metrics; 100% pass rate
@@ -161,11 +161,11 @@ atlas-strategic-agent/
 ├── public/                      # Static Assets
 ├── docs/                        # Project Documentation
 ├── .env.example                 # Environment template
-├── vite.config.ts               # Vite 7.3 configuration
+├── vite.config.ts               # Vite 8.0 configuration
 ├── vitest.config.ts             # Test configuration
 ├── tsconfig.json                # TypeScript compiler options
 ├── eslint.config.js             # ESLint flat config
-├── postcss.config.js           # PostCSS ESM configuration
+├── postcss.config.js            # PostCSS ESM configuration
 └── package.json                 # Dependencies and scripts
 ```
 
@@ -233,10 +233,11 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
-- [x] **V3.4.0** - Strategic Repository Reorganization: Categorized component hierarchy (`ui`, `views`, `cards`), architectural cleanup (dead code removal), and consolidated build pipeline.
-- [x] **V3.4.0** - Zero-warning linting pipeline, 100% type safety across ADK & Services, and dependency modernization (React 19.2.4+).
-- [x] **V3.2.6** - Hardened JSON parsing logic, multi-agent property mapping, and iterative refinement loops
-- [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol, ReactFlow graphs
+- [x] **V3.4.0** - Dependency Modernization & Version Unification
+- [x] **V3.3.0** - Strategic Repository Reorganization
+- [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety
+- [x] **V3.2.6** - Hardened JSON parsing logic
+- [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol
 - [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization
 - [x] **V3.2.4** - TaskBank with 90+ 2026 strategic objectives
 - [x] **V3.2.4** - What-If failure simulation engine
@@ -294,10 +295,25 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 ## 📚 Documentation
 
 - **[Agent Development Kit (ADK)](./AGENT.md)** - Multi-agent architecture and API reference
-- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post and architectural decisions
+- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post
 - [Changelog](./CHANGELOG.md) - Version history and release notes
 - [Contributing Guide](./CONTRIBUTING.md) - How to contribute
 - [Gemini API Documentation](https://ai.google.dev/gemini-api/docs) - Gemini 2.0 Flash docs
+
+---
+
+## 🐛 Known Issues & Fixes (v3.4.0)
+
+All issues in the codebase have been identified and fixed in this release:
+
+### Fixed Issues
+
+1. **Missing Coverage Dependency** - Added `@vitest/coverage-v8` to devDependencies
+2. **Deprecated TypeScript baseUrl** - Added `ignoreDeprecations: "6.0"` to tsconfig.json
+3. **Vite manualChunks API** - Updated to functional API in vite.config.ts
+4. **Lucide React Icon Migration** - Migrated `Github` to `GitBranch` (removed in v1.7.0)
+5. **User-Agent Version Sync** - Updated all service layer USER_AGENT strings to v3.4.0
+6. **All Dependencies Updated** - Synchronized to latest stable versions
 
 ---
 
@@ -311,7 +327,7 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 - **Google AI** - For the Gemini 2.0 Flash model and Generative AI SDK
 - **Vercel** - For React 19 and the Next.js ecosystem
-- **Tailwind Labs** - For Tailwind CSS 4.1
+- **Tailwind Labs** - For Tailwind CSS 4.2
 - **XYFlow Team** - For @xyflow/react dependency visualization
 - **Framer** - For Framer Motion animation library
 
