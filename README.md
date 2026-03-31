@@ -48,6 +48,7 @@ Atlas facilitates **collaborative synthesis** between specialized AI agents. For
 | **Persistent State** | Encrypted localStorage with Base64 obfuscation | Custom PersistenceService |
 | **TaskBank** | 90+ pre-calculated 2026 strategic objectives | AI, Cyber, ESG, Global, Infra, People themes |
 
+
 ---
 
 ## 🚀 Getting Started
