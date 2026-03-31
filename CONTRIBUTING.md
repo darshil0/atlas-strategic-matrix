@@ -43,7 +43,7 @@ We are committed to providing a welcoming and inclusive environment for all cont
 
 ### Enforcement
 
-Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues, and other contributions that are not aligned with this Code of Conduct. Instances of unacceptable behavior may be reported by contacting the project team at contact@darshilshah.com. All complaints will be reviewed and investigated promptly and fairly.
+Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, issues, and other contributions that are not aligned with this Code of Conduct. Instances of unacceptable behavior may be reported by contacting the project team at [contact@darshilshah.com](mailto:contact@darshilshah.com). All complaints will be reviewed and investigated promptly and fairly.
 
 ---
 
@@ -60,7 +60,7 @@ Before you begin contributing, ensure you have the following installed:
 
 ### Fork and Clone
 
-1. Fork the repository on GitHub by clicking the "Fork" button at the top right of the repository page
+1. Fork the repository on GitHub by clicking the **Fork** button at the top right of the repository page.
 2. Clone your fork locally:
 
 ```bash
@@ -94,7 +94,7 @@ npm run dev
 npm test
 ```
 
-If everything is set up correctly, the development server should start on `http://localhost:5173` and all tests should pass.
+If everything is set up correctly, the development server should start on `http://localhost:5173`, and all tests should pass.
 
 ---
 
@@ -125,12 +125,12 @@ git checkout -b feature/your-feature-name
 
 ### Making Changes
 
-1. Make your changes in your feature branch
-2. Write or update tests as needed
-3. Ensure all tests pass: `npm test`
-4. Run linting: `npm run lint`
-5. Format code: `npm run format`
-6. Check TypeScript: `npm run type-check`
+1. Make your changes in your feature branch.
+2. Write or update tests as needed.
+3. Ensure all tests pass: `npm test`.
+4. Run linting: `npm run lint`.
+5. Format code: `npm run format`.
+6. Check TypeScript: `npm run type-check`.
 
 ### Keeping Your Branch Updated
 
@@ -140,7 +140,7 @@ git fetch upstream
 git rebase upstream/main
 ```
 
-If you encounter conflicts during the rebase, resolve them carefully and continue the rebase with `git rebase --continue`.
+If you encounter conflicts during the rebase, resolve them carefully and continue with `git rebase --continue`.
 
 ---
 
@@ -148,13 +148,14 @@ If you encounter conflicts during the rebase, resolve them carefully and continu
 
 ### TypeScript
 
-- Use **strict mode** - all code must pass TypeScript strict checks
-- Prefer interfaces over types for object shapes
-- Use explicit return types for functions
-- Avoid `any` type - use `unknown` if type is truly unknown
-- Use const assertions where appropriate
+- Use **strict mode**.
+- Prefer interfaces over types for object shapes.
+- Use explicit return types for functions.
+- Avoid `any`; use `unknown` if the type is truly unknown.
+- Use const assertions where appropriate.
 
 **Example:**
+
 ```typescript
 interface TaskProps {
   id: string;
@@ -163,12 +164,12 @@ interface TaskProps {
 }
 
 function createTask(props: TaskProps): Task {
-  // Implementation
   return task;
 }
 ```
 
 **Avoid:**
+
 ```typescript
 function createTask(props: any) {
   // Implementation
@@ -177,40 +178,27 @@ function createTask(props: any) {
 
 ### React Components
 
-- Use functional components with hooks
-- Extract custom hooks for reusable logic
-- Keep components small and focused (under 200 lines)
-- Use proper prop typing with interfaces
-- Implement proper error boundaries where appropriate
-
-**Example:**
-```typescript
-interface TaskCardProps {
-  task: Task;
-  onUpdate: (task: Task) => void;
-}
-
-export function TaskCard({ task, onUpdate }: TaskCardProps) {
-  // Component logic
-  return <div>{task.title}</div>;
-}
-```
+- Use functional components with hooks.
+- Extract custom hooks for reusable logic.
+- Keep components small and focused.
+- Use proper prop typing with interfaces.
+- Implement proper error boundaries where appropriate.
 
 ### CSS and Styling
 
-- Use Tailwind utility classes for styling
-- Follow the existing glassmorphic design system
-- Ensure responsive design with mobile-first approach
-- Maintain WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text)
-- Use semantic HTML elements (e.g., `<nav>`, `<main>`, `<article>`)
+- Use Tailwind utility classes for styling.
+- Follow the existing glassmorphic design system.
+- Ensure responsive design with a mobile-first approach.
+- Maintain WCAG AA contrast ratios.
+- Use semantic HTML elements such as `<nav>`, `<main>`, and `<article>`.
 
 ### Code Organization
 
-- One component per file
-- Group related functionality together
-- Use barrel exports (index.ts) for clean imports
-- Keep functions pure where possible
-- Separate business logic from UI logic
+- One component per file.
+- Group related functionality together.
+- Use barrel exports (`index.ts`) for clean imports.
+- Keep functions pure where possible.
+- Separate business logic from UI logic.
 
 ---
 
@@ -256,18 +244,17 @@ describe('TaskCard', () => {
     const onUpdate = vi.fn();
     const task = { id: '1', title: 'Test Task', priority: 'high' as const };
     render(<TaskCard task={task} onUpdate={onUpdate} />);
-    // Test interaction
   });
 });
 ```
 
 ### Testing Best Practices
 
-- Test user behavior, not implementation details
-- Use meaningful test descriptions that explain what is being tested
-- Keep tests focused and isolated from each other
-- Mock external dependencies appropriately
-- Test error cases and edge cases thoroughly
+- Test user behavior, not implementation details.
+- Use meaningful test descriptions.
+- Keep tests focused and isolated.
+- Mock external dependencies appropriately.
+- Test error cases and edge cases thoroughly.
 
 ---
 
@@ -277,7 +264,7 @@ describe('TaskCard', () => {
 
 We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body>
@@ -290,15 +277,15 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation changes
-- `style` - Code style changes (formatting, missing semicolons, etc.)
+- `style` - Code style changes
 - `refactor` - Code refactoring without changing functionality
 - `test` - Adding or updating tests
-- `chore` - Maintenance tasks (dependency updates, build configuration, etc.)
+- `chore` - Maintenance tasks
 
 ### Examples
 
 ```bash
-feat(agent): add Monte Carlo risk simulation
+feat(agent): add monte carlo risk simulation
 
 Implements probability distribution modeling for timeline predictions.
 Includes new MonteCarlo service with statistical analysis.
@@ -309,25 +296,23 @@ Closes #123
 ```bash
 fix(ui): resolve race condition in dependency graph
 
-The XYFlow component was causing crashes when tasks were updated
-rapidly. Added debouncing and proper cleanup in useEffect.
+The XYFlow component was causing crashes when tasks were updated rapidly.
+Added debouncing and proper cleanup in useEffect.
 
 Fixes #456
 ```
 
 ```bash
 docs(readme): update installation instructions
-
-Added troubleshooting section for common setup issues.
 ```
 
 ### Commit Best Practices
 
-- Use present tense ("add feature" not "added feature")
-- Use imperative mood ("move cursor to..." not "moves cursor to...")
-- Limit first line to 72 characters or less
-- Reference issues and pull requests when relevant
-- Keep commits atomic and focused on a single change
+- Use present tense.
+- Use imperative mood.
+- Limit the first line to 72 characters or less.
+- Reference issues and pull requests when relevant.
+- Keep commits atomic and focused on one change.
 
 ---
 
@@ -342,9 +327,9 @@ Ensure your PR meets these requirements:
 - [ ] Linting passes (`npm run lint`)
 - [ ] Type checking passes (`npm run type-check`)
 - [ ] Coverage meets 85% threshold
-- [ ] Documentation is updated (if applicable)
+- [ ] Documentation is updated if applicable
 - [ ] Commit messages follow guidelines
-- [ ] Branch is up-to-date with main
+- [ ] Branch is up to date with `main`
 
 ### Submitting a Pull Request
 
@@ -354,16 +339,16 @@ Ensure your PR meets these requirements:
 git push origin feature/your-feature-name
 ```
 
-2. Go to the repository on GitHub and click "New Pull Request"
+2. Go to the repository on GitHub and click **New Pull Request**.
 
 3. Fill out the PR description with:
    - Clear description of changes
    - Link to related issues
    - Screenshots for UI changes
    - Testing performed
-   - Breaking changes (if any)
+   - Breaking changes, if any
 
-4. Wait for maintainer review (typically within 48 hours)
+4. Wait for maintainer review, typically within 48 hours.
 
 ### PR Template
 
@@ -384,8 +369,8 @@ Relates to #456
 - [ ] Documentation update
 
 ## Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests added/updated
+- [ ] Unit tests added or updated
+- [ ] Integration tests added or updated
 - [ ] Manual testing performed
 
 ## Screenshots (if applicable)
@@ -397,17 +382,17 @@ Add screenshots here
 - [ ] I have commented my code where necessary
 - [ ] I have updated the documentation
 - [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix/feature works
+- [ ] I have added tests that prove my fix or feature works
 - [ ] New and existing tests pass locally
 - [ ] Coverage threshold is maintained
 ```
 
 ### Review Process
 
-- Maintainers will review your PR within 48 hours
-- Address feedback by pushing updates to your branch
-- Once approved, a maintainer will merge your PR
-- Your contribution will be included in the next release
+- Maintainers will review your PR within 48 hours.
+- Address feedback by pushing updates to your branch.
+- Once approved, a maintainer will merge your PR.
+- Your contribution will be included in the next release.
 
 ---
 
@@ -415,22 +400,19 @@ Add screenshots here
 
 ### Before Creating an Issue
 
-- Search existing issues to avoid duplicates
-- Check if the issue is already fixed in the main branch
-- Gather relevant information (browser version, OS, package versions)
+- Search existing issues to avoid duplicates.
+- Check if the issue is already fixed in the `main` branch.
+- Gather relevant information such as browser version, OS, and package versions.
 
 ### Asking Questions
 
 If you have a question about using Atlas, please check the following resources first:
 
-- Read the [README.md](README.md) and available documentation
-- Search [existing issues](https://github.com/darshil0/atlas-strategic-agent/issues) for similar questions
-- Search the internet for answers
+- Read the [README.md](README.md) and available documentation.
+- Search existing issues for similar questions.
+- Search the internet for answers.
 
-If you still need clarification after checking these resources, feel free to [open an issue](https://github.com/darshil0/atlas-strategic-agent/issues/new) with the following information:
-
-- Provide as much context as you can about what you're trying to accomplish
-- Include project and platform versions (Node.js, npm, browser, OS) where relevant
+If you still need clarification after checking these resources, feel free to open an issue with the relevant context and platform details.
 
 ### Bug Reports
 
@@ -440,33 +422,8 @@ Use the bug report template and include:
 - Steps to reproduce the issue
 - Expected behavior
 - Actual behavior
-- Screenshots or error messages (if applicable)
-- Environment details (browser, OS, Atlas version)
-
-**Example:**
-
-```markdown
-**Bug Description**
-Dependency graph crashes when loading large roadmaps (100+ tasks)
-
-**Steps to Reproduce**
-1. Create a new strategic plan
-2. Add 150+ tasks with dependencies
-3. Open the dependency visualization
-4. Browser tab crashes
-
-**Expected Behavior**
-Graph should render smoothly with proper virtualization
-
-**Actual Behavior**
-Browser tab crashes with "Out of memory" error
-
-**Environment**
-- Browser: Chrome 120.0.6099.109
-- OS: macOS 14.2
-- Atlas Version: 3.2.2
-- Node.js: 20.10.0
-```
+- Screenshots or error messages, if applicable
+- Environment details
 
 ### Feature Requests
 
@@ -474,30 +431,8 @@ Use the feature request template and include:
 
 - Clear description of the feature
 - Use case and benefits
-- Proposed implementation (optional)
-- Mockups or examples (optional)
-
-**Example:**
-
-```markdown
-**Feature Description**
-Add Excel import/export functionality for bulk task management
-
-**Use Case**
-Enterprise users often have existing roadmaps in Excel and need to 
-migrate them to Atlas without manual entry.
-
-**Proposed Solution**
-- Add "Import from Excel" button
-- Support .xlsx and .csv formats
-- Map columns to task properties
-- Validate data before import
-
-**Benefits**
-- Reduces onboarding time for new users
-- Enables bulk updates
-- Improves enterprise adoption
-```
+- Proposed implementation, if desired
+- Mockups or examples, if helpful
 
 ### Issue Labels
 
@@ -517,59 +452,29 @@ Once filed, the project team will label issues accordingly:
 
 Understanding the project structure will help you navigate the codebase:
 
-```
+```text
 atlas-strategic-agent/
 ├── src/
-│   ├── components/          # React UI components
-│   │   ├── TaskCard.tsx
-│   │   └── DependencyGraph.tsx
-│   ├── config/              # Configuration files
-│   │   ├── env.ts
-│   │   └── prompts.ts
-│   ├── data/                # Static data & templates
-│   │   └── taskBank.ts
+│   ├── components/
+│   ├── config/
+│   ├── data/
 │   ├── lib/
-│   │   └── adk/            # Agent Development Kit
-│   │       ├── agents.ts
-│   │       ├── factory.ts
-│   │       └── protocol.ts
-│   ├── services/           # External service integrations
-│   │   ├── geminiService.ts
-│   │   ├── githubService.ts
-│   │   └── jiraService.ts
-│   ├── types/              # TypeScript type definitions
-│   │   └── index.ts
-│   └── test/               # Test infrastructure
-│       ├── setup.ts
-│       └── smoke.test.ts
-├── docs/                   # Project documentation
-├── public/                 # Static assets
-└── [config files]          # Build and dev configs
+│   │   └── adk/
+│   ├── services/
+│   ├── types/
+│   └── test/
+├── docs/
+├── public/
+└── [config files]
 ```
-
-### Key Directories
-
-- **components/** - Reusable React components with co-located tests
-- **lib/adk/** - Core agent system logic and protocols
-- **services/** - External API integrations (Gemini, GitHub, Jira)
-- **types/** - Shared TypeScript interfaces and type definitions
-- **test/** - Test infrastructure and test utilities
 
 ---
 
 ## Recognition
 
-### Contributors
+All contributors will be recognized in the project README, release notes, and GitHub contributor graph.
 
-All contributors will be recognized in:
-
-- The project README
-- Release notes for their contributions
-- The project's contributor graph on GitHub
-
-### First-Time Contributors
-
-We especially welcome first-time contributors! Look for issues labeled `good first issue` or `help wanted` to get started. These issues are specifically chosen to be approachable for developers new to the project.
+We especially welcome first-time contributors. Look for issues labeled `good first issue` or `help wanted`.
 
 ---
 
@@ -579,7 +484,7 @@ We especially welcome first-time contributors! Look for issues labeled `good fir
 
 - **GitHub Discussions** - [Ask questions and discuss ideas](https://github.com/darshil0/atlas-strategic-agent/discussions)
 - **GitHub Issues** - [Report bugs or request features](https://github.com/darshil0/atlas-strategic-agent/issues)
-- **Email** - contact@darshilshah.com
+- **Email** - [contact@darshilshah.com](mailto:contact@darshilshah.com)
 
 ### Maintainers
 
@@ -593,15 +498,13 @@ We strive to respond to:
 - **Issues**: Within 72 hours
 - **Questions**: Within 1 week
 
-Please be patient with us as we're maintaining this project in our free time.
+Please be patient as we maintain this project in our free time.
 
 ---
 
 ## License
 
 By contributing to Atlas Strategic Agent, you agree that your contributions will be licensed under the same license as the project (MIT License).
-
----
 
 <div align="center">
 
