@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.2.7
+# 🌌 Atlas Strategic Agent v3.3.0
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -116,15 +116,17 @@ npm run coverage         # Generate coverage report (85% threshold)
 ```
 atlas-strategic-agent/
 ├── src/
-│   ├── components/              # React UI Components
-│   │   ├── TaskCard.tsx         # Individual task display
-│   │   ├── DependencyGraph.tsx  # ReactFlow visualization
-│   │   ├── TimelineView.tsx     # Quarterly timeline
-│   │   ├── TaskBank.tsx         # 90+ objective library
-│   │   ├── SettingsModal.tsx    # GitHub/Jira configuration
-│   │   ├── SettingsModal.tsx    # GitHub/Jira configuration
-│   │   ├── Sidebar.tsx          # Navigation & View Switcher
-│   │   └── a2ui/               # A2UI Protocol renderer
+│   ├── components/              # Categorized UI Components
+│   │   ├── ui/                 # A2UI glassmorphic primitives
+│   │   │   └── A2UIRenderer.tsx # Protocol renderer
+│   │   ├── views/              # High-level dashboard views
+│   │   │   ├── DependencyGraph.tsx # ReactFlow visualization
+│   │   │   ├── SettingsModal.tsx # Integration config
+│   │   │   ├── Sidebar.tsx      # Navigation & switcher
+│   │   │   ├── TaskBank.tsx     # 90+ objective library
+│   │   │   └── TimelineView.tsx # Strategic timeline
+│   │   └── cards/              # Specialized domain components
+│   │       └── TaskCard.tsx    # Individual task module
 │   ├── config/                  # Centralized Configuration
 │   │   ├── env.ts              # Environment validation
 │   │   ├── system.ts           # ATLAS_SYSTEM_INSTRUCTION
@@ -162,7 +164,7 @@ atlas-strategic-agent/
 ├── vitest.config.ts             # Test configuration
 ├── tsconfig.json                # TypeScript compiler options
 ├── eslint.config.js             # ESLint flat config
-├── postcss.config.cjs           # PostCSS + Tailwind
+├── postcss.config.js           # PostCSS ESM configuration
 └── package.json                 # Dependencies and scripts
 ```
 
@@ -206,7 +208,7 @@ VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # OPTIONAL: Development
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.2.7
+VITE_APP_VERSION=3.3.0
 ```
 
 **Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.
@@ -230,6 +232,7 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
+- [x] **V3.3.0** - Strategic Repository Reorganization: Categorized component hierarchy (`ui`, `views`, `cards`), architectural cleanup (dead code removal), and consolidated build pipeline.
 - [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety across ADK & Services, and dependency modernization (React 19.2.4+).
 - [x] **V3.2.6** - Hardened JSON parsing logic, multi-agent property mapping, and iterative refinement loops
 - [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol, ReactFlow graphs
