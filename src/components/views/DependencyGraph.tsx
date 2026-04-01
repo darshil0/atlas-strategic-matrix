@@ -1,4 +1,5 @@
 // src/components/DependencyGraph.tsx
+// FIX v3.5.0: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -18,13 +19,8 @@ import {
   type NodeTypes,
 } from "@xyflow/react";
 import { SubTask, TaskStatus, Priority } from "@types";
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
+import { cn } from "@lib/utils";
 import "@xyflow/react/dist/style.css";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 /** Custom node typings */
 interface TaskNodeData {
