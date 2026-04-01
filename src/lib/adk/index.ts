@@ -1,5 +1,5 @@
 /**
- * Atlas Development Kit (ADK) Core Barrel (v3.4.0)
+ * Atlas Development Kit (ADK) Core Barrel (v3.5.0)
  * Production-ready agent orchestration for glassmorphic 2026 strategic planning
  */
 
@@ -12,10 +12,13 @@ export * from "./exporter";      // 📊 Mermaid + GitHub/Jira export
 export * from "./factory";       // 🏭 AgentFactory + pooling
 
 /**
- * Quick-start MissionControl for new projects
+ * Quick-start MissionControl for new projects.
+ * FIX v3.5.0: Removed self-referential circular import (was `import('./index')`).
+ * Now imports directly from sub-modules to avoid the circular dependency.
  */
 export const createAtlasMission = async () => {
-  const { MissionControl, AgentFactory } = await import('./index');
+  const { MissionControl } = await import("./orchestrator");
+  const { AgentFactory } = await import("./factory");
 
   // Warm agent pool for glassmorphic UX
   AgentFactory.warmPool();
@@ -28,13 +31,13 @@ export const createAtlasMission = async () => {
  */
 export const bootstrapADK = async (): Promise<boolean> => {
   try {
-    const { ENV } = await import('@config');
-    const { AgentFactory } = await import('./factory');
+    const { ENV } = await import("@config");
+    const { AgentFactory } = await import("./factory");
 
     AgentFactory.warmPool();
 
     if (ENV.DEBUG_MODE) {
-      console.group("🏛️ ATLAS ADK v3.4.0 BOOTSTRAP");
+      console.group("🏛️ ATLAS ADK v3.5.0 BOOTSTRAP");
       console.log("✅ MissionControl ready");
       console.log("✅ AgentFactory pool warmed");
       console.log("✅ A2UI Renderer glassmorphic");

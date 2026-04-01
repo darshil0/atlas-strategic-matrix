@@ -1,5 +1,5 @@
 /**
- * Atlas ADK Core (v3.4.0) - Glassmorphic Agent Foundations
+ * Atlas ADK Core (v3.5.0) - Glassmorphic Agent Foundations
  * Re-exports core types and defines BaseAgent contract
  */
 

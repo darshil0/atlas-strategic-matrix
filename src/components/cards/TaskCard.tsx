@@ -1,10 +1,10 @@
 // src/components/TaskCard.tsx
+// FIX v3.5.0: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
 import { SubTask, TaskStatus, Priority, type Citation } from "@types";
 import { ICONS } from "@config";
+import { cn } from "@lib/utils";
 import {
   Plus,
   ChevronDown,
@@ -15,10 +15,6 @@ import {
   Ticket,
   Activity,
 } from "lucide-react";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 interface TaskCardProps {
   task: SubTask;

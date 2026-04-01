@@ -1,18 +1,14 @@
 // src/components/A2UIRenderer.tsx
+// FIX v3.5.0: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import React from "react";
 import { motion } from "framer-motion";
 import {
   A2UIElement,
   A2UIComponentType,
   AGUIEvent,
-} from "@lib/adk/protocol"; // Fixed path alias
-import { twMerge } from "tailwind-merge";
-import { clsx, type ClassValue } from "clsx";
+} from "@lib/adk/protocol";
+import { cn } from "@lib/utils";
 import { ChevronDown, Check } from "lucide-react";
-
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
 
 interface A2UIRendererProps {
   elements: A2UIElement[];
@@ -97,7 +93,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
             )}
           >
             {props.title && (
-              <motion.h3 
+              <motion.h3
                 className="font-display text-lg font-black text-white uppercase tracking-wider mb-6 border-b border-white/10 pb-4 bg-gradient-to-r from-white via-slate-100 to-slate-200 bg-clip-text text-transparent"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -193,7 +189,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <motion.h4 
+            <motion.h4
               className="font-mono text-xs font-black uppercase text-slate-400 tracking-[0.3em] mb-8"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -337,8 +333,8 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
 
       default:
         return (
-          <motion.div 
-            key={id} 
+          <motion.div
+            key={id}
             className="glass-2 p-4 rounded-2xl text-xs text-slate-500 italic border border-rose-500/20 bg-rose-500/5 backdrop-blur-xl"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}

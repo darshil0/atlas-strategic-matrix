@@ -1,53 +1,68 @@
-/**
- * Atlas Development Kit (ADK) Core Barrel (v3.5.0)
- * Production-ready agent orchestration for glassmorphic 2026 strategic planning
- */
-
-export * from "./uiBuilder";     // 🧱 A2UI glassmorphic builder
-export * from "./types";         // 🎭 AgentPersona + BaseAgent
-export * from "./orchestrator";  // 🎛️ MissionControl swarm conductor
-export * from "./agents";        // 🧠 Strategist/Analyst/Critic agents
-export * from "./protocol";      // 📨 A2UI protocol (events + messages)
-export * from "./exporter";      // 📊 Mermaid + GitHub/Jira export
-export * from "./factory";       // 🏭 AgentFactory + pooling
+import React, { Suspense } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App';
+import './index.css';
 
 /**
- * Quick-start MissionControl for new projects.
- * FIX v3.5.0: Removed self-referential circular import (was `import('./index')`).
- * Now imports directly from sub-modules to avoid the circular dependency.
+ * Atlas Strategic Agent (v3.5.0)
+ * Glassmorphic Enterprise Orchestrator
  */
-export const createAtlasMission = async () => {
-  const { MissionControl } = await import("./orchestrator");
-  const { AgentFactory } = await import("./factory");
 
-  // Warm agent pool for glassmorphic UX
-  AgentFactory.warmPool();
-
-  return new MissionControl();
-};
-
-/**
- * Development bootstrap helper
- */
-export const bootstrapADK = async (): Promise<boolean> => {
-  try {
-    const { ENV } = await import("@config");
-    const { AgentFactory } = await import("./factory");
-
-    AgentFactory.warmPool();
-
-    if (ENV.DEBUG_MODE) {
-      console.group("🏛️ ATLAS ADK v3.5.0 BOOTSTRAP");
-      console.log("✅ MissionControl ready");
-      console.log("✅ AgentFactory pool warmed");
-      console.log("✅ A2UI Renderer glassmorphic");
-      console.log("✅ ReactFlow + TaskBank linked");
-      console.groupEnd();
-    }
-
-    return true;
-  } catch (error) {
-    console.error("❌ ADK Bootstrap failed:", error);
-    return false;
+// Error Boundary for production resilience
+class LocalErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
   }
-};
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("[Atlas] Critical Render Error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
+          <div className="glass-1 p-8 rounded-3xl border border-white/10 max-w-md backdrop-blur-2xl">
+            <h1 className="text-2xl font-bold text-white mb-4">🏛️ Mission Critical Failure</h1>
+            <p className="text-slate-400 mb-6 leading-relaxed">
+              Atlas encountered a fatal rendering exception. The strategic intelligence pipeline has been suspended.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all font-medium"
+            >
+              Restart MissionControl
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const container = document.getElementById('root');
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <React.StrictMode>
+      <LocalErrorBoundary>
+        <Suspense fallback={
+          <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+          </div>
+        }>
+          <App />
+        </Suspense>
+      </LocalErrorBoundary>
+    </React.StrictMode>
+  );
+}
+
+// Production telemetry
+console.log("🏛️ ATLAS STRATEGIC v3.5.0 ONLINE");
