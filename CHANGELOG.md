@@ -4,6 +4,46 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.5.0] - 2026-04-01
+
+### 🔧 Bug Fixes & Code Quality
+
+This release resolves six distinct bugs identified across the codebase spanning circular imports, incorrect version strings, duplicated utility code, a broken timeout guard, swallowed error messages, and an incomplete React error boundary.
+
+### Fixed
+
+**Critical: Circular Import in ADK Barrel (`src/lib/adk/index.ts`)**
+`createAtlasMission` previously called `await import('./index')` — importing the module from itself — which creates a circular dependency and can cause subtle runtime failures depending on the bundler's module resolution order. The helper now imports directly from `./orchestrator` and `./factory`.
+
+**Incorrect Version String in UIBuilder (`src/lib/adk/uiBuilder.ts`)**
+`missionControlStatus` was generating a MissionControl card with the title `"🏛️ MissionControl v1.0.0"`. The version string is now correctly synchronised to `v3.5.0` and will be kept in step with `package.json` going forward.
+
+**Duplicated `cn` Utility in Three Components**
+`TaskCard`, `A2UIRenderer`, and `DependencyGraph` each contained a locally-defined copy of the `cn` (class-name merge) helper that is already exported from `@lib/utils`. All three files now import the shared utility, removing ~15 lines of dead duplication and ensuring a single source of truth for Tailwind class merging behaviour.
+
+**Missing `analysis` Field on `AgentExecutionContext` (`src/types/index.ts`)**
+The orchestrator's iterative refinement loop passes an `AnalystResult` object as `analysis` on the execution context, but the interface only had a generic index signature (`[key: string]: unknown`) to accommodate it. The field is now explicitly typed as `analysis?: AnalystResult | null`, providing proper autocomplete, preventing accidental typos, and removing a latent implicit-`any` path.
+
+**Broken Timeout Race Condition in `AtlasService.generatePlan` (`src/services/geminiService.ts`)**
+`Promise.race` was applied to `result.response` — a property that is already synchronously available the moment `generateContent` resolves. The timeout therefore never fired, making the 45-second guard completely inoperative. The fix moves the race to wrap the `generateContent` call itself, so the timeout correctly races against the live network request.
+
+**Swallowed Errors in `handleSend` (`src/App.tsx`)**
+The `catch` block was discarding the original `Error` object and displaying a hardcoded generic string `"⚠️ Error generating strategic synthesis."`. This made diagnosing failures in production impossible without the DevTools console being open. The handler now surfaces `err.message` (or a safe fallback for non-`Error` throws) directly in the chat, and logs the full error object to the console.
+
+**Incomplete React Error Boundary in `index.tsx` (`src/index.tsx`)**
+`LocalErrorBoundary` was implemented as a functional component that only listened to `window.error` DOM events. React rendering errors (thrown during `render`, `getDerivedStateFromError`, or a child's render phase) do **not** bubble to `window.error`, so component crashes were silently swallowed rather than showing the fallback UI. The component is now a proper React class-based error boundary implementing `getDerivedStateFromError` and `componentDidCatch`, which is the only React-supported mechanism for catching render-phase errors.
+
+### Changed
+- Version references updated to **v3.5.0** across `src/index.tsx` boot logger and `src/lib/adk/uiBuilder.ts` card title
+
+### Breaking Changes
+None — all changes are internal refactors with identical external behaviour.
+
+### Migration Notes
+No action required. Run `npm install` if dependency versions have drifted, then `npm run type-check && npm run lint` to verify the zero-warning baseline holds.
+
+---
+
 ## [3.4.0] - 2026-03-31
 
 ### 🚀 Dependency Modernization & Critical Fixes
@@ -345,6 +385,23 @@ For issues, questions, or contributions:
 
 ## Migration Guides
 
+### Upgrading from 3.4.0 to 3.5.0
+
+No breaking changes. All fixes are internal refactors with identical external behaviour.
+
+**Action Required**: None — the changes are self-contained within the files listed above. Run `npm run type-check && npm run lint` after pulling to confirm the zero-warning baseline holds.
+
+**Files changed**:
+- `src/lib/adk/index.ts` — circular import resolved
+- `src/lib/adk/uiBuilder.ts` — version string corrected
+- `src/types/index.ts` — `analysis` field added to `AgentExecutionContext`
+- `src/components/cards/TaskCard.tsx` — local `cn` removed, imports from `@lib/utils`
+- `src/components/ui/A2UIRenderer.tsx` — local `cn` removed, imports from `@lib/utils`
+- `src/components/views/DependencyGraph.tsx` — local `cn` removed, imports from `@lib/utils`
+- `src/services/geminiService.ts` — timeout race condition fixed
+- `src/App.tsx` — error messages surfaced in chat
+- `src/index.tsx` — proper class-based React error boundary
+
 ### Upgrading from 3.3.x to 3.4.0
 
 **Action Required**:
@@ -359,7 +416,7 @@ For issues, questions, or contributions:
 **Structural Changes**:
 - Components have moved from `src/components/*` to `src/components/[ui|views|cards]/*`
 
-**Action Required**: 
+**Action Required**:
 - Update custom imports if you are extending Atlas through external modules
 - The core `App.tsx` has been automatically updated to reflect these changes
 
