@@ -1,5 +1,5 @@
 /**
- * ATLAS Core Types (v3.4.0) - Production Type System
+ * ATLAS Core Types (v3.5.0) - Production Type System
  * Comprehensive typing for MissionControl ADK, ReactFlow, GitHub/Jira sync
  * Enterprise-grade 2026 strategic planning with glassmorphic A2UI protocol
  */

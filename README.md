@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.4.0
+# 🌌 Atlas Strategic Agent v3.5.0
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -14,17 +14,17 @@
 
 ## 🎯 What Makes Atlas Different?
 
-- **Multi-Agent Synthesis** - Strategist, Analyst, and Critic agents collaborate in real-time
-- **A2UI Protocol v1.1** - Stream glassmorphic UI components directly from LLM reasoning
-- **What-If Simulations** - Model failure cascades and timeline risk propagation
-- **Enterprise-Ready** - Direct GitHub Issues API v3 and Jira Cloud REST API integration
-- **Premium UX** - Glassmorphic interface with Framer Motion 12 and Tailwind CSS 4.2
+- **Multi-Agent Synthesis** - Strategist, Analyst, and Critic agents collaborate in real-time.
+- **A2UI Protocol v1.1** - Stream glassmorphic UI components directly from LLM reasoning.
+- **What-If Simulations** - Model failure cascades and timeline risk propagation.
+- **Enterprise-Ready** - Direct GitHub Issues API v3 and Jira Cloud REST API integration.
+- **Premium UX** - Glassmorphic interface with Framer Motion 12 and Tailwind CSS 4.2.
 
 ---
 
 ## 🗂️ The Multi-Agent Engine
 
-Atlas facilitates **collaborative synthesis** between specialized AI agents. For detailed architecture and API documentation, see **[AGENT.md](./AGENT.md)**.
+Atlas facilitates **collaborative synthesis** between specialized AI agents. For detailed architecture and API documentation, see **[AGENTS.md](./AGENTS.md)**.
 
 | Agent | Role | Output |
 |-------|------|--------|
@@ -32,7 +32,7 @@ Atlas facilitates **collaborative synthesis** between specialized AI agents. For
 | **🔬 The Analyst** | Performs feasibility scoring and TASK_BANK alignment | Risk assessments and capacity analysis |
 | **⚖️ The Critic** | Stress-tests roadmaps for acyclic graph validation | DAG optimization and quality scores |
 
-**Learn More**: Read the complete [Agent Development Kit documentation](./AGENT.md) for implementation details, API reference, and customization guides.
+**Learn More**: Read the complete [Agent Development Kit documentation](./AGENTS.md) for implementation details, API reference, and customization guides.
 
 ---
 
@@ -77,7 +77,7 @@ cp .env.example .env
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000` (configured in vite.config.ts).
+The application will be available at `http://localhost:3000`.
 
 ---
 
@@ -93,7 +93,7 @@ npm run preview          # Preview production build locally
 
 # Code Quality
 npm run lint             # Run ESLint with TypeScript rules
-npm run format           # Format code with Prettier (80 char width)
+npm run format           # Format code with Prettier
 npm run type-check       # TypeScript strict type checking
 
 # Testing
@@ -106,7 +106,7 @@ npm run coverage         # Generate coverage report (85% threshold)
 
 - **TypeScript** - Strict mode with comprehensive type safety (TypeScript 6.0.2+)
 - **ESLint** - Modern flat config with TypeScript integration; Zero Warning Baseline
-- **Prettier** - Automated formatting (80 char width, 2 space tabs)
+- **Prettier** - Automated formatting
 - **Vitest** - 85% coverage requirement across all metrics; 100% pass rate
 - **React Testing Library** - Component integration tests
 
@@ -209,7 +209,7 @@ VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # OPTIONAL: Development
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.4.0
+VITE_APP_VERSION=3.5.0
 ```
 
 **Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.
@@ -233,22 +233,22 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
-- [x] **V3.4.0** - Dependency Modernization & Version Unification
-- [x] **V3.3.0** - Strategic Repository Reorganization
-- [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety
-- [x] **V3.2.6** - Hardened JSON parsing logic
-- [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol
-- [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization
-- [x] **V3.2.4** - TaskBank with 90+ 2026 strategic objectives
-- [x] **V3.2.4** - What-If failure simulation engine
-- [x] **V3.2.4** - Glassmorphic UI with Framer Motion animations
+- [x] **V3.5.0** - Dependency Modernization & Version Unification.
+- [x] **V3.3.0** - Strategic Repository Reorganization.
+- [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety.
+- [x] **V3.2.6** - Hardened JSON parsing logic.
+- [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol.
+- [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization.
+- [x] **V3.2.4** - TaskBank with 90+ 2026 strategic objectives.
+- [x] **V3.2.4** - What-If failure simulation engine.
+- [x] **V3.2.4** - Glassmorphic UI with Framer Motion animations.
 
 ### Planned 🚀
 
-- [ ] **V4.0.0** - Monte Carlo risk modeling with probability distributions
-- [ ] **V4.1.0** - Real-time collaboration via WebSockets
-- [ ] **V4.2.0** - Resource optimizer (headcount/budget allocation)
-- [ ] **V4.3.0** - Claude Code integration for agentic coding tasks
+- [ ] **V4.0.0** - Monte Carlo risk modeling with probability distributions.
+- [ ] **V4.1.0** - Real-time collaboration via WebSockets.
+- [ ] **V4.2.0** - Resource optimizer (headcount/budget allocation).
+- [ ] **V4.3.0** - Claude Code integration for agentic coding tasks.
 
 ---
 
@@ -294,26 +294,30 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ## 📚 Documentation
 
-- **[Agent Development Kit (ADK)](./AGENT.md)** - Multi-agent architecture and API reference
-- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post
-- [Changelog](./CHANGELOG.md) - Version history and release notes
-- [Contributing Guide](./CONTRIBUTING.md) - How to contribute
-- [Gemini API Documentation](https://ai.google.dev/gemini-api/docs) - Gemini 2.0 Flash docs
+- **[Agent Development Kit (ADK)](./AGENTS.md)** - Multi-agent architecture and API reference.
+- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post.
+- [Changelog](./CHANGELOG.md) - Version history and release notes.
+- [Contributing Guide](./CONTRIBUTING.md) - How to contribute.
+- [Gemini API Documentation](https://ai.google.dev/gemini-api/docs) - Gemini 2.0 Flash docs.
 
 ---
 
-## 🐛 Known Issues & Fixes (v3.4.0)
+## 🐛 Known Issues & Fixes (v3.5.0)
 
 All issues in the codebase have been identified and fixed in this release:
 
 ### Fixed Issues
 
-1. **Missing Coverage Dependency** - Added `@vitest/coverage-v8` to devDependencies
-2. **Deprecated TypeScript baseUrl** - Added `ignoreDeprecations: "6.0"` to tsconfig.json
-3. **Vite manualChunks API** - Updated to functional API in vite.config.ts
-4. **Lucide React Icon Migration** - Migrated `Github` to `GitBranch` (removed in v1.7.0)
-5. **User-Agent Version Sync** - Updated all service layer USER_AGENT strings to v3.4.0
-6. **All Dependencies Updated** - Synchronized to latest stable versions
+1. **Missing Coverage Dependency** - Added `@vitest/coverage-v8` to devDependencies.
+2. **Deprecated TypeScript baseUrl** - Added `ignoreDeprecations: "6.0"` to tsconfig.json.
+3. **Vite manualChunks API** - Updated to functional API in vite.config.ts.
+4. **Lucide React Icon Migration** - Migrated `Github` to `GitBranch` (removed in v1.7.0).
+5. **User-Agent Version Sync** - Updated all service layer USER_AGENT strings to v3.5.0.
+6. **Gemini Race Condition** - Fixed timeout/race-condition pattern in `generatePlan`.
+7. **Error Visibility** - Surface actual error messages in `handleSend` catch block.
+8. **ADK Circular Import** - Removed self-referential import in `src/lib/adk/index.ts`.
+9. **Duplicate Utilities** - Consolidated `cn` helper to `src/lib/utils.ts`.
+10. **MissionControl Versioning** - Corrected version display in `uiBuilder.ts`.
 
 ---
 
@@ -325,11 +329,11 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 🙏 Acknowledgments
 
-- **Google AI** - For the Gemini 2.0 Flash model and Generative AI SDK
-- **Vercel** - For React 19 and the Next.js ecosystem
-- **Tailwind Labs** - For Tailwind CSS 4.2
-- **XYFlow Team** - For @xyflow/react dependency visualization
-- **Framer** - For Framer Motion animation library
+- **Google AI** - For the Gemini 2.0 Flash model and Generative AI SDK.
+- **Vercel** - For React 19 and the Next.js ecosystem.
+- **Tailwind Labs** - For Tailwind CSS 4.2.
+- **XYFlow Team** - For @xyflow/react dependency visualization.
+- **Framer** - For Framer Motion animation library.
 
 ---
 

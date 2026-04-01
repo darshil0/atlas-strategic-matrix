@@ -1,6 +1,10 @@
 /**
- * ATLAS App (v3.4.0) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v3.5.0) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
+ *
+ * FIX v3.5.0: `handleSend` catch block now surfaces the actual error message
+ *   instead of swallowing it behind a generic string. This makes failures
+ *   debuggable in production without requiring the browser console to be open.
  */
 
 import React, {
@@ -93,6 +97,11 @@ const App: React.FC = () => {
     setMessages((prev) => [...prev, message]);
   }, []);
 
+  /**
+   * FIX v3.5.0: The catch block now surfaces the actual error message so that
+   * failures are visible without opening DevTools. A generic fallback is still
+   * shown for unknown error shapes.
+   */
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
 
@@ -117,8 +126,13 @@ const App: React.FC = () => {
         );
         addMessage("assistant", response.text, response.a2ui);
       }
-    } catch {
-      addMessage("assistant", "⚠️ Error generating strategic synthesis.");
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred. Please try again.";
+      addMessage("assistant", `⚠️ Error: ${errorMessage}`);
+      console.error("[Atlas] handleSend error:", err);
     } finally {
       setIsThinking(false);
     }
@@ -226,7 +240,6 @@ const App: React.FC = () => {
     });
   };
 
-  // ... (rest of the component rendered below)
   return (
     <div className="flex h-screen w-full bg-slate-950 text-slate-50 overflow-hidden font-sans selection:bg-atlas-blue/30">
       <Sidebar

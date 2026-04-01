@@ -1,7 +1,13 @@
 /**
- * Atlas Gemini Service Layer (v3.4.0) - Glassmorphic Enterprise LLM
+ * Atlas Gemini Service Layer (v3.5.0) - Glassmorphic Enterprise LLM
  * Production Gemini 2.0 integration for MissionControl → Agent swarm
  * JSON schema enforcement + A2UI extraction + TaskBank aware planning
+ *
+ * FIX v3.5.0: Corrected the timeout/race-condition pattern in `generatePlan`.
+ *   Previously, `Promise.race` was applied to `result.response` which is already
+ *   resolved by the time we reach that line (it's the synchronous response object
+ *   from `generateContent`). The timeout now correctly wraps the entire
+ *   `generateContent` call so it can actually race against the timer.
  */
 
 import { GoogleGenerativeAI, SchemaType, GenerativeModel, ResponseSchema } from "@google/generative-ai";
@@ -27,9 +33,9 @@ interface MissionMetrics {
 }
 
 export class AtlasService {
-  private static readonly modelName = "gemini-2.0-flash-exp"; // Jan 2026 production model
+  private static readonly modelName = "gemini-2.0-flash-exp";
   private static readonly maxRetries = 3;
-  private static readonly timeoutMs = 45_000; // Optimized for glassmorphic UX
+  private static readonly timeoutMs = 45_000;
 
   private static getModel(withA2UI = false): GenerativeModel {
     const systemInstruction = withA2UI
@@ -40,18 +46,21 @@ export class AtlasService {
       model: this.modelName,
       systemInstruction,
       generationConfig: {
-        temperature: 0.05,        // Production precision
+        temperature: 0.05,
         topP: 0.75,
         topK: 32,
-        maxOutputTokens: 12288,   // Extended for complex roadmaps
+        maxOutputTokens: 12288,
         responseMimeType: withA2UI ? undefined : "application/json",
       },
     });
   }
 
   /**
-   * Generate 2026 Q1-Q4 strategic roadmap with TaskBank alignment
-   * Returns ReactFlow + DependencyGraph ready Plan
+   * Generate 2026 Q1-Q4 strategic roadmap with TaskBank alignment.
+   *
+   * FIX v3.5.0: The timeout race now wraps `generateContent` itself rather than
+   * the already-resolved `result.response` property. This ensures the 45 s guard
+   * actually fires if the network call hangs.
    */
   static async generatePlan(userPrompt: string): Promise<Plan> {
     const model = this.getModel(false);
@@ -66,7 +75,7 @@ export class AtlasService {
           items: {
             type: SchemaType.OBJECT,
             properties: {
-              id: { type: SchemaType.STRING },                    // AI-26-Q1-001
+              id: { type: SchemaType.STRING },
               description: { type: SchemaType.STRING },
               status: {
                 type: SchemaType.STRING,
@@ -100,13 +109,11 @@ export class AtlasService {
       required: ["goal", "tasks"],
     };
 
-    for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
-      try {
-        const result = await model.generateContent({
-          contents: [{
-            role: "user",
-            parts: [{
-              text: `Generate 2026 enterprise roadmap for: "${userPrompt}"
+    const requestPayload = {
+      contents: [{
+        role: "user",
+        parts: [{
+          text: `Generate 2026 enterprise roadmap for: "${userPrompt}"
 
 TASK_BANK CONTEXT (90+ objectives):
 ${TASK_BANK.slice(0, 10).map(t => `${t.id}: ${t.description.slice(0, 60)}...`).join("\n")}
@@ -118,24 +125,29 @@ REQUIREMENTS:
 • Balance Q1 workload (max 12 HIGH priority)
 
 Return structured JSON matching schema exactly.`
-            }]
-          }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema,
-          },
-        });
+        }]
+      }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema,
+      },
+    };
 
-        const response = await Promise.race([
-          result.response,
+    for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+      try {
+        // FIX: Race the entire generateContent call, not the already-settled response property.
+        const result = await Promise.race([
+          model.generateContent(requestPayload),
           new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Generation timeout")), this.timeoutMs)
-          )
+            setTimeout(
+              () => reject(new Error(`Generation timed out after ${this.timeoutMs / 1000}s`)),
+              this.timeoutMs,
+            )
+          ),
         ]);
 
-        const plan = this.parseResponse<Plan>(response.text());
+        const plan = this.parseResponse<Plan>(result.response.text());
 
-        // Production quality gates
         if (this.validatePlanQuality(plan, userPrompt)) {
           if (ENV.DEBUG_MODE) {
             console.group("🏛️ [AtlasService] PLAN GENERATED");
@@ -156,8 +168,7 @@ Return structured JSON matching schema exactly.`
   }
 
   /**
-   * Execute SubTask with streaming + glassmorphic A2UI extraction
-   * Powers MissionControl real-time feedback
+   * Execute SubTask with streaming + glassmorphic A2UI extraction.
    */
   static async executeSubtask(
     subtask: SubTask,
@@ -179,12 +190,10 @@ Return structured JSON matching schema exactly.`
     let fullText = "";
     const a2uiCandidates: string[] = [];
 
-    // Real-time streaming with A2UI extraction
     for await (const chunk of result.stream) {
       const text = chunk.text();
       fullText += text;
 
-      // Extract embedded A2UI glassmorphic payloads
       const a2uiMatch = text.match(/<a2ui>[\s\S]*?<\/a2ui>/gi);
       if (a2uiMatch) a2uiCandidates.push(...a2uiMatch);
 
@@ -200,7 +209,7 @@ Return structured JSON matching schema exactly.`
   }
 
   /**
-   * MissionControl completion summary with Q1-Q4 metrics
+   * MissionControl completion summary with Q1-Q4 metrics.
    */
   static async summarizeMission(plan: Plan, executionHistory: string): Promise<string> {
     const model = this.getModel(false);
@@ -232,11 +241,11 @@ Format as concise executive briefing with:
 
   private static validatePlanQuality(plan: Plan, goal: string): boolean {
     return (
-      plan.tasks.length >= 8 &&           // Minimum roadmap size
-      plan.tasks.length <= 30 &&           // Reasonable scope
-      plan.goal.trim().toLowerCase().includes(goal.toLowerCase().slice(0, 20)) && // Goal alignment
-      plan.tasks.some(t => t.category === "2026 Q1") && // Q1 coverage
-      plan.tasks.filter(t => t.priority === Priority.HIGH).length >= 3 // Critical tasks
+      plan.tasks.length >= 8 &&
+      plan.tasks.length <= 30 &&
+      plan.goal.trim().toLowerCase().includes(goal.toLowerCase().slice(0, 20)) &&
+      plan.tasks.some(t => t.category === "2026 Q1") &&
+      plan.tasks.filter(t => t.priority === Priority.HIGH).length >= 3
     );
   }
 
@@ -287,7 +296,7 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
   private static extractA2UI(candidates: string[]): A2UIMessage | undefined {
     for (const candidate of candidates) {
       try {
-        const payload = candidate.slice(6, -8).trim(); // Remove <a2ui> tags
+        const payload = candidate.slice(6, -8).trim();
         const parsed = JSON.parse(payload);
         const validated = validateA2UIMessage(parsed);
         if (validated) return validated;

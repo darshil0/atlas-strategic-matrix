@@ -1,5 +1,5 @@
 /**
- * Atlas Core Configuration Barrel (v3.4.0)
+ * Atlas Core Configuration Barrel (v3.5.0)
  * Centralized exports for your glassmorphic AI planning system
  * 
  * 🏗️  Architecture: Monorepo-style config organization

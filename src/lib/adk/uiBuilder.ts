@@ -1,6 +1,9 @@
 /**
- * Glassmorphic UIBuilder v3.4.0 - Atlas A2UI Fluent API (v3.4.0)
+ * Glassmorphic UIBuilder v3.5.0 - Atlas A2UI Fluent API
  * Production-ready fluent interface for Strategist/Analyst/Critic glassmorphic UIs
+ *
+ * FIX v3.5.0: missionControlStatus card title now correctly reads "MissionControl v3.5.0"
+ *             (was incorrectly hardcoded as "MissionControl v1.0.0").
  */
 
 import { A2UIMessage, A2UIElement, A2UIComponentType, AgentPersona } from "@types";
@@ -92,14 +95,17 @@ export class UIBuilder {
     });
   }
 
-  /** MissionControl status dashboard */
+  /**
+   * MissionControl status dashboard.
+   * FIX v3.5.0: Card title updated from "MissionControl v1.0.0" to "MissionControl v3.5.0".
+   */
   missionControlStatus(
     score: number,
     iterations: number,
     q1Count: number
   ): this {
     return this
-      .card("🏛️ MissionControl v1.0.0", "Strategic Synthesis Pipeline")
+      .card("🏛️ MissionControl v3.5.0", "Strategic Synthesis Pipeline")
       .progress("Plan Quality", score)
       .text(`Q1 Critical Path: ${q1Count} HIGH priority`, { size: "sm" })
       .text(`Refinement Cycles: ${iterations + 1}`, { size: "sm" })
