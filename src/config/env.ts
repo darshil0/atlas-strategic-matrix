@@ -1,5 +1,5 @@
 /**
- * Runtime environment helper for Atlas Strategic Agent (v3.5.1)
+ * Runtime environment helper for Atlas Strategic Agent (v3.5.2)
  * - Coerces import.meta.env values to known ENV keys safely.
  * - Integrates PersistenceService for user-configurable settings.
  * - Provides validation with actionable feedback.
@@ -19,10 +19,22 @@ interface EnvShape {
   TASKBANK_SIZE: string;
 }
 
+/**
+ * Vite exposes typed import.meta.env via vite/client; access through the
+ * declared ImportMeta interface rather than casting to `any`.
+ */
+type ImportMetaEnv = Record<string, string | boolean | undefined>;
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 const getEnvVar = (key: string): string | undefined => {
   // Vite client-side (import.meta.env.VITE_*)
-  if (typeof import.meta !== "undefined" && (import.meta as any).env?.[key]) {
-    return (import.meta as any).env[key] as string;
+  const viteEnv = (import.meta as unknown as ImportMeta).env;
+  const val = viteEnv[key];
+  if (val !== undefined && val !== "") {
+    return String(val);
   }
 
   // Fallback to PersistenceService for user-configurable settings
@@ -50,7 +62,7 @@ export const ENV: EnvShape = {
   JIRA_EMAIL: getEnvVar("VITE_JIRA_EMAIL")?.trim(),
   JIRA_API_TOKEN: getEnvVar("VITE_JIRA_API_TOKEN")?.trim(),
   DEBUG_MODE: String(getEnvVar("VITE_DEBUG_MODE") ?? "false").toLowerCase() === "true",
-  APP_VERSION: String(getEnvVar("VITE_APP_VERSION") ?? "3.5.1").trim(),
+  APP_VERSION: String(getEnvVar("VITE_APP_VERSION") ?? "3.5.2").trim(),
   APP_NAME: "Atlas AI Planner",
   TASKBANK_SIZE: String(getEnvVar("VITE_TASKBANK_SIZE") ?? "92"),
 } as const;
@@ -98,7 +110,7 @@ export const ENV_TEMPLATE = `# Atlas AI Planner - .env.example
 # Copy to .env and NEVER commit! (.env* in .gitignore)
 
 # REQUIRED: Gemini AI (powers task generation)
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
+VITE_GEMINI_API_KEY=your_gemini_key_here
 
 # OPTIONAL: GitHub Issues integration (Settings modal)
 # VITE_GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -110,7 +122,7 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 # DEVELOPMENT
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.5.1
+VITE_APP_VERSION=3.5.2
 VITE_TASKBANK_SIZE=92
 `;
 
@@ -119,7 +131,8 @@ VITE_TASKBANK_SIZE=92
  */
 export const initializeEnv = async (): Promise<boolean> => {
   const ok = validateEnv();
-  if (ENV.DEBUG_MODE && (import.meta as any).env?.DEV) {
+  const viteEnv = (import.meta as unknown as ImportMeta).env;
+  if (ENV.DEBUG_MODE && viteEnv.DEV) {
     console.warn("\n🔒 ATLAS SECURITY NOTICE:");
     console.warn("• VITE_* vars visible in browser DevTools");
     console.warn("• GitHub/Jira tokens stored in localStorage (Settings) by design");
