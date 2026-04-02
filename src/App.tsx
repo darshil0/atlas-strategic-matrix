@@ -1,8 +1,8 @@
 /**
- * ATLAS App (v3.5.0) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v3.5.1) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  *
- * FIX v3.5.0: `handleSend` catch block now surfaces the actual error message
+ * FIX v3.5.1: `handleSend` catch block now surfaces the actual error message
  *   instead of swallowing it behind a generic string. This makes failures
  *   debuggable in production without requiring the browser console to be open.
  */
@@ -98,7 +98,7 @@ const App: React.FC = () => {
   }, []);
 
   /**
-   * FIX v3.5.0: The catch block now surfaces the actual error message so that
+   * FIX v3.5.1: The catch block now surfaces the actual error message so that
    * failures are visible without opening DevTools. A generic fallback is still
    * shown for unknown error shapes.
    */

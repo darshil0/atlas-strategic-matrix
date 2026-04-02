@@ -1,5 +1,5 @@
 /**
- * Runtime environment helper for Atlas Strategic Agent (v3.5.0)
+ * Runtime environment helper for Atlas Strategic Agent (v3.5.1)
  * - Coerces import.meta.env values to known ENV keys safely.
  * - Integrates PersistenceService for user-configurable settings.
  * - Provides validation with actionable feedback.
@@ -50,7 +50,7 @@ export const ENV: EnvShape = {
   JIRA_EMAIL: getEnvVar("VITE_JIRA_EMAIL")?.trim(),
   JIRA_API_TOKEN: getEnvVar("VITE_JIRA_API_TOKEN")?.trim(),
   DEBUG_MODE: String(getEnvVar("VITE_DEBUG_MODE") ?? "false").toLowerCase() === "true",
-  APP_VERSION: String(getEnvVar("VITE_APP_VERSION") ?? "3.5.0").trim(),
+  APP_VERSION: String(getEnvVar("VITE_APP_VERSION") ?? "3.5.1").trim(),
   APP_NAME: "Atlas AI Planner",
   TASKBANK_SIZE: String(getEnvVar("VITE_TASKBANK_SIZE") ?? "92"),
 } as const;
@@ -110,7 +110,7 @@ VITE_GEMINI_API_KEY=your_gemini_api_key_here
 
 # DEVELOPMENT
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.5.0
+VITE_APP_VERSION=3.5.1
 VITE_TASKBANK_SIZE=92
 `;
 
