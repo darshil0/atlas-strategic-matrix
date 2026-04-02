@@ -4,6 +4,23 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.5.2] - 2026-04-02
+
+### 🔧 Repository Maintenance & Organization
+
+This release focuses on cleaning up the repository structure, stabilizing dependencies, and ensuring a "Zero Warning" baseline across the codebase.
+
+### Changed
+- **Repository Organization**: Removed redundant source files from the root directory (`App.tsx`, `Sidebar.tsx`, etc.) and consolidated them in `src/`.
+- **Test Consolidation**: Moved root-level test scripts to `src/test/`.
+- **Dependency Stabilization**: Reverted `tailwind-merge` to a stable `3.0.0` version to resolve installation issues.
+
+### Fixed
+- **Environment Logic**: Refactored `src/config/env.ts` to include improved environment variable access logic with proper TypeScript typing.
+- **Zero Warning Baseline**: Eliminated all `any` usage in core configuration files to ensure strict type safety.
+
+---
+
 ## [3.5.1] - 2026-04-02
 
 ### 🔧 Standardization & Hotfixes
