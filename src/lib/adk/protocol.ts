@@ -1,5 +1,5 @@
 /**
- * A2UI (Agent-to-User Interface) Protocol v3.5.0 - Glassmorphic Edition
+ * A2UI (Agent-to-User Interface) Protocol v3.5.1 - Glassmorphic Edition
  * Type-safe contract for Atlas agent swarm ↔ React glassmorphic renderer
  */
 

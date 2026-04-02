@@ -4,6 +4,27 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.5.1] - 2026-04-02
+
+### 🔧 Standardization & Hotfixes
+
+This release standardizes the ESLint and Environment configuration, consolidates the application entry points, and hardens the "Zero Warning" baseline with the introduction of proper TypeScript-based linting infrastructure.
+
+### Added
+- **ESLint TypeScript Support**: Integrated `jiti` to allow ESLint to load `eslint.config.ts` directly, enabling type-aware linting for the flat configuration.
+- **Unified Versioning**: Synchronized application version to **v3.5.1** across all 50+ project files, including AI system instructions and service layer telemetry.
+
+### Fixed
+- **Entry Point Consolidation**: Resolved a critical discrepancy where the feature-rich `index.tsx` (with advanced Error Boundaries and BootLoader) was residing in the root while a simplified version was being served from `src/`. The advanced version has been moved to `src/index.tsx`.
+- **Environment Standardization**: Cleaned up redundant environment helpers and standardized `VITE_APP_VERSION` handling in `src/config/env.ts`.
+- **Zero Warning Baseline**: Addressed latent warnings in `src/config/env.ts` and achieved a pristine linting state across the core ADK.
+
+### Changed
+- Updated `AGENTS.md` and `README.md` to reflect the v3.5.1 architectural state.
+- Moved `index.tsx` from root to `src/index.tsx`.
+
+---
+
 ## [3.5.0] - 2026-04-01
 
 ### 🔧 Bug Fixes & Code Quality
@@ -385,7 +406,7 @@ For issues, questions, or contributions:
 
 ## Migration Guides
 
-### Upgrading from 3.4.0 to 3.5.0
+### Upgrading from 3.4.0 to 3.5.1
 
 No breaking changes. All fixes are internal refactors with identical external behaviour.
 

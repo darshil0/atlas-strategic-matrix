@@ -1,5 +1,5 @@
 /**
- * Atlas Jira Service (v3.5.0) - Glassmorphic Jira Cloud REST API v3 Integration
+ * Atlas Jira Service (v3.5.1) - Glassmorphic Jira Cloud REST API v3 Integration
  * Bidirectional sync: SubTasks ↔ Jira Issues with Q1-Q4 epics + priority mapping
  */
 
@@ -12,7 +12,7 @@ import { TASK_BANK } from "@data/taskBank";
  */
 export class JiraService {
   private static readonly API_VERSION = "3";
-  private static readonly USER_AGENT = "Atlas-Strategic-Agent/3.5.0";
+  private static readonly USER_AGENT = "Atlas-Strategic-Agent/3.5.1";
 
   /**
    * Create Jira Issue from Atlas SubTask with glassmorphic epic linking
