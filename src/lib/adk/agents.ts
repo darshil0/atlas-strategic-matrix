@@ -15,7 +15,7 @@ import {
   CriticResult,
 } from "@types";
 import { ENV } from "@config";
-import { AtlasService } from "@services/geminiService";
+import { AtlasService } from "@services/ai/gemini";
 
 /**
  * Strategist Agent - Hierarchical Goal Decomposition

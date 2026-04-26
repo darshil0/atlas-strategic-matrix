@@ -341,16 +341,32 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
   }
 
   private static parseResponse<T>(text: string): T {
+    // Strategy 1: Standard markdown stripping
     const cleanText = text.replace(/```(?:json)?\n?|\n?```/g, "").trim();
 
     try {
       return JSON.parse(cleanText) as T;
-    } catch {
+    } catch (error) {
+      // Strategy 2: Brace discovery (fallback for messy LLM output)
+      const start = cleanText.indexOf("{");
+      const end = cleanText.lastIndexOf("}");
+
+      if (start !== -1 && end !== -1 && end > start) {
+        try {
+          const extracted = cleanText.slice(start, end + 1);
+          return JSON.parse(extracted) as T;
+        } catch (innerError) {
+          console.error("[AtlasService] Brace discovery failed:", innerError);
+        }
+      }
+
       console.error(
         "[AtlasService] JSON parse failed:",
         cleanText.slice(0, 200)
       );
-      throw new Error("Failed to parse structured Gemini response");
+      throw new Error("Failed to parse structured Gemini response", {
+        cause: error,
+      });
     }
   }
 

@@ -36,31 +36,46 @@ const ATLAS_STORAGE_KEYS = {
  * Production persistence layer with validation + quota protection
  */
 export class PersistenceService {
+  private static savePlanQueue: (Plan | null)[] = [];
+  private static isProcessingQueue = false;
+
   /**
-   * Save 2026 strategic plan with ReactFlow validation
+   * Save 2026 strategic plan with non-recursive queue pattern to prevent race conditions.
    */
   static savePlan(plan: Plan | null): void {
-    try {
-      if (plan && this.validatePlan(plan)) {
-        localStorage.setItem(
-          ATLAS_STORAGE_KEYS.CURRENT_PLAN,
-          this.encrypt(JSON.stringify(plan))
-        );
-        if (ENV.DEBUG_MODE) {
-          console.log("🏛️ [Persistence] Plan saved:", {
-            tasks: plan.tasks.length,
-            q1High: plan.tasks.filter(
-              (t) => t.priority === Priority.HIGH && t.category === "2026 Q1"
-            ).length,
-          });
+    this.savePlanQueue.push(plan);
+    this.processQueue();
+  }
+
+  private static async processQueue(): Promise<void> {
+    if (this.isProcessingQueue) return;
+    this.isProcessingQueue = true;
+
+    while (this.savePlanQueue.length > 0) {
+      const plan = this.savePlanQueue.shift();
+      try {
+        if (plan && this.validatePlan(plan)) {
+          localStorage.setItem(
+            ATLAS_STORAGE_KEYS.CURRENT_PLAN,
+            this.encrypt(JSON.stringify(plan))
+          );
+          if (ENV.DEBUG_MODE) {
+            console.log("🏛️ [Persistence] Plan saved:", {
+              tasks: plan.tasks.length,
+            });
+          }
+        } else if (plan === null) {
+          localStorage.removeItem(ATLAS_STORAGE_KEYS.CURRENT_PLAN);
         }
-      } else {
-        localStorage.removeItem(ATLAS_STORAGE_KEYS.CURRENT_PLAN);
+      } catch (error) {
+        console.error("🚨 [Persistence] Plan save failed:", error);
+        this.handleQuotaError();
       }
-    } catch (error) {
-      console.error("🚨 [Persistence] Plan save failed:", error);
-      this.handleQuotaError();
+      // Small delay to ensure browser doesn't lock up on heavy writes
+      await new Promise((resolve) => setTimeout(resolve, 0));
     }
+
+    this.isProcessingQueue = false;
   }
 
   /**

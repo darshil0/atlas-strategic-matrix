@@ -93,7 +93,7 @@ vi.mock("@config", async (importOriginal) => {
 });
 
 // Mock PersistenceService
-vi.mock("@services/persistenceService", () => ({
+vi.mock("@services/core/persistence", () => ({
   PersistenceService: {
     getPlan: vi.fn(() => mockState.plan),
     savePlan: vi.fn((plan) => {
@@ -128,7 +128,7 @@ vi.mock("@services/persistenceService", () => ({
 }));
 
 // Mock AtlasService
-vi.mock("@services/geminiService", () => ({
+vi.mock("@services/ai/gemini", () => ({
   AtlasService: {
     generatePlan: vi
       .fn()

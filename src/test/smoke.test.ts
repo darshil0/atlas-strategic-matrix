@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { AgentFactory, MissionControl } from "../lib/adk";
 import { AgentPersona } from "../types";
-import { PersistenceService } from "../services/persistenceService";
+import { PersistenceService } from "../services/core/persistence";
 import { syncServices } from "../services";
 import { ATLAS_TEST_UTILS } from "../test/setup";
 

@@ -3,10 +3,10 @@
  * Single import for GitHub Issues + Jira Tickets bidirectional sync
  */
 
-import { GithubService } from "@services/githubService";
-import { JiraService } from "@services/jiraService";
-import { PersistenceService } from "@services/persistenceService";
-import { AtlasService } from "@services/geminiService";
+import { GithubService } from "@services/integrations/github";
+import { JiraService } from "@services/integrations/jira";
+import { PersistenceService } from "@services/core/persistence";
+import { AtlasService } from "@services/ai/gemini";
 import { Plan, SyncResult } from "@types";
 
 export const githubService = new GithubService();
