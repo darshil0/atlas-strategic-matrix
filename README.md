@@ -234,8 +234,8 @@ Atlas uses a custom glassmorphic design system:
 ### Completed ✅
 
 - [x] **V3.6.0** - Dependency Modernization & Robustness.
-- [x] **V3.5.2** - Maintenance Release: Repository Organization & Dependency Stabilization.
-- [x] **V3.5.1** - Standardization & Hotfixes.
+- [x] **V3.6.0** - Maintenance Release: Repository Organization & Dependency Stabilization.
+- [x] **V3.6.0** - Dependency Modernization & Version Unification.
 - [x] **V3.3.0** - Strategic Repository Reorganization.
 - [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety.
 - [x] **V3.2.6** - Hardened JSON parsing logic.
