@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.5.2
+# 🌌 Atlas Strategic Agent v3.6.0
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -209,7 +209,7 @@ VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # OPTIONAL: Development
 VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.5.2
+VITE_APP_VERSION=3.6.0
 ```
 
 **Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.
@@ -233,8 +233,9 @@ Atlas uses a custom glassmorphic design system:
 
 ### Completed ✅
 
-- [x] **V3.5.2** - Maintenance Release: Repository Organization & Dependency Stabilization.
-- [x] **V3.5.1** - Dependency Modernization & Version Unification.
+- [x] **V3.6.0** - Dependency Modernization & Robustness.
+- [x] **V3.6.0** - Maintenance Release: Repository Organization & Dependency Stabilization.
+- [x] **V3.6.0** - Dependency Modernization & Version Unification.
 - [x] **V3.3.0** - Strategic Repository Reorganization.
 - [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety.
 - [x] **V3.2.6** - Hardened JSON parsing logic.
@@ -303,7 +304,7 @@ We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for gu
 
 ---
 
-## 🐛 Known Issues & Fixes (v3.5.1)
+## 🐛 Known Issues & Fixes (v3.6.0)
 
 All issues in the codebase have been identified and fixed in this release:
 
@@ -313,7 +314,7 @@ All issues in the codebase have been identified and fixed in this release:
 2. **Deprecated TypeScript baseUrl** - Added `ignoreDeprecations: "6.0"` to tsconfig.json.
 3. **Vite manualChunks API** - Updated to functional API in vite.config.ts.
 4. **Lucide React Icon Migration** - Migrated `Github` to `GitBranch` (removed in v1.7.0).
-5. **User-Agent Version Sync** - Updated all service layer USER_AGENT strings to v3.5.1.
+5. **User-Agent Version Sync** - Updated all service layer USER_AGENT strings to v3.6.0.
 6. **Gemini Race Condition** - Fixed timeout/race-condition pattern in `generatePlan`.
 7. **Error Visibility** - Surface actual error messages in `handleSend` catch block.
 8. **ADK Circular Import** - Removed self-referential import in `src/lib/adk/index.ts`.
