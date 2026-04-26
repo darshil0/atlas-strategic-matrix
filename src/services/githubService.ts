@@ -35,8 +35,8 @@ export class GithubService {
         headers: {
           "Content-Type": "application/json",
           "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
-          "Accept": "application/vnd.github+json",
-          "Authorization": `Bearer ${config.apiKey}`,
+          Accept: "application/vnd.github+json",
+          Authorization: `Bearer ${config.apiKey}`,
           "User-Agent": GithubService.USER_AGENT,
         },
         body: JSON.stringify(issueData),
@@ -48,7 +48,7 @@ export class GithubService {
       throw new Error(`GitHub API [${response.status}]: ${errorData.message}`);
     }
 
-    const issue = await response.json() as GitHubIssue;
+    const issue = (await response.json()) as GitHubIssue;
 
     if (ENV.DEBUG_MODE) {
       console.group("🏛️ [GitHubService] Issue Created");
@@ -96,7 +96,7 @@ export class GithubService {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
           "User-Agent": GithubService.USER_AGENT,
         },
@@ -105,7 +105,9 @@ export class GithubService {
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to update GitHub issue #${issueNumber}: ${response.statusText}`);
+      throw new Error(
+        `Failed to update GitHub issue #${issueNumber}: ${response.statusText}`
+      );
     }
   }
 
@@ -123,7 +125,9 @@ export class GithubService {
     };
 
     if (dryRun) {
-      console.log(`[GitHubService] Dry-run: Would sync ${tasks.length} tasks to ${config.owner}/${config.repo}`);
+      console.log(
+        `[GitHubService] Dry-run: Would sync ${tasks.length} tasks to ${config.owner}/${config.repo}`
+      );
       return results;
     }
 
@@ -145,7 +149,11 @@ export class GithubService {
         // Link to GitHub Project (Atlas 2026 Roadmap)
         await this.addToProject(config, issue.issueNumber);
       } catch (error) {
-        results.failed.push({ success: false, taskId: task.id, error: (error as Error).message });
+        results.failed.push({
+          success: false,
+          taskId: task.id,
+          error: (error as Error).message,
+        });
         console.warn(`[GitHubService] Failed to sync ${task.id}:`, error);
       }
     }
@@ -164,7 +172,7 @@ export class GithubService {
       `${GithubService.GITHUB_API_BASE}/repos/${owner}/${repo}/issues?labels=atlas-strategic&state=open&per_page=100`,
       {
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
           "User-Agent": GithubService.USER_AGENT,
         },
@@ -173,8 +181,8 @@ export class GithubService {
 
     if (!response.ok) throw new Error("Failed to fetch GitHub issues");
 
-    const issues = await response.json() as GitHubIssue[];
-    return issues.map(issue => this.parseIssueToSubTask(issue));
+    const issues = (await response.json()) as GitHubIssue[];
+    return issues.map((issue) => this.parseIssueToSubTask(issue));
   }
 
   // === PRIVATE IMPLEMENTATION ===
@@ -190,7 +198,7 @@ export class GithubService {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${config.apiKey}`,
+              Authorization: `Bearer ${config.apiKey}`,
               "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
             },
             body: JSON.stringify({
@@ -201,7 +209,8 @@ export class GithubService {
           }
         );
 
-        if (response.status === 201 || response.status === 422) { // Already exists
+        if (response.status === 201 || response.status === 422) {
+          // Already exists
           continue;
         }
       } catch (error) {
@@ -210,17 +219,20 @@ export class GithubService {
     }
   }
 
-  private async findExistingIssue(config: GitHubConfig, taskId: string): Promise<GitHubIssue | null> {
+  private async findExistingIssue(
+    config: GitHubConfig,
+    taskId: string
+  ): Promise<GitHubIssue | null> {
     const response = await fetch(
       `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues?labels=${encodeURIComponent(taskId)}`,
       {
-        headers: { "Authorization": `Bearer ${config.apiKey}` },
+        headers: { Authorization: `Bearer ${config.apiKey}` },
       }
     );
 
     if (!response.ok) return null;
 
-    const issues = await response.json() as GitHubIssue[];
+    const issues = (await response.json()) as GitHubIssue[];
     return issues[0] || null;
   }
 
@@ -236,18 +248,21 @@ export class GithubService {
     return { apiKey, owner, repo };
   }
 
-  private buildGlassmorphicIssuePayload(task: SubTask, config: GitHubConfig): GitHubIssuePayload {
+  private buildGlassmorphicIssuePayload(
+    task: SubTask,
+    config: GitHubConfig
+  ): GitHubIssuePayload {
     const themeLabels = this.getTaskBankLabels(task);
     const priorityLabel = `priority-${task.priority?.toLowerCase()}`;
     const quarterLabel = task.category?.replace(/2026 /, "q")?.toLowerCase();
 
     const labels = [
-      task.id,                    // AI-26-Q1-001
+      task.id, // AI-26-Q1-001
       priorityLabel,
       quarterLabel,
       ...themeLabels,
       "atlas-strategic",
-      "glassmorphic-roadmap",     // Project board column
+      "glassmorphic-roadmap", // Project board column
     ].filter((l): l is string => typeof l === "string");
 
     const body = `\
@@ -264,9 +279,14 @@ export class GithubService {
 ${task.description}
 
 **📊 TASK_BANK Alignment:**
-${TASK_BANK.filter(t => t.id === task.id || t.description.includes(task.description.slice(0, 20)))
-        .map(t => `• ${t.id}: ${t.description}`)
-        .join("\n") || "New strategic objective"}
+${
+  TASK_BANK.filter(
+    (t) =>
+      t.id === task.id || t.description.includes(task.description.slice(0, 20))
+  )
+    .map((t) => `• ${t.id}: ${t.description}`)
+    .join("\n") || "New strategic objective"
+}
 
 ---
 *Generated by Atlas v3.6.1 • ${new Date().toISOString().slice(0, 10)}*
@@ -281,13 +301,22 @@ ${TASK_BANK.filter(t => t.id === task.id || t.description.includes(task.descript
   }
 
   private getTaskBankLabels(task: SubTask): string[] {
-    const matchingTask = TASK_BANK.find(t => t.id === task.id || t.description.includes(task.description.slice(0, 20)));
+    const matchingTask = TASK_BANK.find(
+      (t) =>
+        t.id === task.id ||
+        t.description.includes(task.description.slice(0, 20))
+    );
     return matchingTask ? [`taskbank-${matchingTask.theme.toLowerCase()}`] : [];
   }
 
   private getThemeEmoji(theme?: string): string {
     const emojis: Record<string, string> = {
-      AI: "🤖", Cyber: "🛡️", ESG: "🌱", Global: "🌍", Infra: "⚡", People: "👥"
+      AI: "🤖",
+      Cyber: "🛡️",
+      ESG: "🌱",
+      Global: "🌍",
+      Infra: "⚡",
+      People: "👥",
     };
     return emojis[theme || ""] || "🎯";
   }
@@ -299,15 +328,26 @@ ${TASK_BANK.filter(t => t.id === task.id || t.description.includes(task.descript
     return {
       id: taskId,
       description: issue.title.replace(/^\[.*?\]\s*/, "").trim(),
-      status: issue.state === "closed" ? TaskStatus.COMPLETED : TaskStatus.PENDING,
-      priority: (issue.labels.find(l => l.startsWith("priority-")) as string)?.replace("priority-", "").toUpperCase() as Priority || Priority.MEDIUM,
-      category: issue.labels.find(l => l.includes("q")) || "2026 Q1",
-      theme: issue.labels.find(l => ["ai", "cyber", "esg", "global", "infra", "people"].some(t => l.includes(t))) || undefined,
+      status:
+        issue.state === "closed" ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+      priority:
+        ((issue.labels.find((l) => l.startsWith("priority-")) as string)
+          ?.replace("priority-", "")
+          .toUpperCase() as Priority) || Priority.MEDIUM,
+      category: issue.labels.find((l) => l.includes("q")) || "2026 Q1",
+      theme:
+        issue.labels.find((l) =>
+          ["ai", "cyber", "esg", "global", "infra", "people"].some((t) =>
+            l.includes(t)
+          )
+        ) || undefined,
       dependencies: [],
     };
   }
 
-  private async parseErrorResponse(response: Response): Promise<{ message: string }> {
+  private async parseErrorResponse(
+    response: Response
+  ): Promise<{ message: string }> {
     try {
       return await response.json();
     } catch {
@@ -315,9 +355,14 @@ ${TASK_BANK.filter(t => t.id === task.id || t.description.includes(task.descript
     }
   }
 
-  private async addToProject(_config: GitHubConfig, issueNumber: number): Promise<void> {
+  private async addToProject(
+    _config: GitHubConfig,
+    issueNumber: number
+  ): Promise<void> {
     if (ENV.DEBUG_MODE) {
-      console.log(`[GitHubService] Linking #${issueNumber} to Atlas Project Board (Simulated)`);
+      console.log(
+        `[GitHubService] Linking #${issueNumber} to Atlas Project Board (Simulated)`
+      );
     }
   }
 }

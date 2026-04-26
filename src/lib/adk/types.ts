@@ -9,7 +9,7 @@ import {
   A2UIMessage,
   AGUIEvent,
   MissionResult,
-  FailureCascadeResult
+  FailureCascadeResult,
 } from "@types";
 
 export { AgentPersona };

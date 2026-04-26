@@ -3,7 +3,13 @@
  * Type-safe contract for Atlas agent swarm ↔ React glassmorphic renderer
  */
 
-import { A2UIMessage, A2UIElement, A2UIComponentType, AGUIEvent, AGUIAction } from "@types";
+import {
+  A2UIMessage,
+  A2UIElement,
+  A2UIComponentType,
+  AGUIEvent,
+  AGUIAction,
+} from "@types";
 
 /**
  * Protocol constants matching your glassmorphic system
@@ -26,7 +32,9 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
 
   // Protocol version (glassmorphic edition)
   if (msg.version !== "1.1") {
-    console.warn(`[A2UI] Version mismatch: expected "1.1", got "${msg.version}"`);
+    console.warn(
+      `[A2UI] Version mismatch: expected "1.1", got "${msg.version}"`
+    );
     return null;
   }
 
@@ -47,7 +55,7 @@ export function validateA2UIMessage(data: unknown): A2UIMessage | null {
     version: "1.1",
     timestamp: msg.timestamp || Date.now(),
     elements: validElements,
-    sessionId: msg.sessionId
+    sessionId: msg.sessionId,
   };
 }
 
@@ -56,7 +64,8 @@ function validateElement(el: unknown): el is Partial<A2UIElement> {
 
   const element = el as Partial<A2UIElement>;
   return (
-    typeof element.id === "string" && element.id.length > 0 &&
+    typeof element.id === "string" &&
+    element.id.length > 0 &&
     typeof element.type === "string"
   );
 }
@@ -68,10 +77,14 @@ function sanitizeElement(el: Partial<A2UIElement>): A2UIElement {
     type: el.type as A2UIComponentType,
     props: {
       ...props,
-      className: (props?.className as string) || GLASSMORPHIC_DEFAULTS.className,
+      className:
+        (props?.className as string) || GLASSMORPHIC_DEFAULTS.className,
       variant: (props?.variant as string) || GLASSMORPHIC_DEFAULTS.variant,
     },
-    children: (el as { children?: unknown[] }).children?.filter(validateElement).map(sanitizeElement) || [],
+    children:
+      (el as { children?: unknown[] }).children
+        ?.filter(validateElement)
+        .map(sanitizeElement) || [],
   } as A2UIElement;
 }
 

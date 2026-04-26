@@ -24,14 +24,14 @@ afterEach(() => {
 // === BROWSER ENVIRONMENT MOCKS ===
 Element.prototype.scrollIntoView = vi.fn();
 
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(),      // deprecated
-    removeListener: vi.fn(),   // deprecated
+    addListener: vi.fn(), // deprecated
+    removeListener: vi.fn(), // deprecated
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn().mockReturnValue(true),
@@ -68,7 +68,7 @@ class AtlasLocalStorageMock {
 }
 
 const localStorageMock = new AtlasLocalStorageMock();
-Object.defineProperty(window, 'localStorage', {
+Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
   writable: true,
 });
@@ -80,23 +80,25 @@ const mockState = {
   messages: [] as Message[],
 };
 
-vi.mock('@config', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@config')>();
+vi.mock("@config", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@config")>();
   return {
     ...actual,
     ENV: {
       ...actual.ENV,
-      GEMINI_API_KEY: 'test-api-key-12345',
+      GEMINI_API_KEY: "test-api-key-12345",
       DEBUG_MODE: false,
     },
   };
 });
 
 // Mock PersistenceService
-vi.mock('@services/persistenceService', () => ({
+vi.mock("@services/persistenceService", () => ({
   PersistenceService: {
     getPlan: vi.fn(() => mockState.plan),
-    savePlan: vi.fn((plan) => { mockState.plan = plan; }),
+    savePlan: vi.fn((plan) => {
+      mockState.plan = plan;
+    }),
     getSecret: vi.fn((key) => mockState.secrets[key]),
     saveSecret: vi.fn((key, val) => { mockState.secrets[key] = val; }),
     getMessages: vi.fn(() => mockState.messages),
@@ -126,27 +128,37 @@ vi.mock('@services/persistenceService', () => ({
 }));
 
 // Mock AtlasService
-vi.mock('@services/geminiService', () => ({
+vi.mock("@services/geminiService", () => ({
   AtlasService: {
-    generatePlan: vi.fn().mockImplementation(async () => ATLAS_TEST_UTILS.createMockPlan()),
-    executeSubtask: vi.fn().mockResolvedValue({ text: 'Subtask executed' }),
-    summarizeMission: vi.fn().mockResolvedValue('Mission summary'),
+    generatePlan: vi
+      .fn()
+      .mockImplementation(async () => ATLAS_TEST_UTILS.createMockPlan()),
+    executeSubtask: vi.fn().mockResolvedValue({ text: "Subtask executed" }),
+    summarizeMission: vi.fn().mockResolvedValue("Mission summary"),
   },
 }));
 
 // Mock sync services
-vi.mock('@services', () => ({
+vi.mock("@services", () => ({
   githubService: {
-    createIssue: vi.fn().mockResolvedValue({ issueNumber: 123, htmlUrl: 'https://github.com/test' }),
+    createIssue: vi.fn().mockResolvedValue({
+      issueNumber: 123,
+      htmlUrl: "https://github.com/test",
+    }),
     syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
   },
   jiraService: {
-    createTicket: vi.fn().mockResolvedValue({ success: true, issueKey: 'ATLAS-123' }),
+    createTicket: vi
+      .fn()
+      .mockResolvedValue({ success: true, issueKey: "ATLAS-123" }),
     syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
   },
   syncServices: {
     syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
-    healthCheck: vi.fn().mockResolvedValue([{ service: 'GitHub', healthy: true }, { service: 'Jira', healthy: true }]),
+    healthCheck: vi.fn().mockResolvedValue([
+      { service: "GitHub", healthy: true },
+      { service: "Jira", healthy: true },
+    ]),
   },
 }));
 
@@ -161,7 +173,7 @@ beforeEach(() => {
     unobserve: vi.fn(),
   }));
 
-  vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);
+  vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
 });
 
 // === CONSOLE MOCKING ===
@@ -172,18 +184,18 @@ global.console = {
     // Suppress React error boundaries and Vitest warnings
     const errorMsg = args[0]?.toString?.();
     if (
-      errorMsg?.includes('Error: Uncaught') ||
-      errorMsg?.includes('Warning:') ||
-      errorMsg?.includes('act') ||
-      errorMsg?.includes('findBy') ||
-      errorMsg?.includes('PersistenceService')
+      errorMsg?.includes("Error: Uncaught") ||
+      errorMsg?.includes("Warning:") ||
+      errorMsg?.includes("act") ||
+      errorMsg?.includes("findBy") ||
+      errorMsg?.includes("PersistenceService")
     ) {
       return;
     }
     originalConsoleError.call(console, ...args);
   },
   warn: vi.fn(), // Suppress warnings in tests
-  log: vi.fn(),  // Optional: suppress logs
+  log: vi.fn(), // Optional: suppress logs
 } as unknown as Console;
 
 // === ATLAS-SPECIFIC TEST UTILITIES ===
@@ -193,25 +205,25 @@ export const ATLAS_TEST_UTILS = {
    */
   createMockPlan: (): Plan => ({
     projectName: "Test Project",
-    goal: 'AI Transformation Q1 2026',
+    goal: "AI Transformation Q1 2026",
     tasks: [
       {
-        id: 'AI-26-Q1-001',
-        description: 'Deploy Multi-Modal Agent Orchestration',
+        id: "AI-26-Q1-001",
+        description: "Deploy Multi-Modal Agent Orchestration",
         status: TaskStatus.PENDING,
         priority: Priority.HIGH,
-        category: '2026 Q1',
-        theme: 'AI',
+        category: "2026 Q1",
+        theme: "AI",
         dependencies: [],
       },
       {
-        id: 'CY-26-Q1-001',
-        description: 'Deploy Zero-Trust Identity Fabric',
+        id: "CY-26-Q1-001",
+        description: "Deploy Zero-Trust Identity Fabric",
         status: TaskStatus.PENDING,
         priority: Priority.HIGH,
-        category: '2026 Q1',
-        theme: 'Cyber',
-        dependencies: ['AI-26-Q1-001'],
+        category: "2026 Q1",
+        theme: "Cyber",
+        dependencies: ["AI-26-Q1-001"],
       },
     ],
   }),
@@ -241,7 +253,7 @@ export const ATLAS_TEST_UTILS = {
 };
 
 // === GLASSMORPHIC CSS MOCKS ===
-Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
   value: vi.fn(),
   writable: true,
 });
@@ -255,16 +267,18 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 
 // Mock crypto.randomUUID for consistent test IDs
 let uuidCounter = 0;
-vi.stubGlobal('crypto', {
+vi.stubGlobal("crypto", {
   getRandomValues: vi.fn(() => new Uint8Array(32)),
-  randomUUID: vi.fn(() => `12345678-1234-1234-1234-12345678901${uuidCounter++ % 10}`),
+  randomUUID: vi.fn(
+    () => `12345678-1234-1234-1234-12345678901${uuidCounter++ % 10}`
+  ),
 });
 
 // Vitest snapshot serializer for A2UI messages
 expect.addSnapshotSerializer({
   test: (val: unknown) => {
     const v = val as { version?: string; elements?: unknown[] };
-    return v?.version === '1.1' && Array.isArray(v.elements);
+    return v?.version === "1.1" && Array.isArray(v.elements);
   },
   serialize: (val: unknown) => {
     const v = val as { elements: unknown[] };

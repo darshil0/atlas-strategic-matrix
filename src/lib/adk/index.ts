@@ -3,13 +3,13 @@
  * Production-ready agent orchestration for glassmorphic 2026 strategic planning
  */
 
-export * from "./uiBuilder";     // 🧱 A2UI glassmorphic builder
-export * from "./types";         // 🎭 AgentPersona + BaseAgent
-export * from "./orchestrator";  // 🎛️ MissionControl swarm conductor
-export * from "./agents";        // 🧠 Strategist/Analyst/Critic agents
-export * from "./protocol";      // 📨 A2UI protocol (events + messages)
-export * from "./exporter";      // 📊 Mermaid + GitHub/Jira export
-export * from "./factory";       // 🏭 AgentFactory + pooling
+export * from "./uiBuilder"; // 🧱 A2UI glassmorphic builder
+export * from "./types"; // 🎭 AgentPersona + BaseAgent
+export * from "./orchestrator"; // 🎛️ MissionControl swarm conductor
+export * from "./agents"; // 🧠 Strategist/Analyst/Critic agents
+export * from "./protocol"; // 📨 A2UI protocol (events + messages)
+export * from "./exporter"; // 📊 Mermaid + GitHub/Jira export
+export * from "./factory"; // 🏭 AgentFactory + pooling
 
 /**
  * Quick-start MissionControl for new projects.

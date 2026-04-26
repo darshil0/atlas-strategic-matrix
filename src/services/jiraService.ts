@@ -3,7 +3,13 @@
  * Bidirectional sync: SubTasks ↔ Jira Issues with Q1-Q4 epics + priority mapping
  */
 
-import { SubTask, Priority, TaskStatus, JiraTicketResult, JiraSyncResult } from "@types";
+import {
+  SubTask,
+  Priority,
+  TaskStatus,
+  JiraTicketResult,
+  JiraSyncResult,
+} from "@types";
 import { PersistenceService } from "@services/persistenceService";
 import { TASK_BANK } from "@data/taskBank";
 
@@ -20,7 +26,10 @@ export class JiraService {
   async createTicket(task: SubTask): Promise<JiraIssueResult> {
     try {
       const config = this.getValidatedConfig();
-      const issueData = this.buildGlassmorphicJiraPayload(task, config.projectKey);
+      const issueData = this.buildGlassmorphicJiraPayload(
+        task,
+        config.projectKey
+      );
 
       const response = await fetch(
         `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue`,
@@ -33,7 +42,9 @@ export class JiraService {
 
       if (!response.ok) {
         const errorData = await this.parseJiraError(response);
-        throw new Error(`Jira API [${response.status}]: ${errorData.errorMessages?.[0] || response.statusText}`);
+        throw new Error(
+          `Jira API [${response.status}]: ${errorData.errorMessages?.[0] || response.statusText}`
+        );
       }
 
       const issue = await response.json();
@@ -57,7 +68,10 @@ export class JiraService {
   /**
    * Update Jira Issue with Atlas status/priority changes + transition
    */
-  async updateTicket(issueKey: string, updates: Partial<SubTask>): Promise<void> {
+  async updateTicket(
+    issueKey: string,
+    updates: Partial<SubTask>
+  ): Promise<void> {
     const config = this.getValidatedConfig();
 
     const fieldUpdate = this.buildFieldUpdate(updates);
@@ -93,7 +107,9 @@ export class JiraService {
     };
 
     if (dryRun) {
-      console.log(`[JiraService] Dry-run: Would sync ${tasks.length} tasks to ${config.projectKey}`);
+      console.log(
+        `[JiraService] Dry-run: Would sync ${tasks.length} tasks to ${config.projectKey}`
+      );
       return results;
     }
 
@@ -121,7 +137,11 @@ export class JiraService {
           results.failed.push(result);
         }
       } catch (error) {
-        results.failed.push({ success: false, taskId: task.id, error: (error as Error).message });
+        results.failed.push({
+          success: false,
+          taskId: task.id,
+          error: (error as Error).message,
+        });
       }
     }
 
@@ -144,7 +164,10 @@ export class JiraService {
     if (!response.ok) throw new Error("Failed to fetch Jira issues");
 
     const searchResult = await response.json();
-    return (searchResult.issues || []).map((issue: { key: string; fields: JiraIssueFields }) => this.parseJiraIssue(issue));
+    return (searchResult.issues || []).map(
+      (issue: { key: string; fields: JiraIssueFields }) =>
+        this.parseJiraIssue(issue)
+    );
   }
 
   // === PRIVATE IMPLEMENTATION ===
@@ -159,8 +182,12 @@ export class JiraService {
             project: { key: config.projectKey },
             summary: `Epic: ${quarter} Strategic Roadmap`,
             issuetype: { name: "Epic" },
-            labels: ["atlas-strategic", "roadmap", quarter.replace(/\s+/g, "-")],
-          }
+            labels: [
+              "atlas-strategic",
+              "roadmap",
+              quarter.replace(/\s+/g, "-"),
+            ],
+          },
         };
 
         await fetch(
@@ -177,7 +204,10 @@ export class JiraService {
     }
   }
 
-  private async findExistingTicket(config: JiraConfig, taskId: string): Promise<string | null> {
+  private async findExistingTicket(
+    config: JiraConfig,
+    taskId: string
+  ): Promise<string | null> {
     const response = await fetch(
       `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/search?jql=summary~"${taskId}"`,
       { headers: this.getHeaders(config) }
@@ -189,7 +219,10 @@ export class JiraService {
     return searchResult.issues?.[0]?.key || null;
   }
 
-  private buildGlassmorphicJiraPayload(task: SubTask, projectKey: string): unknown {
+  private buildGlassmorphicJiraPayload(
+    task: SubTask,
+    projectKey: string
+  ): unknown {
     const themeComponent = this.getTaskBankComponent(task);
 
     return {
@@ -212,27 +245,33 @@ export class JiraService {
           content: [
             {
               type: "paragraph",
-              content: [{ type: "text", text: task.description }]
-            }
-          ]
-        }
-      }
+              content: [{ type: "text", text: task.description }],
+            },
+          ],
+        },
+      },
     };
   }
 
   private getTaskBankComponent(task: SubTask): string | undefined {
-    const matchingTask = TASK_BANK.find(t => t.id === task.id);
+    const matchingTask = TASK_BANK.find((t) => t.id === task.id);
     return matchingTask?.theme;
   }
 
   private buildFieldUpdate(updates: Partial<SubTask>): Record<string, unknown> {
     const fields: Record<string, unknown> = {};
-    if (updates.priority) fields.priority = { name: this.mapPriority(updates.priority) };
-    if (updates.category) fields.labels = [updates.category.replace(/\s+/g, "-"), "atlas-updated"];
+    if (updates.priority)
+      fields.priority = { name: this.mapPriority(updates.priority) };
+    if (updates.category)
+      fields.labels = [updates.category.replace(/\s+/g, "-"), "atlas-updated"];
     return fields;
   }
 
-  private async transitionIssue(config: JiraConfig, issueKey: string, status: TaskStatus): Promise<void> {
+  private async transitionIssue(
+    config: JiraConfig,
+    issueKey: string,
+    status: TaskStatus
+  ): Promise<void> {
     const transitionId = await this.findTransitionId(config, issueKey, status);
     if (transitionId) {
       await fetch(
@@ -246,18 +285,29 @@ export class JiraService {
     }
   }
 
-  private async findTransitionId(config: JiraConfig, issueKey: string, status: TaskStatus): Promise<string | null> {
+  private async findTransitionId(
+    config: JiraConfig,
+    issueKey: string,
+    status: TaskStatus
+  ): Promise<string | null> {
     const response = await fetch(
       `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}/transitions`,
       { headers: this.getHeaders(config) }
     );
     if (!response.ok) return null;
-    const data = (await response.json()) as { transitions: { id: string; name: string }[] };
-    const transition = data.transitions?.find((t) => t.name.toLowerCase().includes(status.toLowerCase()));
+    const data = (await response.json()) as {
+      transitions: { id: string; name: string }[];
+    };
+    const transition = data.transitions?.find((t) =>
+      t.name.toLowerCase().includes(status.toLowerCase())
+    );
     return transition?.id || null;
   }
 
-  private async getEpicKey(config: JiraConfig, quarter: string): Promise<string | null> {
+  private async getEpicKey(
+    config: JiraConfig,
+    quarter: string
+  ): Promise<string | null> {
     const response = await fetch(
       `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/search?jql=issuetype=Epic AND summary~"${quarter}"`,
       { headers: this.getHeaders(config) }
@@ -267,7 +317,11 @@ export class JiraService {
     return data.issues?.[0]?.key || null;
   }
 
-  private async linkToEpic(config: JiraConfig, issueKey: string, epicKey: string): Promise<void> {
+  private async linkToEpic(
+    config: JiraConfig,
+    issueKey: string,
+    epicKey: string
+  ): Promise<void> {
     await fetch(
       `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue/${issueKey}`,
       {
@@ -281,9 +335,9 @@ export class JiraService {
   private getHeaders(config: JiraConfig) {
     return {
       "Content-Type": "application/json",
-      "Authorization": `Basic ${btoa(`${config.email}:${config.apiKey}`)}`,
+      Authorization: `Basic ${btoa(`${config.email}:${config.apiKey}`)}`,
       "User-Agent": JiraService.USER_AGENT,
-      "Accept": "application/json",
+      Accept: "application/json",
     };
   }
 
@@ -303,20 +357,31 @@ export class JiraService {
       projectKey: PersistenceService.getJiraProjectKey(),
       email: PersistenceService.getJiraEmail(),
     };
-    if (!config.apiKey || !config.domain || !config.projectKey || !config.email) {
+    if (
+      !config.apiKey ||
+      !config.domain ||
+      !config.projectKey ||
+      !config.email
+    ) {
       throw new Error("🚨 Missing Jira configuration");
     }
     return config as JiraConfig;
   }
 
-  private parseJiraIssue(issue: { fields: JiraIssueFields; key: string }): SubTask {
+  private parseJiraIssue(issue: {
+    fields: JiraIssueFields;
+    key: string;
+  }): SubTask {
     const taskIdMatch = issue.fields.summary.match(/\[([A-Z]+-\d+-\d+)\]/);
     return {
       id: taskIdMatch?.[1] || issue.key,
       description: issue.fields.summary.replace(/^\[.*?\]\s*/, "").trim(),
       status: this.mapJiraStatus(issue.fields.status?.name || "To Do"),
       priority: this.mapJiraPriority(issue.fields.priority?.name || "Medium"),
-      category: (issue.fields.labels?.find((l: string) => l.includes("2026")) as string) || "2026 Q1",
+      category:
+        (issue.fields.labels?.find((l: string) =>
+          l.includes("2026")
+        ) as string) || "2026 Q1",
       theme: issue.fields.components?.[0]?.name || undefined,
       dependencies: [],
     };
@@ -334,7 +399,9 @@ export class JiraService {
     return Priority.MEDIUM;
   }
 
-  private async parseJiraError(response: Response): Promise<{ errorMessages?: string[] }> {
+  private async parseJiraError(
+    response: Response
+  ): Promise<{ errorMessages?: string[] }> {
     try {
       return await response.json();
     } catch {

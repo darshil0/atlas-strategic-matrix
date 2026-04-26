@@ -44,7 +44,8 @@ export const syncServices = {
       console.error("Jira Sync Failed:", e);
     }
 
-    results.totalCreated = (results.github?.created || 0) + (results.jira?.created || 0);
+    results.totalCreated =
+      (results.github?.created || 0) + (results.jira?.created || 0);
 
     return results;
   },
@@ -62,8 +63,8 @@ export const syncServices = {
       if (owner && repo) {
         const ghUpdates = await githubService.importPlan(owner, repo);
         // Logic to merge status/priority from GH back to local plan
-        updatedPlan.tasks = updatedPlan.tasks.map(t => {
-          const match = ghUpdates.find(g => g.id === t.id);
+        updatedPlan.tasks = updatedPlan.tasks.map((t) => {
+          const match = ghUpdates.find((g) => g.id === t.id);
           return match ? { ...t, status: match.status } : t;
         });
       }

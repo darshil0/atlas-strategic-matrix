@@ -12,7 +12,7 @@ import {
   A2UIMessage,
   SubTask,
   AnalystResult,
-  CriticResult
+  CriticResult,
 } from "@types";
 import { AgentFactory } from "./factory";
 import { UIBuilder } from "./uiBuilder";
@@ -38,8 +38,15 @@ export class MissionControl {
     let currentPlan = await strategist.execute<Plan>(goal, context);
 
     // Initial analysis and review
-    let analysis = await analyst.execute<AnalystResult>(goal, { ...context, plan: currentPlan });
-    let review = await critic.execute<CriticResult>(goal, { ...context, plan: currentPlan, analysis });
+    let analysis = await analyst.execute<AnalystResult>(goal, {
+      ...context,
+      plan: currentPlan,
+    });
+    let review = await critic.execute<CriticResult>(goal, {
+      ...context,
+      plan: currentPlan,
+      analysis,
+    });
 
     // Phase 2: Iterative refinement via Critic feedback (up to 3 iterations)
     let iterations = 1;
@@ -51,23 +58,30 @@ export class MissionControl {
       // Feed feedback back to strategist for refinement
       const feedbackPrompt = `Refine the strategic roadmap for: "${goal}".
       Analyst Feasibility: ${analysis.feasibility}/100. Risks: ${analysis.risks.join("; ")}.
-      Critic Feedback (Score: ${review.score}): ${review.issues.map(i => i.description).join(", ")}.
+      Critic Feedback (Score: ${review.score}): ${review.issues.map((i) => i.description).join(", ")}.
       Suggested Optimizations: ${review.optimizations.join(", ")}.`;
 
       currentPlan = await strategist.execute<Plan>(feedbackPrompt, {
         ...context,
         plan: currentPlan,
         criticFeedback: review,
-        analysis
+        analysis,
       });
 
-      analysis = await analyst.execute<AnalystResult>(goal, { ...context, plan: currentPlan });
-      review = await critic.execute<CriticResult>(goal, { ...context, plan: currentPlan, analysis });
+      analysis = await analyst.execute<AnalystResult>(goal, {
+        ...context,
+        plan: currentPlan,
+      });
+      review = await critic.execute<CriticResult>(goal, {
+        ...context,
+        plan: currentPlan,
+        analysis,
+      });
     }
 
     // Final Synthesis
-    const q1HighCount = currentPlan.tasks.filter(t =>
-      t.priority === Priority.HIGH && t.category?.includes("Q1")
+    const q1HighCount = currentPlan.tasks.filter(
+      (t) => t.priority === Priority.HIGH && t.category?.includes("Q1")
     ).length;
 
     const summaryUI = builder
@@ -82,8 +96,8 @@ export class MissionControl {
         iterations,
         finalScore: review.score,
         graphReady: review.graphValid,
-        q1HighCount
-      }
+        q1HighCount,
+      },
     };
   }
 
@@ -111,18 +125,27 @@ export class MissionControl {
       cascade.add(currentId);
 
       // Find all tasks that depend on this one
-      const children = plan.tasks.filter(t => t.dependencies?.includes(currentId));
-      children.forEach(c => queue.push(c.id));
+      const children = plan.tasks.filter((t) =>
+        t.dependencies?.includes(currentId)
+      );
+      children.forEach((c) => queue.push(c.id));
     }
 
-    const impactedTasks = plan.tasks.filter(t => cascade.has(t.id));
-    const impactedHighPriority = impactedTasks.filter(t => t.priority === Priority.HIGH).length;
-    const riskScore = Math.min(100, (impactedTasks.length / plan.tasks.length) * 100);
+    const impactedTasks = plan.tasks.filter((t) => cascade.has(t.id));
+    const impactedHighPriority = impactedTasks.filter(
+      (t) => t.priority === Priority.HIGH
+    ).length;
+    const riskScore = Math.min(
+      100,
+      (impactedTasks.length / plan.tasks.length) * 100
+    );
 
     const builder = new UIBuilder();
     const ui = builder
       .card("⚠️ Failure Simulation Result", `Impact analysis for ${taskId}`)
-      .progress("Impact Severity", riskScore, { variant: riskScore > 50 ? "danger" : "warning" })
+      .progress("Impact Severity", riskScore, {
+        variant: riskScore > 50 ? "danger" : "warning",
+      })
       .text(`Total nodes impacted: ${cascade.size}`)
       .text(`High-priority risks: ${impactedHighPriority}`, { size: "lg" })
       .build();
@@ -131,7 +154,7 @@ export class MissionControl {
       cascade: Array.from(cascade),
       riskScore,
       impactedHighPriority,
-      a2ui: ui
+      a2ui: ui,
     };
   }
 
@@ -139,10 +162,11 @@ export class MissionControl {
    * Enterprise Data Alignment: Map generated tasks to TaskBank objectives
    */
   alignWithTaskBank(tasks: SubTask[]): SubTask[] {
-    return tasks.map(task => {
-      const match = TASK_BANK.find(bt =>
-        bt.id === task.id ||
-        bt.description.toLowerCase().includes(task.description.toLowerCase())
+    return tasks.map((task) => {
+      const match = TASK_BANK.find(
+        (bt) =>
+          bt.id === task.id ||
+          bt.description.toLowerCase().includes(task.description.toLowerCase())
       );
 
       if (match) {
@@ -150,7 +174,7 @@ export class MissionControl {
           ...task,
           theme: match.theme,
           category: match.category,
-          priority: match.priority
+          priority: match.priority,
         };
       }
       return task;
@@ -161,7 +185,7 @@ export class MissionControl {
    * Summarize current mission state for persistence
    */
   summarizeMission(plan: Plan, executionHistory: string): string {
-    const completed = plan.tasks.filter(t => t.status === "COMPLETED").length;
+    const completed = plan.tasks.filter((t) => t.status === "COMPLETED").length;
     return `Mission summary: ${completed}/${plan.tasks.length} tasks completed. History: ${executionHistory}`;
   }
 }

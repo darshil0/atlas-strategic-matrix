@@ -2,11 +2,7 @@
 // FIX v3.6.1: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  A2UIElement,
-  A2UIComponentType,
-  AGUIEvent,
-} from "@lib/adk/protocol";
+import { A2UIElement, A2UIComponentType, AGUIEvent } from "@lib/adk/protocol";
 import { cn } from "@lib/utils";
 import { ChevronDown, Check } from "lucide-react";
 
@@ -71,7 +67,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
             onClick={() => handleAction("click", props.actionData)}
             className={cn(
               "glass-2 px-6 py-3 rounded-2xl font-mono font-black uppercase tracking-wider text-sm transition-all backdrop-blur-3xl shadow-xl hover:shadow-2xl border border-white/20 active:scale-95 flex items-center gap-2",
-              (props.variant === "primary" || !props.variant)
+              props.variant === "primary" || !props.variant
                 ? "bg-gradient-to-r from-atlas-blue to-indigo-500 text-white border-atlas-blue/50 hover:from-atlas-blue/90 hover:shadow-[0_0_30px_rgba(59,130,246,0.4)]"
                 : "text-slate-300 hover:text-white hover:border-white/40 hover:bg-white/10",
               props.className || ""
@@ -163,7 +159,9 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
               <motion.li
                 key={`${id}_${idx}`}
                 className="glass-2 flex items-center gap-3 p-4 rounded-2xl border border-white/10 hover:border-white/30 hover:bg-white/5 cursor-pointer transition-all backdrop-blur-xl group shadow-lg hover:shadow-xl"
-                onClick={() => handleAction("item_click", item as Record<string, unknown>)}
+                onClick={() =>
+                  handleAction("item_click", item as Record<string, unknown>)
+                }
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -201,7 +199,12 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
                 <motion.div
                   key={idx}
                   className="flex-1 flex flex-col items-center gap-2 group cursor-pointer"
-                  onClick={() => handleAction("chart_click", { index: idx, data: val as Record<string, unknown> })}
+                  onClick={() =>
+                    handleAction("chart_click", {
+                      index: idx,
+                      data: val as Record<string, unknown>,
+                    })
+                  }
                   whileHover={{ y: -8 }}
                 >
                   <motion.div
@@ -242,14 +245,14 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
                   : "border-white/30 bg-white/5 group-hover:border-white/50"
               )}
             >
-              {props.checked && (
-                <Check className="w-4 h-4 text-white" />
-              )}
+              {props.checked && <Check className="w-4 h-4 text-white" />}
             </div>
             <span
               className={cn(
                 "text-sm font-mono font-semibold",
-                props.checked ? "text-white" : "text-slate-300 group-hover:text-white"
+                props.checked
+                  ? "text-white"
+                  : "text-slate-300 group-hover:text-white"
               )}
             >
               {props.label || ""}
@@ -281,7 +284,7 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
                     <option key={opt.value} value={opt.value}>
                       {opt.label}
                     </option>
-                  ),
+                  )
                 )}
               </select>
               <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 pointer-events-none" />
@@ -319,12 +322,21 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
                 {props.value || 0}
               </p>
               {props.trend && (
-                <span className={cn(
-                  "text-[10px] font-bold px-1.5 py-0.5 rounded-md",
-                  props.trend === "up" ? "text-emerald-400 bg-emerald-500/10" :
-                  props.trend === "down" ? "text-rose-400 bg-rose-500/10" : "text-slate-400 bg-slate-500/10"
-                )}>
-                  {props.trend === "up" ? "↑" : props.trend === "down" ? "↓" : "→"}
+                <span
+                  className={cn(
+                    "text-[10px] font-bold px-1.5 py-0.5 rounded-md",
+                    props.trend === "up"
+                      ? "text-emerald-400 bg-emerald-500/10"
+                      : props.trend === "down"
+                        ? "text-rose-400 bg-rose-500/10"
+                        : "text-slate-400 bg-slate-500/10"
+                  )}
+                >
+                  {props.trend === "up"
+                    ? "↑"
+                    : props.trend === "down"
+                      ? "↓"
+                      : "→"}
                 </span>
               )}
             </div>
@@ -345,9 +357,5 @@ export const A2UIRenderer: React.FC<A2UIRendererProps> = ({
     }
   };
 
-  return (
-    <div className="space-y-6">
-      {elements.map(renderElement)}
-    </div>
-  );
+  return <div className="space-y-6">{elements.map(renderElement)}</div>;
 };

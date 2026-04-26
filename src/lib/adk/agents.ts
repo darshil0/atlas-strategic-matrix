@@ -12,7 +12,7 @@ import {
   Priority,
   AgentExecutionContext,
   AnalystResult,
-  CriticResult
+  CriticResult,
 } from "@types";
 import { ENV } from "@config";
 import { AtlasService } from "@services/geminiService";
@@ -22,7 +22,8 @@ import { AtlasService } from "@services/geminiService";
  */
 export class StrategistAgent extends BaseAgent {
   name = "STRATEGIST";
-  description = "Decomposes goals into executable 2026 Q1-Q4 roadmaps with dependencies.";
+  description =
+    "Decomposes goals into executable 2026 Q1-Q4 roadmaps with dependencies.";
 
   async handleEvent(event: AGUIEvent): Promise<A2UIMessage> {
     const builder = new UIBuilder();
@@ -162,18 +163,24 @@ export class CriticAgent extends BaseAgent {
     context: AgentExecutionContext = {}
   ): Promise<R> {
     const plan = context.plan;
-    const q1HighCount = plan?.tasks?.filter(t =>
-      t.priority === Priority.HIGH && t.category?.includes("Q1")
-    )?.length || 0;
+    const q1HighCount =
+      plan?.tasks?.filter(
+        (t) => t.priority === Priority.HIGH && t.category?.includes("Q1")
+      )?.length || 0;
 
     const review: CriticResult = {
       score: 88,
       graphValid: true,
-      issues: q1HighCount > 10 ? [{
-        type: "capacity",
-        severity: "high",
-        description: `Q1 capacity warning: ${q1HighCount} high priority tasks`,
-      }] : [],
+      issues:
+        q1HighCount > 10
+          ? [
+              {
+                type: "capacity",
+                severity: "high",
+                description: `Q1 capacity warning: ${q1HighCount} high priority tasks`,
+              },
+            ]
+          : [],
       optimizations: [
         "Combine redundant security audits in Q1",
         "Offload documentation tasks to Q2",

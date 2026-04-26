@@ -8,7 +8,7 @@ import {
   Zap,
   Clock,
   CloudLightning,
-  Terminal
+  Terminal,
 } from "lucide-react";
 import { cn } from "@lib/utils";
 import { Plan, SubTask } from "@types";
@@ -22,7 +22,7 @@ interface SidebarProps {
   currentPlan: Plan | null;
   activeTaskId: string | null;
   startDate?: Date; // For TimelineView if needed
-  
+
   // State
   sidebarView: SidebarViewType;
   setSidebarView: (view: SidebarViewType) => void;
@@ -30,17 +30,17 @@ interface SidebarProps {
   setIsSettingsOpen: (open: boolean) => void;
   isTaskBankOpen: boolean;
   setIsTaskBankOpen: (open: boolean) => void;
-  
+
   // Actions
   onTaskClick: (taskId: string) => void;
   onDecompose: (taskId: string) => void;
   onExportTask: (taskId: string, type: "github" | "jira") => void;
   exportedTasks: Record<string, { github?: string; jira?: string }>;
-  
+
   // Graph / Simulation
   isTaskBlocked: (task: SubTask, allTasks: SubTask[]) => boolean;
   onLinkDependency: (source: string, target: string) => void;
-  
+
   isWhatIfEnabled: boolean;
   setIsWhatIfEnabled: (enabled: boolean) => void;
   simulationResult: {
@@ -50,12 +50,12 @@ interface SidebarProps {
   } | null;
   setSimulationResult: (result: SidebarProps["simulationResult"]) => void;
   onSimulateFailure: (taskId: string) => Promise<void>;
-  
+
   // Refs
   taskRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
 }
 
-export const Sidebar: React.FC<SidebarProps> =({
+export const Sidebar: React.FC<SidebarProps> = ({
   currentPlan,
   activeTaskId,
   sidebarView,
@@ -73,7 +73,7 @@ export const Sidebar: React.FC<SidebarProps> =({
   simulationResult,
   setSimulationResult,
   onSimulateFailure,
-  taskRefs
+  taskRefs,
 }) => {
   return (
     <aside className="w-[450px] flex flex-col border-r border-white/5 bg-slate-950/50 backdrop-blur-3xl z-30 h-full">
@@ -122,7 +122,12 @@ export const Sidebar: React.FC<SidebarProps> =({
         {sidebarView === "list" && currentPlan && (
           <AnimatePresence mode="popLayout">
             {currentPlan.tasks.map((task: SubTask) => (
-              <div key={task.id} ref={(el: HTMLDivElement | null) => { if (taskRefs.current) taskRefs.current[task.id] = el; }}>
+              <div
+                key={task.id}
+                ref={(el: HTMLDivElement | null) => {
+                  if (taskRefs.current) taskRefs.current[task.id] = el;
+                }}
+              >
                 <TaskCard
                   task={task}
                   isActive={activeTaskId === task.id}
@@ -161,7 +166,7 @@ export const Sidebar: React.FC<SidebarProps> =({
                 )}
               >
                 <CloudLightning className="w-3 h-3" />
-                What-If Mode {isWhatIfEnabled ? 'ON' : 'OFF'}
+                What-If Mode {isWhatIfEnabled ? "ON" : "OFF"}
               </button>
               {simulationResult && (
                 <button
@@ -186,9 +191,12 @@ export const Sidebar: React.FC<SidebarProps> =({
               <Terminal className="text-slate-700 h-10 w-10 relative z-10" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white mb-2">No Active Roadmap</h3>
+              <h3 className="text-lg font-bold text-white mb-2">
+                No Active Roadmap
+              </h3>
               <p className="text-sm text-slate-500 leading-relaxed font-mono">
-                Enter a strategic directive to generate an autonomous enterprise roadmap for 2026.
+                Enter a strategic directive to generate an autonomous enterprise
+                roadmap for 2026.
               </p>
             </div>
           </div>

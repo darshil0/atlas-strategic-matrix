@@ -6,7 +6,12 @@
  *             (was incorrectly hardcoded as "MissionControl v1.0.0").
  */
 
-import { A2UIMessage, A2UIElement, A2UIComponentType, AgentPersona } from "@types";
+import {
+  A2UIMessage,
+  A2UIElement,
+  A2UIComponentType,
+  AgentPersona,
+} from "@types";
 import { GLASSMORPHIC_DEFAULTS, validateA2UIMessage } from "./protocol";
 
 type ComponentProps = Record<string, unknown>;
@@ -22,11 +27,7 @@ export class UIBuilder {
   /**
    * Core fluent API
    */
-  add(
-    type: A2UIComponentType,
-    props: ComponentProps = {},
-    id?: string
-  ): this {
+  add(type: A2UIComponentType, props: ComponentProps = {}, id?: string): this {
     this.elements.push({
       id: id || `a2ui-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
       type,
@@ -47,7 +48,11 @@ export class UIBuilder {
   }
 
   /** Primary button */
-  button(label: string, actionData?: unknown, props: ComponentProps = {}): this {
+  button(
+    label: string,
+    actionData?: unknown,
+    props: ComponentProps = {}
+  ): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "primary",
@@ -57,7 +62,11 @@ export class UIBuilder {
   }
 
   /** Glassmorphic secondary button */
-  glassButton(label: string, actionData?: unknown, props: ComponentProps = {}): this {
+  glassButton(
+    label: string,
+    actionData?: unknown,
+    props: ComponentProps = {}
+  ): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "glass",
@@ -67,7 +76,11 @@ export class UIBuilder {
   }
 
   /** Danger button */
-  dangerButton(label: string, actionData?: unknown, props: ComponentProps = {}): this {
+  dangerButton(
+    label: string,
+    actionData?: unknown,
+    props: ComponentProps = {}
+  ): this {
     return this.add(A2UIComponentType.BUTTON, {
       label,
       variant: "danger",
@@ -115,15 +128,28 @@ export class UIBuilder {
 
   /** Agent selector */
   agentSelector(selectedPersona?: AgentPersona): this {
-    return this
-      .card("🤖 Agent Swarm Switched")
-      .add(A2UIComponentType.LIST, {
-        items: [
-          { label: "Strategist", value: "STRATEGIST", icon: "🧠", selected: selectedPersona === AgentPersona.STRATEGIST },
-          { label: "Analyst", value: "ANALYST", icon: "📊", selected: selectedPersona === AgentPersona.ANALYST },
-          { label: "Critic", value: "CRITIC", icon: "🔍", selected: selectedPersona === AgentPersona.CRITIC },
-        ],
-      });
+    return this.card("🤖 Agent Swarm Switched").add(A2UIComponentType.LIST, {
+      items: [
+        {
+          label: "Strategist",
+          value: "STRATEGIST",
+          icon: "🧠",
+          selected: selectedPersona === AgentPersona.STRATEGIST,
+        },
+        {
+          label: "Analyst",
+          value: "ANALYST",
+          icon: "📊",
+          selected: selectedPersona === AgentPersona.ANALYST,
+        },
+        {
+          label: "Critic",
+          value: "CRITIC",
+          icon: "🔍",
+          selected: selectedPersona === AgentPersona.CRITIC,
+        },
+      ],
+    });
   }
 
   /** Build A2UI v1.1 message */

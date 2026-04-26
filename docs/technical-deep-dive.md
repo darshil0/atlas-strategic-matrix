@@ -1,4 +1,4 @@
-# 🧠 Atlas Strategic Agent v3.5.1: A Technical Deep Dive
+# 🧠 Atlas Strategic Agent v3.6.0: A Technical Deep Dive
 
 ## What You're Actually Looking At
 
@@ -12,14 +12,14 @@ It's not just another project management tool. It's an AI-powered reality check 
 - **The Analyst**: The pragmatist who asks "but can I actually do this?"
 - **The Critic**: The pessimist who finds every hole in your plan before reality does
 
-## v3.5.1 Update: The "Zero Warning" Milestone
+## v3.6.0 Update: The "Zero Warning" Milestone
 *Added January 2026*
 
-The transition to v3.5.1 represents the ultimate hardening of the Atlas platform. We shifted from "feature complete" to "technically pristine" with three core pillars:
+The transition to v3.6.0 represents the ultimate hardening of the Atlas platform. We shifted from "feature complete" to "technically pristine" with three core pillars:
 
 1. **The Zero Warning Baseline**: We didn't just fix bugs; we resolved every single ESLint warning across 15,000+ lines of code. This includes unused variables in catch blocks, module resolution ambiguities, and legacy path alias warnings. The project now maintains a **Zero Problem** linting status, enforced by a strict pre-commit pipeline.
 2. **100% Core Type Safety**: We conducted a "Great Purge" of the `any` keyword. Every agent execution, every service call, and every global state transition is now governed by strict interfaces (`AnalystResult`, `JiraSyncResult`, etc.). The ADK and Service layers are now 100% type-safe.
-3. **Synchronized Reasoning**: We unified the codebase versioning with the AI's internal system instruction. The agent now *knows* it is Atlas v3.5.1, aligning its reasoning with the latest technical constraints and protocol versions of the platform.
+3. **Synchronized Reasoning**: We unified the codebase versioning with the AI's internal system instruction. The agent now *knows* it is Atlas v3.6.0, aligning its reasoning with the latest technical constraints and protocol versions of the platform.
 4. **Service Layer Modernization**: `GithubService` and `JiraService` were redesigned with robust, strongly-typed result patterns, ensuring enterprise-grade error handling and synchronization reliability.
 
 ## v3.2.6 Update: The Orchestration Hardening
@@ -56,9 +56,9 @@ interface Task {
 }
 ```
 
-**The Path to Zero Warnings**: In v3.5.1, we achieved a perfect 0-warning baseline. This involved hunting down edge cases in `global.d.ts`, refining Vitest environment mocks, and ensuring that every path alias (`@adk/*`, `@services/*`) is perfectly resolved by both the TypeScript compiler and ESLint.
+**The Path to Zero Warnings**: In v3.6.0, we achieved a perfect 0-warning baseline. This involved hunting down edge cases in `global.d.ts`, refining Vitest environment mocks, and ensuring that every path alias (`@adk/*`, `@services/*`) is perfectly resolved by both the TypeScript compiler and ESLint.
 
-**The Learning**: Modern JavaScript without TypeScript is like skydiving without checking your parachute. v3.5.1 is our proof that you can reach a state where the parachute isn't just checked—it's mathematically verified.
+**The Learning**: Modern JavaScript without TypeScript is like skydiving without checking your parachute. v3.6.0 is our proof that you can reach a state where the parachute isn't just checked—it's mathematically verified.
 
 ### React 19: The Cutting Edge (Maybe Too Cutting?)
 
@@ -153,7 +153,7 @@ User Input: "Dominate AI market in 2026"
 **The Implementation**:
 
 ```typescript
-// src/lib/adk/orchestrator.ts (v3.5.1)
+// src/lib/adk/orchestrator.ts (v3.6.0)
 class MissionControl {
   async orchestrate(input: ExecutiveInput): Promise<Roadmap> {
     // Phase 1: Strategist generates initial plan
@@ -322,7 +322,7 @@ This was supposed to be "just wire up some APIs." It was not.
 
 3. **Data Format**: GitHub uses Markdown. Jira uses ADF (Atlassian Document Format), which is JSON but somehow worse.
 
-**The Solution**: I built a service abstraction with strict interface enforcement in v3.5.1:
+**The Solution**: I built a service abstraction with strict interface enforcement in v3.6.0:
 
 ```typescript
 // src/types/index.ts

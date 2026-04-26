@@ -80,14 +80,18 @@ export const validateEnv = (): boolean => {
 
   // Optional warning: Integrations
   if (!ENV.GITHUB_TOKEN && !ENV.JIRA_DOMAIN) {
-    console.warn("⚠️  No GitHub/Jira integration configured. Use Settings modal.");
+    console.warn(
+      "⚠️  No GitHub/Jira integration configured. Use Settings modal."
+    );
   }
 
   if (issues.length > 0) {
     console.error("\n🚨 ATLAS ENV VALIDATION FAILED:");
     console.error("═══════════════════════════════════════");
     issues.forEach((issue, i) => console.error(`${i + 1}. ${issue}`));
-    console.error("\n📝 Quick Fix - Create .env in project root (copy .env.example):");
+    console.error(
+      "\n📝 Quick Fix - Create .env in project root (copy .env.example):"
+    );
     console.error(`VITE_GEMINI_API_KEY=your_gemini_key_here`);
     console.error("\n⚠️  Add .env* to .gitignore - NEVER commit secrets!");
     return false;
@@ -97,7 +101,10 @@ export const validateEnv = (): boolean => {
     console.log("\n✅ ATLAS ENVIRONMENT READY");
     console.log("═══════════════════════════════════════");
     console.log("🎯 AI:", ENV.GEMINI_API_KEY ? "✅ Ready" : "❌ Missing");
-    console.log("🐙 GitHub:", ENV.GITHUB_TOKEN ? "✅ Configured" : "⚪ Optional");
+    console.log(
+      "🐙 GitHub:",
+      ENV.GITHUB_TOKEN ? "✅ Configured" : "⚪ Optional"
+    );
     console.log("🎫 Jira:", ENV.JIRA_DOMAIN ? "✅ Configured" : "⚪ Optional");
     console.log("🔧 Debug:", ENV.DEBUG_MODE ? "ON" : "OFF");
     console.log(`📱 v${ENV.APP_VERSION}`);
@@ -135,7 +142,9 @@ export const initializeEnv = async (): Promise<boolean> => {
   if (ENV.DEBUG_MODE && viteEnv.DEV) {
     console.warn("\n🔒 ATLAS SECURITY NOTICE:");
     console.warn("• VITE_* vars visible in browser DevTools");
-    console.warn("• GitHub/Jira tokens stored in localStorage (Settings) by design");
+    console.warn(
+      "• GitHub/Jira tokens stored in localStorage (Settings) by design"
+    );
     console.warn("• Production: Use /api proxy endpoints for secrets");
     console.warn("• Secrets never committed (.env* → .gitignore)\n");
   }

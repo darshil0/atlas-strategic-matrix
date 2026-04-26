@@ -5,7 +5,12 @@
 
 import { AgentPersona, Plan, AnalystResult, CriticResult } from "@types";
 import { BaseAgent } from "./types";
-import { StrategistAgent, AnalystAgent, CriticAgent, ArchitectAgent } from "./agents";
+import {
+  StrategistAgent,
+  AnalystAgent,
+  CriticAgent,
+  ArchitectAgent,
+} from "./agents";
 
 /**
  * Production Agent Factory with lifecycle hooks + metrics
@@ -69,7 +74,11 @@ export class AgentFactory {
    * Warm entire swarm pool on app bootstrap
    */
   static warmPool(): void {
-    [AgentPersona.STRATEGIST, AgentPersona.ANALYST, AgentPersona.CRITIC].forEach(persona => {
+    [
+      AgentPersona.STRATEGIST,
+      AgentPersona.ANALYST,
+      AgentPersona.CRITIC,
+    ].forEach((persona) => {
       this.getOrCreate(persona);
     });
   }
@@ -94,11 +103,17 @@ export const AgentSwarm = {
     finalScore: number;
     readyForVisualization: boolean;
   }> {
-    const [strategist, analyst, critic] = await AgentFactory.createSwarmPipeline();
+    const [strategist, analyst, critic] =
+      await AgentFactory.createSwarmPipeline();
 
     const roadmap = await strategist.execute<Plan>(goal);
-    const analysis = await analyst.execute<AnalystResult>(goal, { plan: roadmap });
-    const review = await critic.execute<CriticResult>(goal, { plan: roadmap, analysis });
+    const analysis = await analyst.execute<AnalystResult>(goal, {
+      plan: roadmap,
+    });
+    const review = await critic.execute<CriticResult>(goal, {
+      plan: roadmap,
+      analysis,
+    });
 
     return {
       roadmap,
@@ -107,5 +122,5 @@ export const AgentSwarm = {
       finalScore: review.score,
       readyForVisualization: review.graphValid,
     };
-  }
+  },
 };
