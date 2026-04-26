@@ -1,5 +1,5 @@
 /**
- * Atlas ADK Core (v3.5.1) - Glassmorphic Agent Foundations
+ * Atlas ADK Core (v3.6.0) - Glassmorphic Agent Foundations
  * Re-exports core types and defines BaseAgent contract
  */
 
@@ -9,7 +9,7 @@ import {
   A2UIMessage,
   AGUIEvent,
   MissionResult,
-  FailureCascadeResult
+  FailureCascadeResult,
 } from "@types";
 
 export { AgentPersona };

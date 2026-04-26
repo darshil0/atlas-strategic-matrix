@@ -12,12 +12,17 @@ interface TimelineViewProps {
 
 const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
   const sortedTasks = React.useMemo(
-    () => [...plan.tasks].sort((a: SubTask, b: SubTask) => a.id.localeCompare(b.id)),
+    () =>
+      [...plan.tasks].sort((a: SubTask, b: SubTask) =>
+        a.id.localeCompare(b.id)
+      ),
     [plan.tasks]
   );
 
   const getStatusColor = (task: SubTask) => {
-    const isBlocked = task.status === TaskStatus.PENDING && (task.dependencies?.length || 0) > 0;
+    const isBlocked =
+      task.status === TaskStatus.PENDING &&
+      (task.dependencies?.length || 0) > 0;
 
     if (isBlocked) {
       return "glass-1 border-slate-800/60 backdrop-blur-3xl opacity-70 shadow-slate/10";
@@ -65,7 +70,8 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                 transition={{ delay: index * 0.05 }}
                 className={cn(
                   "flex gap-8 items-start transition-all duration-500 group",
-                  isActive && "[&>*]:ring-2 [&>*]:ring-atlas-blue/40 [&>*]:shadow-[0_0_40px_rgba(59,130,246,0.2)]"
+                  isActive &&
+                    "[&>*]:ring-2 [&>*]:ring-atlas-blue/40 [&>*]:shadow-[0_0_40px_rgba(59,130,246,0.2)]"
                 )}
                 id={`timeline-task-${task.id}`}
               >
@@ -74,18 +80,26 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                   className="relative z-20 flex-shrink-0 mt-3 w-14"
                   role="img"
                   aria-label={`${task.status} indicator for task ${task.id}`}
-                  animate={isActive ? { scale: 1.15, rotate: 5 } : { scale: 1, rotate: 0 }}
+                  animate={
+                    isActive
+                      ? { scale: 1.15, rotate: 5 }
+                      : { scale: 1, rotate: 0 }
+                  }
                   transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   <div
                     className={cn(
                       "w-14 h-14 rounded-3xl flex items-center justify-center border-2 shadow-2xl transition-all duration-500 ring-1 ring-transparent backdrop-blur-3xl",
                       getStatusColor(task),
-                      isActive && "ring-atlas-blue/50 shadow-[0_0_40px_rgba(59,130,246,0.3)]"
+                      isActive &&
+                        "ring-atlas-blue/50 shadow-[0_0_40px_rgba(59,130,246,0.3)]"
                     )}
                   >
                     {task.status === TaskStatus.COMPLETED ? (
-                      <CheckCircle2 className="w-7 h-7 text-emerald-400" aria-hidden="true" />
+                      <CheckCircle2
+                        className="w-7 h-7 text-emerald-400"
+                        aria-hidden="true"
+                      />
                     ) : (
                       <span className="font-mono font-black text-lg leading-none tracking-tight text-slate-200 drop-shadow-lg">
                         {task.id.slice(-2)}
@@ -118,10 +132,17 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                   {/* Header */}
                   <header className="flex justify-between items-start mb-6 pb-4 border-b border-white/10">
                     <div className="glass-2 inline-flex items-center gap-3 text-xs font-mono font-black uppercase tracking-[0.2em] text-slate-400 bg-slate-900/30 px-5 py-2.5 rounded-2xl border border-white/20 backdrop-blur-xl">
-                      <Clock className="w-4 h-4 text-slate-500" aria-hidden="true" />
+                      <Clock
+                        className="w-4 h-4 text-slate-500"
+                        aria-hidden="true"
+                      />
                       <span>Phase {index + 1}</span>
-                      <span className="tracking-normal px-3 bg-slate-800/50 rounded-xl font-bold">•</span>
-                      <span aria-label={`Category: ${task.category || 'Strategic'}`}>
+                      <span className="tracking-normal px-3 bg-slate-800/50 rounded-xl font-bold">
+                        •
+                      </span>
+                      <span
+                        aria-label={`Category: ${task.category || "Strategic"}`}
+                      >
                         {task.category || "Strategic"}
                       </span>
                     </div>

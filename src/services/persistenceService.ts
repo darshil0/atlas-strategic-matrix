@@ -1,8 +1,8 @@
 /**
- * Atlas Persistence Service (v3.5.1) - Glassmorphic Enterprise Storage
+ * Atlas Persistence Service (v3.6.0) - Glassmorphic Enterprise Storage
  * Type-safe localStorage wrapper with quota management + API key encryption
  * Powers MissionControl state + GitHub/Jira sync + ReactFlow persistence
- * 
+ *
  * Single import: `import { PersistenceService } from '@/services/persistenceService'`
  */
 
@@ -22,7 +22,7 @@ const ATLAS_STORAGE_KEYS = {
   GITHUB_CONFIG: "github_config_v3.2",
   GITHUB_API_KEY: "github_api_key_enc_v3.2",
 
-  // Jira integration (encrypted)  
+  // Jira integration (encrypted)
   JIRA_CONFIG: "jira_config_v3.2",
   JIRA_API_KEY: "jira_api_key_enc_v3.2",
 
@@ -31,7 +31,6 @@ const ATLAS_STORAGE_KEYS = {
   TASKBANK_FILTERS: "taskbank_filters_v3.2",
   GITHUB_WORKFLOWS: "github_workflows_v3.2",
 } as const;
-
 
 /**
  * Production persistence layer with validation + quota protection
@@ -44,15 +43,15 @@ export class PersistenceService {
     try {
       if (plan && this.validatePlan(plan)) {
         localStorage.setItem(
-          ATLAS_STORAGE_KEYS.CURRENT_PLAN, 
+          ATLAS_STORAGE_KEYS.CURRENT_PLAN,
           this.encrypt(JSON.stringify(plan))
         );
         if (ENV.DEBUG_MODE) {
           console.log("🏛️ [Persistence] Plan saved:", {
             tasks: plan.tasks.length,
-            q1High: plan.tasks.filter(t => 
-              t.priority === Priority.HIGH && t.category === "2026 Q1"
-            ).length
+            q1High: plan.tasks.filter(
+              (t) => t.priority === Priority.HIGH && t.category === "2026 Q1"
+            ).length,
           });
         }
       } else {
@@ -74,7 +73,7 @@ export class PersistenceService {
 
       const planJson = this.decrypt(encrypted);
       const plan = JSON.parse(planJson) as Plan;
-      
+
       return this.validatePlan(plan) ? plan : null;
     } catch (error) {
       console.error("🚨 [Persistence] Plan load failed:", error);
@@ -93,7 +92,7 @@ export class PersistenceService {
   static saveMessages(messages: Message[]): void {
     try {
       localStorage.setItem(
-        ATLAS_STORAGE_KEYS.MESSAGES, 
+        ATLAS_STORAGE_KEYS.MESSAGES,
         this.encrypt(JSON.stringify(messages.slice(-200)))
       );
     } catch (error) {
@@ -105,7 +104,7 @@ export class PersistenceService {
     try {
       const encrypted = localStorage.getItem(ATLAS_STORAGE_KEYS.MESSAGES);
       if (!encrypted) return [];
-      
+
       const messagesJson = this.decrypt(encrypted);
       return JSON.parse(messagesJson) as Message[];
     } catch {
@@ -116,10 +115,10 @@ export class PersistenceService {
   /**
    * GitHub enterprise config (secure storage)
    */
-  static saveGithubConfig(config: { 
-    apiKey: string; 
-    owner: string; 
-    repo: string; 
+  static saveGithubConfig(config: {
+    apiKey: string;
+    owner: string;
+    repo: string;
     assignees?: string[];
   }): void {
     localStorage.setItem(
@@ -131,7 +130,7 @@ export class PersistenceService {
         updated: new Date().toISOString(),
       })
     );
-    
+
     this.saveSecret(ATLAS_STORAGE_KEYS.GITHUB_API_KEY, config.apiKey);
   }
 
@@ -159,12 +158,16 @@ export class PersistenceService {
   }
 
   static saveGithubApiKey(apiKey: string): void {
-    const config = this.getGithubConfig() || { apiKey: "", owner: "", repo: "" };
+    const config = this.getGithubConfig() || {
+      apiKey: "",
+      owner: "",
+      repo: "",
+    };
     this.saveGithubConfig({
       ...config,
       apiKey,
       owner: config.owner || "",
-      repo: config.repo || ""
+      repo: config.repo || "",
     });
   }
 
@@ -204,7 +207,7 @@ export class PersistenceService {
         updated: new Date().toISOString(),
       })
     );
-    
+
     this.saveSecret(ATLAS_STORAGE_KEYS.JIRA_API_KEY, config.apiKey);
   }
 
@@ -232,35 +235,50 @@ export class PersistenceService {
   }
 
   static saveJiraApiKey(apiKey: string): void {
-    const config = this.getJiraConfig() || { apiKey: "", domain: "", projectKey: "", email: "" };
+    const config = this.getJiraConfig() || {
+      apiKey: "",
+      domain: "",
+      projectKey: "",
+      email: "",
+    };
     this.saveJiraConfig({
       ...config,
       apiKey,
       domain: config.domain || "",
       projectKey: config.projectKey || "",
-      email: config.email || ""
+      email: config.email || "",
     });
   }
 
   static saveJiraDomain(domain: string): void {
-    const config = this.getJiraConfig() || { apiKey: "", domain: "", projectKey: "", email: "" };
+    const config = this.getJiraConfig() || {
+      apiKey: "",
+      domain: "",
+      projectKey: "",
+      email: "",
+    };
     this.saveJiraConfig({
       ...config,
       domain,
       apiKey: config.apiKey || "",
       projectKey: config.projectKey || "",
-      email: config.email || ""
+      email: config.email || "",
     });
   }
 
   static saveJiraEmail(email: string): void {
-    const config = this.getJiraConfig() || { apiKey: "", domain: "", projectKey: "", email: "" };
+    const config = this.getJiraConfig() || {
+      apiKey: "",
+      domain: "",
+      projectKey: "",
+      email: "",
+    };
     this.saveJiraConfig({
       ...config,
       email,
       apiKey: config.apiKey || "",
       domain: config.domain || "",
-      projectKey: config.projectKey || ""
+      projectKey: config.projectKey || "",
     });
   }
 
@@ -294,7 +312,10 @@ export class PersistenceService {
   /**
    * MissionControl session persistence
    */
-  static saveAgentSession(sessionId: string, data: Record<string, unknown>): void {
+  static saveAgentSession(
+    sessionId: string,
+    data: Record<string, unknown>
+  ): void {
     try {
       const sessions = this.getAgentSessions();
       sessions[sessionId] = { ...data, updated: Date.now() };
@@ -387,7 +408,10 @@ export class PersistenceService {
    * Debug Mode persistence
    */
   static saveDebugMode(enabled: boolean): void {
-    localStorage.setItem(ATLAS_STORAGE_KEYS.DEBUG_MODE, enabled ? "true" : "false");
+    localStorage.setItem(
+      ATLAS_STORAGE_KEYS.DEBUG_MODE,
+      enabled ? "true" : "false"
+    );
   }
 
   static getDebugMode(): boolean {
@@ -398,7 +422,7 @@ export class PersistenceService {
    * Production utilities
    */
   static clearAll(): void {
-    Object.values(ATLAS_STORAGE_KEYS).forEach(key => 
+    Object.values(ATLAS_STORAGE_KEYS).forEach((key) =>
       localStorage.removeItem(key)
     );
   }
@@ -412,7 +436,7 @@ export class PersistenceService {
   } {
     const used = new Blob(Object.values(localStorage)).size;
     const quota = 5 * 1024 * 1024; // 5MB typical quota
-    
+
     return {
       used,
       quota,
@@ -423,16 +447,17 @@ export class PersistenceService {
   }
 
   // === PRIVATE IMPLEMENTATION ===
-  
+
   private static validatePlan(plan: Plan): boolean {
     return !!(
       plan.goal?.trim() &&
       plan.tasks?.length > 0 &&
-      plan.tasks.every(task => 
-        task.id?.trim() && 
-        task.description?.trim() &&
-        Object.values(TaskStatus).includes(task.status) &&
-        Object.values(Priority).includes(task.priority)
+      plan.tasks.every(
+        (task) =>
+          task.id?.trim() &&
+          task.description?.trim() &&
+          Object.values(TaskStatus).includes(task.status) &&
+          Object.values(Priority).includes(task.priority)
       )
     );
   }
@@ -440,20 +465,18 @@ export class PersistenceService {
   private static encrypt(data: string): string {
     // Simple obfuscation (not crypto-strength)
     return btoa(
-      data.replace(/./g, c => 
-        String.fromCharCode(c.charCodeAt(0) ^ 0xAA)
-      )
+      data.replace(/./g, (c) => String.fromCharCode(c.charCodeAt(0) ^ 0xaa))
     );
   }
 
   private static decrypt(encrypted: string): string {
     try {
       return atob(encrypted)
-        .split('')
-        .map(c => String.fromCharCode(c.charCodeAt(0) ^ 0xAA))
-        .join('');
+        .split("")
+        .map((c) => String.fromCharCode(c.charCodeAt(0) ^ 0xaa))
+        .join("");
     } catch {
-      return '';
+      return "";
     }
   }
 

@@ -1,8 +1,8 @@
-# 🤖 Atlas Agent Development Kit (ADK) v3.5.1
+# 🤖 Atlas Agent Development Kit (ADK) v3.6.0
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.5.1 continues the **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.6.0 continues the **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
 
 ---
 
@@ -144,7 +144,7 @@ Maintain the **Zero Warning Baseline**. All PRs must pass `npm run lint`, `npm r
 
 <div align="center">
 
-**Atlas Agent Development Kit v3.5.1**
+**Atlas Agent Development Kit v3.6.0**
 
 *Powered by Google Gemini 2.0 Flash*
 

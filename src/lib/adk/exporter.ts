@@ -1,5 +1,5 @@
 /**
- * Atlas PlanExporter (v3.5.1) - Glassmorphic Mermaid + Export Suite
+ * Atlas PlanExporter (v3.6.0) - Glassmorphic Mermaid + Export Suite
  * Production-ready Mermaid.js diagrams for GitHub READMEs, Notion, Obsidian
  */
 
@@ -44,8 +44,8 @@ export const PlanExporter = {
 
     let mermaid = `\
 graph TD
-  %% Atlas v3.5.1 - Glassmorphic Strategic Roadmap
-  %% Generated: ${new Date().toISOString().split('T')[0]}
+  %% Atlas v3.6.0 - Glassmorphic Strategic Roadmap
+  %% Generated: ${new Date().toISOString().split("T")[0]}
 `;
 
     // Glassmorphic matching your design system
@@ -76,7 +76,10 @@ graph TD
         color: "#fee2e2",
       },
       [Priority.HIGH.toLowerCase()]: { stroke: "#ef4444", strokeWidth: "4px" },
-      [Priority.MEDIUM.toLowerCase()]: { stroke: "#f59e0b", strokeWidth: "3px" },
+      [Priority.MEDIUM.toLowerCase()]: {
+        stroke: "#f59e0b",
+        strokeWidth: "3px",
+      },
       [Priority.LOW.toLowerCase()]: { stroke: "#3b82f6", strokeWidth: "2px" },
     };
 
@@ -105,7 +108,7 @@ graph TD
       mermaid += "\n";
 
       if (task.dependencies?.length) {
-        task.dependencies.forEach(depId => {
+        task.dependencies.forEach((depId) => {
           mermaid += `  ${depId} --> ${task.id}\n`;
         });
       }
@@ -125,7 +128,7 @@ graph TD
     const headers = "| ID | Theme | Priority | Status | Category |";
     const separator = "|----|-------|----------|--------|----------|";
 
-    const rows = plan.tasks.map(task => {
+    const rows = plan.tasks.map((task) => {
       return `| ${task.id} | ${task.theme || "-"} | ${task.priority} | ${task.status} | ${task.category || "-"} |`;
     });
 

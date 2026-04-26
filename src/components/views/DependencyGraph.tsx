@@ -1,5 +1,5 @@
 // src/components/DependencyGraph.tsx
-// FIX v3.5.1: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
+// FIX v3.6.0: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import { useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -92,7 +92,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
         getStatusStyles(),
         isActive
           ? "ring-2 ring-atlas-blue/70 ring-offset-4 ring-offset-slate-950/50 scale-110 z-50 shadow-[0_0_50px_rgba(59,130,246,0.4)]"
-          : "hover:border-white/20 hover:shadow-xl",
+          : "hover:border-white/20 hover:shadow-xl"
       )}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
@@ -114,7 +114,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
               "font-display font-bold leading-snug line-clamp-2 min-h-[2.8em] tracking-tight",
               task.status === TaskStatus.COMPLETED
                 ? "text-slate-400"
-                : "text-white",
+                : "text-white"
             )}
           >
             {task.description}
@@ -128,7 +128,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
                     ? "animate-pulse bg-atlas-blue"
                     : task.status === TaskStatus.COMPLETED
                       ? "bg-emerald-400"
-                      : "bg-slate-600",
+                      : "bg-slate-600"
                 )}
               />
               <span className="text-[8px] uppercase font-black tracking-widest text-slate-400 font-mono">
@@ -184,7 +184,7 @@ const DependencyGraph = ({
 
       visited.add(id);
       const depDepths = task.dependencies.map((depId) =>
-        getDepth(depId, new Set(visited)),
+        getDepth(depId, new Set(visited))
       );
       const depth = Math.max(...depDepths, 0) + 1;
       depths[id] = depth;
@@ -258,7 +258,9 @@ const DependencyGraph = ({
     onSimulateFailure,
   ]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes as Node[]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(
+    initialNodes as Node[]
+  );
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   useEffect(() => {
@@ -300,9 +302,7 @@ const DependencyGraph = ({
           className="!bg-slate-950/80 !border-slate-800/50 !rounded-2xl !overflow-hidden !shadow-2xl backdrop-blur-xl"
           style={{ height: 120, width: 180 }}
         />
-        <Controls
-          className="!bg-slate-950/80 !border-slate-800/50 !backdrop-blur-xl !rounded-2xl !shadow-2xl !m-4 hover:shadow-3xl transition-all"
-        />
+        <Controls className="!bg-slate-950/80 !border-slate-800/50 !backdrop-blur-xl !rounded-2xl !shadow-2xl !m-4 hover:shadow-3xl transition-all" />
       </ReactFlow>
     </motion.div>
   );

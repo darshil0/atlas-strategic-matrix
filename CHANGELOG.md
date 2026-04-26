@@ -4,6 +4,31 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.6.0] - 2026-04-03
+
+### 🚀 Dependency Modernization & Robustness
+
+This release focuses on updating the entire dependency stack to their latest versions and improving the application's robustness through better error handling and testing.
+
+### Added
+- **Safety Checks**: Added validation for `AtlasService.executeSubtask` responses in `App.tsx` to prevent `TypeError` when the service returns unexpected results.
+- **Enhanced Testing**: Provided default mock implementations for core services in `App.test.tsx` to ensure a stable testing environment.
+
+### Changed
+- **Dependency Modernization**: Updated all project dependencies to their latest versions:
+  - React 19.2.5+
+  - Vite 8.0.10+
+  - Vitest 4.1.5+
+  - Tailwind CSS 4.2.4+
+  - Lucide React 1.11.0+
+  - TypeScript 6.0.3+
+- **Version Unification**: Synchronized application version to **v3.6.0** across all core files, including `package.json`, `index.html`, `README.md`, `AGENTS.md`, and system instructions.
+
+### Fixed
+- **TypeError in App**: Resolved a critical `TypeError: Cannot read properties of undefined (reading 'text')` in the chat handling logic discovered during automated testing.
+
+---
+
 ## [3.5.2] - 2026-04-02
 
 ### 🔧 Repository Maintenance & Organization

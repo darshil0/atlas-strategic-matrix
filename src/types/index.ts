@@ -1,5 +1,5 @@
 /**
- * ATLAS Core Types (v3.5.1) - Production Type System
+ * ATLAS Core Types (v3.6.0) - Production Type System
  * Comprehensive typing for MissionControl ADK, ReactFlow, GitHub/Jira sync
  * Enterprise-grade 2026 strategic planning with glassmorphic A2UI protocol
  */
@@ -31,16 +31,16 @@ export interface SubTask {
   description: string;
   status: TaskStatus;
   priority: Priority;
-  category?: string;        // "2026 Q1", "2026 Q2", etc.
-  theme?: string;          // "AI", "Cyber", "Infra", "Growth"
+  category?: string; // "2026 Q1", "2026 Q2", etc.
+  theme?: string; // "AI", "Cyber", "Infra", "Growth"
   result?: string;
   dependencies?: string[];
   citations?: Citation[];
   parentId?: string;
-  duration?: string;       // "2w", "1d", "4h"
+  duration?: string; // "2w", "1d", "4h"
   output?: string;
-  assignee?: string;       // GitHub username
-  labels?: string[];       // ["atlas-strategic", "q1-critical"]
+  assignee?: string; // GitHub username
+  labels?: string[]; // ["atlas-strategic", "q1-critical"]
   quarter?: "Q1" | "Q2" | "Q3" | "Q4"; // 2026 quarters
   estimatedEffort?: number; // story points
 }
@@ -93,8 +93,8 @@ export interface Message {
   role: MessageRole;
   content: string;
   timestamp: number;
-  a2ui?: string;           // JSON-stringified A2UIMessage
-  agentPersona?: string;   // "STRATEGIST", "ANALYST", "CRITIC"
+  a2ui?: string; // JSON-stringified A2UIMessage
+  agentPersona?: string; // "STRATEGIST", "ANALYST", "CRITIC"
   citations?: Citation[];
 }
 
@@ -115,12 +115,12 @@ export enum AgentMode {
 export interface AgentExecutionContext {
   sessionId?: string;
   metadata?: Record<string, unknown>;
-  goal?: string;                    // C-level strategic objective
-  activeTaskId?: string;            // DependencyGraph focus
-  plan?: Plan | null;               // Current roadmap state
-  previousPlan?: Plan | null;       // Iteration history
-  criticFeedback?: CriticResult;    // Refinement input
-  taskBank?: BankTask[];            // 90+ enterprise objectives
+  goal?: string; // C-level strategic objective
+  activeTaskId?: string; // DependencyGraph focus
+  plan?: Plan | null; // Current roadmap state
+  previousPlan?: Plan | null; // Iteration history
+  criticFeedback?: CriticResult; // Refinement input
+  taskBank?: BankTask[]; // 90+ enterprise objectives
   [key: string]: unknown;
 }
 
@@ -170,7 +170,7 @@ export enum A2UIComponentType {
   PROGRESS = "progress",
   CHECKBOX = "checkbox",
   SELECT = "select",
-  STAT = "stat"
+  STAT = "stat",
 }
 
 export interface A2UIMessage {
@@ -334,7 +334,7 @@ export interface BankTask {
   category: string;
   theme: string;
   quarter: "Q1" | "Q2" | "Q3" | "Q4";
-  effort: number;        // story points
+  effort: number; // story points
   dependencies: string[];
 }
 

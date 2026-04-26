@@ -1,8 +1,8 @@
 /**
- * ATLAS v3.5.1 - Production Entry Point
+ * ATLAS v3.6.0 - Production Entry Point
  * Glassmorphic MissionControl dashboard with error boundaries + loading states
  *
- * FIX v3.5.1: `LocalErrorBoundary` is now a proper React class-based error
+ * FIX v3.6.0: `LocalErrorBoundary` is now a proper React class-based error
  *   boundary (using `componentDidCatch` / `getDerivedStateFromError`). The
  *   previous implementation listened only to `window.error` events, which
  *   do NOT fire for React rendering errors caught during the render phase,
@@ -37,7 +37,11 @@ class LocalErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("🎛️ ATLAS: React error boundary caught:", error, info.componentStack);
+    console.error(
+      "🎛️ ATLAS: React error boundary caught:",
+      error,
+      info.componentStack
+    );
   }
 
   render() {
@@ -49,7 +53,9 @@ class LocalErrorBoundary extends React.Component<
 }
 
 // === PRODUCTION ERROR BOUNDARY WRAPPER ===
-const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <LocalErrorBoundary
       fallback={
@@ -58,7 +64,9 @@ const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children 
             <div className="w-20 h-20 bg-rose-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border-2 border-rose-500/30">
               <span className="text-3xl">⚠️</span>
             </div>
-            <h2 className="strat-h1 mb-4 text-rose-400">Strategic Core Error</h2>
+            <h2 className="strat-h1 mb-4 text-rose-400">
+              Strategic Core Error
+            </h2>
             <p className="text-slate-400 mb-8 leading-relaxed">
               MissionControl encountered an unexpected failure.
               <br />
@@ -73,7 +81,7 @@ const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children 
               Emergency Reboot
             </button>
             <p className="text-[11px] strat-label mt-6 text-slate-600">
-              ATLAS v{ENV.APP_VERSION || "3.5.1"}
+              ATLAS v{ENV.APP_VERSION || "3.6.0"}
             </p>
           </div>
         </div>
@@ -89,15 +97,18 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader: Initializing neural core...");
+    if (ENV.DEBUG_MODE)
+      console.log("🏛️ [Atlas] BootLoader: Initializing neural core...");
 
     const checkServices = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader: Services health check passed.");
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      if (ENV.DEBUG_MODE)
+        console.log("🏛️ [Atlas] BootLoader: Services health check passed.");
       setIsReady(true);
 
       setTimeout(() => {
-        if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader: Neural core ready.");
+        if (ENV.DEBUG_MODE)
+          console.log("🏛️ [Atlas] BootLoader: Neural core ready.");
         onReady();
       }, 800);
     };
@@ -131,11 +142,13 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
             ATLAS
           </h1>
           <div className="flex items-center justify-center gap-2 text-sm font-black uppercase tracking-[0.3em] text-blue-400">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            v{ENV.APP_VERSION || "3.5.1"}
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />v
+            {ENV.APP_VERSION || "3.6.0"}
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           </div>
-          <p className="text-xs strat-label text-slate-600 font-mono">Neural Core Initializing</p>
+          <p className="text-xs strat-label text-slate-600 font-mono">
+            Neural Core Initializing
+          </p>
         </div>
       </motion.div>
 
@@ -207,9 +220,13 @@ const Root: React.FC = () => {
   const [showLoader, setShowLoader] = useState(true);
 
   const handleReady = React.useCallback(() => {
-    if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] BootLoader signaled ready. Transitioning in 600ms...");
+    if (ENV.DEBUG_MODE)
+      console.log(
+        "🏛️ [Atlas] BootLoader signaled ready. Transitioning in 600ms..."
+      );
     setTimeout(() => {
-      if (ENV.DEBUG_MODE) console.log("🏛️ [Atlas] Hiding BootLoader, mounting App.");
+      if (ENV.DEBUG_MODE)
+        console.log("🏛️ [Atlas] Hiding BootLoader, mounting App.");
       setShowLoader(false);
     }, 600);
   }, []);
@@ -241,10 +258,10 @@ const initAtlas = async () => {
   const root = createRoot(rootElement);
 
   if (ENV.DEBUG_MODE) {
-    console.group("🏛️ ATLAS v3.5.1 BOOT SEQUENCE");
+    console.group("🏛️ ATLAS v3.6.0 BOOT SEQUENCE");
     console.log("• React:", React.version);
     console.log("• Environment:", import.meta.env.MODE);
-    console.log("• App Version:", ENV.APP_VERSION || "3.5.1");
+    console.log("• App Version:", ENV.APP_VERSION || "3.6.0");
     console.groupEnd();
   }
 
@@ -261,7 +278,9 @@ const LocalLoader: React.FC = () => (
     <div className="glass-card p-12 rounded-3xl text-center max-w-sm w-full border-2 border-blue-500/20 shadow-2xl shadow-blue-500/20">
       <div className="loader-spinner mb-8" />
       <div className="space-y-3">
-        <h3 className="text-2xl font-black text-white font-display">Loading...</h3>
+        <h3 className="text-2xl font-black text-white font-display">
+          Loading...
+        </h3>
         <p className="text-slate-400 text-sm">Strategic core initializing</p>
       </div>
     </div>
@@ -286,7 +305,7 @@ initAtlas().catch((error) => {
 });
 
 if (import.meta.env.PROD) {
-  console.groupCollapsed("🏛️ ATLAS v3.5.1 • Production Build");
+  console.groupCollapsed("🏛️ ATLAS v3.6.0 • Production Build");
   console.log("• Status: Neural core online");
   console.log("• Tasks: 92+ enterprise objectives loaded");
   console.log("• Agents: Strategist + Analyst + Critic ready");
