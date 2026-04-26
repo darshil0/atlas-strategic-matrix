@@ -403,7 +403,9 @@ const App: React.FC = () => {
                           <A2UIRenderer
                             elements={JSON.parse(m.a2ui).elements}
                             onEvent={(event) => {
-                              console.log("A2UI Event:", event);
+                              if (ENV.DEBUG_MODE) {
+                                console.log("A2UI Event:", event);
+                              }
                             }}
                           />
                         </div>
