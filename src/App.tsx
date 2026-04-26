@@ -20,6 +20,7 @@ import { A2UIRenderer } from "@components/ui/A2UIRenderer";
 import { A2UIMessage } from "@lib/adk/protocol";
 import { MissionControl } from "@lib/adk/orchestrator";
 import { cn } from "@lib/utils";
+import { ENV } from "@config";
 import {
   ChevronRight,
   Send,
