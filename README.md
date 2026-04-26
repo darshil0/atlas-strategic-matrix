@@ -14,348 +14,158 @@
 
 ## 🎯 What Makes Atlas Different?
 
-- **Multi-Agent Synthesis** - Strategist, Analyst, and Critic agents collaborate in real-time.
-- **A2UI Protocol v1.1** - Stream glassmorphic UI components directly from LLM reasoning.
-- **What-If Simulations** - Model failure cascades and timeline risk propagation.
-- **Enterprise-Ready** - Direct GitHub Issues API v3 and Jira Cloud REST API integration.
-- **Premium UX** - Glassmorphic interface with Framer Motion 12 and Tailwind CSS 4.2.
+- **Multi-Agent Synthesis** - specialized Strategist, Analyst, and Critic agents collaborate in a real-time synthesis pipeline.
+- **A2UI Protocol v1.1** - A high-performance protocol for streaming glassmorphic UI components directly from LLM reasoning.
+- **What-If Simulations** - Advanced failure cascade modeling to visualize risk propagation and critical path bottlenecks.
+- **Enterprise-Ready** - Seamless bidirectional synchronization with GitHub Issues API v3 and Jira Cloud REST API.
+- **Premium UX** - A state-of-the-art glassmorphic interface built with React 19, Framer Motion 12, and Tailwind CSS 4.2.
 
 ---
 
-## 🗂️ The Multi-Agent Engine
+## 🏗️ Architecture & Multi-Agent Engine
 
-Atlas facilitates **collaborative synthesis** between specialized AI agents. For detailed architecture and API documentation, see **[AGENTS.md](./AGENTS.md)**.
+Atlas implements a collaborative synthesis pipeline where specialized agents work together to ensure plan quality and technical feasibility.
 
+```mermaid
+graph TD
+    A[Executive Directive] --> B[MissionControl Orchestrator]
+    B --> C{Agent Synthesis}
+    C --> C1["🧠 Strategist (Decomposition)"]
+    C --> C2["📊 Analyst (Feasibility)"]
+    C --> C3["🔍 Critic (Validation)"]
+    C1 & C2 & C3 --> D["🚀 A2UI Protocol v1.1"]
+    D --> E["🎨 Glassmorphic Dashboard"]
+    E --> F{Sync & Export}
+    F --> F1[GitHub Issues]
+    F --> F2[Jira Cloud]
+    F --> F3[Mermaid/JSON]
+```
+
+### Specialized Personas
 | Agent | Role | Output |
 |-------|------|--------|
 | **🎙️ The Strategist** | Decomposes "North Star" goals into Q1-Q4 2026 workstreams | Strategic milestones with dependencies |
 | **🔬 The Analyst** | Performs feasibility scoring and TASK_BANK alignment | Risk assessments and capacity analysis |
 | **⚖️ The Critic** | Stress-tests roadmaps for acyclic graph validation | DAG optimization and quality scores |
 
-**Learn More**: Read the complete [Agent Development Kit documentation](./AGENTS.md) for implementation details, API reference, and customization guides.
+> [!IMPORTANT]
+> **Zero Warning Baseline**: v3.6.1 strictly enforces a zero-warning policy across TypeScript, ESLint, and Vitest, ensuring enterprise-grade stability.
 
 ---
 
 ## ✨ Key Capabilities
 
-| Feature | Description | Technology Stack |
-|---------|-------------|------------------|
-| **A2UI Protocol** | Real-time streaming of glassmorphic UI from LLM responses | React 19 + Framer Motion 12 |
-| **What-If Simulation** | Failure cascade modeling with risk scoring | Custom dependency graph analysis |
-| **Enterprise Sync** | Bidirectional sync with GitHub Issues and Jira tickets | REST API v3 + ADF formatting |
-| **Glassmorphic UI** | Premium backdrop-blur design system | Tailwind CSS 4.2 + Lucide React |
-| **Multi-Model AI** | Gemini 2.0 Flash with JSON schema enforcement | Google Generative AI SDK |
-| **Persistent State** | Encrypted localStorage with Base64 obfuscation | Custom PersistenceService |
-| **TaskBank** | 90+ pre-calculated 2026 strategic objectives | AI, Cyber, ESG, Global, Infra, People themes |
-
+| Feature | Description | Stack |
+|---------|-------------|-------|
+| **A2UI Protocol** | Real-time streaming of UI from LLM responses | React 19 + Framer Motion |
+| **What-If Engine** | Failure cascade modeling with risk scoring | Custom DAG analysis |
+| **Enterprise Sync** | Native GitHub & Jira integration with ADF support | REST API v3 |
+| **Glassmorphic UI** | Premium backdrop-blur design system | Tailwind 4.2 |
+| **Persistence** | Mutex-guarded encrypted localStorage | Custom persistence layer |
+| **TaskBank** | 90+ pre-calculated 2026 strategic objectives | AI, Cyber, ESG, etc. |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - **Node.js** 20+ (LTS recommended)
-- **npm** 10+ or **yarn** 1.22+
-- **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
+- **npm** 10+
+- **Google Gemini API Key** ([Get your key](https://ai.google.dev/gemini-api/docs/api-key))
 
 ### Quick Start
-
 ```bash
-# 1. Clone the repository
+# 1. Clone & Install
 git clone https://github.com/darshil0/atlas-strategic-agent.git
 cd atlas-strategic-agent
-
-# 2. Install dependencies
 npm install
 
-# 3. Environment Setup
+# 2. Environment Setup
 cp .env.example .env
-# Edit .env and add your VITE_GEMINI_API_KEY
+# Add your VITE_GEMINI_API_KEY to .env
 
-# 4. Launch Development Server
+# 3. Launch
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`.
+The application will launch at `http://localhost:3000`.
 
 ---
 
 ## 🧪 Development Workflow
 
 ### Available Scripts
-
 ```bash
-# Development
-npm run dev              # Start dev server with HMR at localhost:3000
+npm run dev              # Start dev server
 npm run build            # Production build with type checking
-npm run preview          # Preview production build locally
-
-# Code Quality
-npm run lint             # Run ESLint with TypeScript rules
-npm run format           # Format code with Prettier
-npm run type-check       # TypeScript strict type checking
-
-# Testing
-npm test                 # Run test suite with Vitest
-npm run test:ui          # Open Vitest UI dashboard
-npm run coverage         # Generate coverage report (85% threshold)
+npm run preview          # Preview production build
+npm run lint             # ESLint Zero Warning check
+npm run type-check       # Strict TypeScript check
+npm test                 # Run Vitest suite
+npm run coverage         # Coverage report (85% threshold)
 ```
-
-### Code Quality Standards
-
-- **TypeScript** - Strict mode with comprehensive type safety (TypeScript 6.0.2+)
-- **ESLint** - Modern flat config with TypeScript integration; Zero Warning Baseline
-- **Prettier** - Automated formatting
-- **Vitest** - 85% coverage requirement across all metrics; 100% pass rate
-- **React Testing Library** - Component integration tests
 
 ---
 
 ## 📂 Project Structure
 
 ```
-atlas-strategic-agent/
-├── src/
-│   ├── components/              # Categorized UI Components
-│   │   ├── ui/                 # A2UI glassmorphic primitives
-│   │   │   └── A2UIRenderer.tsx # Protocol renderer
-│   │   ├── views/              # High-level dashboard views
-│   │   │   ├── DependencyGraph.tsx # ReactFlow visualization
-│   │   │   ├── SettingsModal.tsx # Integration config
-│   │   │   ├── Sidebar.tsx      # Navigation & switcher
-│   │   │   ├── TaskBank.tsx     # 90+ objective library
-│   │   │   └── TimelineView.tsx # Strategic timeline
-│   │   └── cards/              # Specialized domain components
-│   │       └── TaskCard.tsx    # Individual task module
-│   ├── config/                  # Centralized Configuration
-│   │   ├── env.ts              # Environment validation
-│   │   ├── system.ts           # ATLAS_SYSTEM_INSTRUCTION
-│   │   └── ui.tsx              # Icon registry
-│   ├── data/                    # Static Data & Templates
-│   │   └── taskBank.ts         # 90+ 2026 objectives
-│   ├── lib/
-│   │   └── adk/                 # Agent Development Kit
-│   │       ├── agents.ts       # Strategist/Analyst/Critic
-│   │       ├── factory.ts      # Agent instantiation
-│   │       ├── orchestrator.ts # MissionControl pipeline
-│   │       ├── protocol.ts     # A2UI v1.1 protocol
-│   │       ├── uiBuilder.ts    # Fluent UI builder
-│   │       └── exporter.ts     # Mermaid/JSON export
-│   │   └── utils.ts            # Centralized utilities (cn)
-│   ├── services/                # External Services
-│   │   ├── geminiService.ts    # Gemini 2.0 Flash integration
-│   │   ├── githubService.ts    # GitHub Issues API v3
-│   │   ├── jiraService.ts      # Jira Cloud REST API
-│   │   ├── persistenceService.ts # Encrypted localStorage
-│   │   └── index.ts            # Sync orchestration
-│   ├── types/                   # TypeScript Definitions
-│   │   └── index.ts            # Core type system
-│   ├── test/                    # Test Infrastructure
-│   │   ├── setup.ts            # Vitest configuration
-│   │   └── smoke.test.ts       # Integration tests
-│   ├── index.css                # Glassmorphic design system
-│   ├── App.tsx                  # Main application entry
-│   ├── index.tsx                # React 19 root renderer
-│   └── global.d.ts              # Global type declarations
-├── public/                      # Static Assets
-├── docs/                        # Project Documentation
-├── .env.example                 # Environment template
-├── vite.config.ts               # Vite 8.0 configuration
-├── vitest.config.ts             # Test configuration
-├── tsconfig.json                # TypeScript compiler options
-├── eslint.config.js             # ESLint flat config
-├── postcss.config.js            # PostCSS ESM configuration
-└── package.json                 # Dependencies and scripts
+src/
+├── components/          # UI Components (ui/, views/, cards/)
+├── lib/adk/             # Agent Development Kit (Core)
+├── services/            # Integrations (Gemini, GitHub, Jira)
+├── config/              # System & Environment Configuration
+├── data/                # Static Strategic Data (TaskBank)
+├── types/               # Strict TypeScript Definitions
+└── test/                # Integration & Smoke Tests
 ```
-
----
-
-## 🛠️ Architecture Overview
-
-```mermaid
-graph TD
-    A[Executive Input] --> B[MissionControl Orchestrator]
-    B --> C{Agent Synthesis}
-    C --> C1[Strategist Agent]
-    C --> C2[Analyst Agent]
-    C --> C3[Critic Agent]
-    C1 & C2 & C3 --> D[A2UI Protocol v1.1]
-    D --> E[Glassmorphic React UI]
-    E --> F{Export Options}
-    F --> F1[GitHub Issues API v3]
-    F --> F2[Jira Cloud REST API]
-    F --> F3[Mermaid Diagram]
-    F --> F4[JSON Export]
-```
-
----
-
-## 🔧 Configuration
-
-### Environment Variables
-
-```env
-# REQUIRED: Google Gemini API
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
-
-# OPTIONAL: GitHub Integration (configurable via Settings UI)
-VITE_GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# OPTIONAL: Jira Cloud Integration (configurable via Settings UI)
-VITE_JIRA_DOMAIN=yourcompany.atlassian.net
-VITE_JIRA_EMAIL=user@company.com
-VITE_JIRA_TOKEN=ATATT3xxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# OPTIONAL: Development
-VITE_DEBUG_MODE=true
-VITE_APP_VERSION=3.6.1
-```
-
-**Security Note**: GitHub and Jira credentials can be configured through the Settings modal in the UI. API keys are stored with Base64 obfuscation in localStorage. For production, use backend proxy endpoints.
 
 ---
 
 ## 🎨 Design System
 
-Atlas uses a custom glassmorphic design system:
-
-- **Glass-1**: `rgba(255, 255, 255, 0.1)` - Primary glass surfaces
-- **Glass-2**: `rgba(255, 255, 255, 0.05)` - Secondary glass surfaces
-- **Atlas Blue**: `#3b82f6` - Primary accent color
-- **Atlas Indigo**: `#6366f1` - Secondary accent
-- **Backdrop Blur**: 32px-64px for premium depth
-- **Fonts**: Inter (sans), JetBrains Mono (mono), Outfit (display)
+Atlas features a custom glassmorphic theme designed for high-density strategic data:
+- **Glass-1/2**: Backdrop-blur surfaces with dynamic lighting.
+- **Typography**: Inter (UI), JetBrains Mono (Technical), Outfit (Display).
+- **Theming**: Dark-first palette with `atlas-blue` accents.
 
 ---
 
 ## 🗺️ Roadmap
 
-### Completed ✅
-
-- [x] **V3.6.1** - Type Safety, Memory Management & Persistence Fixes.
-- [x] **V3.6.0** - Dependency Modernization & Robustness.
-- [x] **V3.5.2** - Maintenance Release: Repository Organization & Dependency Stabilization.
-- [x] **V3.5.1** - Standardization & Hotfixes.
-- [x] **V3.3.0** - Strategic Repository Reorganization.
-- [x] **V3.2.7** - Zero-warning linting pipeline, 100% type safety.
-- [x] **V3.2.6** - Hardened JSON parsing logic.
-- [x] **V3.2.4** - Multi-agent synthesis, A2UI protocol.
-- [x] **V3.2.4** - GitHub Issues and Jira Cloud synchronization.
-- [x] **V3.2.4** - TaskBank with 90+ 2026 strategic objectives.
-- [x] **V3.2.4** - What-If failure simulation engine.
-- [x] **V3.2.4** - Glassmorphic UI with Framer Motion animations.
+### Current Version (v3.6.1) ✅
+- **Type Safety Audit**: 100% strict compliance across all core modules.
+- **Memory Management**: Automated agent disposal in `AgentFactory`.
+- **Persistence Layer**: Mutex-guarded `writeQueue` for data integrity.
+- **Error Surface**: Detailed error extraction and UI reporting.
+- **Sync Enhancements**: Full GitHub Issue linking and Jira Epic mapping.
 
 ### Planned 🚀
-
-- [ ] **V4.0.0** - Monte Carlo risk modeling with probability distributions.
-- [ ] **V4.1.0** - Real-time collaboration via WebSockets.
-- [ ] **V4.2.0** - Resource optimizer (headcount/budget allocation).
-- [ ] **V4.3.0** - Claude Code integration for agentic coding tasks.
-
----
-
-## 🧪 Testing
-
-Atlas maintains 85% test coverage across all metrics:
-
-```bash
-# Run tests with coverage
-npm run coverage
-
-# Watch mode for development
-npm test
-
-# Open Vitest UI
-npm run test:ui
-```
-
-### Test Coverage Requirements
-
-- **Lines**: 85%
-- **Functions**: 85%
-- **Branches**: 85%
-- **Statements**: 85%
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
-### Development Setup
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes with tests
-4. Run quality checks: `npm run lint && npm test`
-5. Commit: `git commit -m 'feat: add amazing feature'`
-6. Push: `git push origin feature/amazing-feature`
-7. Open a Pull Request
+- **V4.0.0**: Monte Carlo risk modeling with probability distributions.
+- **V4.1.0**: Real-time collaborative synthesis via WebSockets.
+- **V4.2.0**: Intelligent resource optimizer for headcount/budget.
 
 ---
 
 ## 📚 Documentation
-
-- **[Agent Development Kit (ADK)](./AGENTS.md)** - Multi-agent architecture and API reference.
-- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Detailed engineering blog post.
-- [Changelog](./CHANGELOG.md) - Version history and release notes.
-- [Contributing Guide](./CONTRIBUTING.md) - How to contribute.
-- [Gemini API Documentation](https://ai.google.dev/gemini-api/docs) - Gemini 2.0 Flash docs.
-
----
-
-## 🐛 Known Issues & Fixes (v3.6.1)
-
-All issues in the codebase have been identified and fixed in this release:
-
-### Fixed Issues
-
-1. **Type Safety Audit** - Removed all `any` types and implemented strict compliance across 12+ files.
-2. **Memory Leak Fix** - Implemented agent pool lifecycle management and disposal in `AgentFactory`.
-3. **Race Condition Fix** - Added mutex-based `writeQueue` to `PersistenceService` for data integrity.
-4. **JSON Parsing Robustness** - Enhanced Gemini response parsing to handle markdown and schema validation.
-5. **Jira/GitHub Integration** - Completed project linking and epic mapping implementations.
-6. **Error Surface Improvement** - Surface detailed error messages in the UI for better production debugging.
-7. **Build Optimization** - Refined chunking strategy in `vite.config.ts` for smaller vendor bundles.
-8. **Integration Testing** - Added comprehensive integration test suite for MissionControl and failure cascades.
+- **[AGENTS.md](./AGENTS.md)** - Multi-agent ADK reference.
+- **[CHANGELOG.md](./CHANGELOG.md)** - Full version history.
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines.
+- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Engineering insights.
 
 ---
 
 ## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **Google AI** - For the Gemini 2.0 Flash model and Generative AI SDK.
-- **Vercel** - For React 19 and the Next.js ecosystem.
-- **Tailwind Labs** - For Tailwind CSS 4.2.
-- **XYFlow Team** - For @xyflow/react dependency visualization.
-- **Framer** - For Framer Motion animation library.
-
----
-
-## 👨‍💻 Author
-
-**Darshil Shah**  
-*QA Engineering Leader & AI Architect*
-
-- 🔗 [LinkedIn](https://linkedin.com/in/darshil-qa-lead)
-- 🐙 [GitHub](https://github.com/darshil0)
-- 🐦 [X (Twitter)](https://x.com/soulsurfer300)
-- 📧 [Email](mailto:contact@darshilshah.com)
+MIT License - See [LICENSE](./LICENSE) for details.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ by Darshil Shah**
+**Built with ❤️ by [Darshil Shah](https://github.com/darshil0)**
 
 *Transforming executive vision into executable reality*
 
-[Report Bug](https://github.com/darshil0/atlas-strategic-agent/issues) · [Request Feature](https://github.com/darshil0/atlas-strategic-agent/issues) · [Documentation](https://github.com/darshil0/atlas-strategic-agent/wiki)
+[Report Bug](https://github.com/darshil0/atlas-strategic-agent/issues) · [Request Feature](https://github.com/darshil0/atlas-strategic-agent/issues)
 
 </div>
