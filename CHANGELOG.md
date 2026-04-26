@@ -22,7 +22,10 @@ Hardening the Atlas "nervous system" through strict type safety, memory manageme
 - **Persistence Mutex**: Implemented `writeQueue` in `PersistenceService` to prevent storage corruption.
 - **Memory Management**: Added automated agent disposal to `AgentFactory`.
 - **UI Error Surfacing**: Refactored `handleSend` to extract and display detailed error messages.
-- **Git Reconciliation**: Resolved widespread merge conflicts between modernization and core branches.
+- **Git Merge Conflicts**: Resolved widespread codebase conflicts, successfully aligning `v3.6.0` modernization upgrades with the `v3.6.1` core functionality improvements.
+- **Production Logging Hygiene**: Guarded raw debug logs in `A2UIRenderer` event handlers with `ENV.DEBUG_MODE` checks to prevent leaks in production environments.
+- **Project Reorganization**: Consolidated test infrastructure by moving `src/App.test.tsx` to `src/test/` and streamlined the root directory by removing redundant environment templates.
+- **Boot Sequence Extraction**: Refactored `src/index.tsx` by extracting the `BootLoader` and `AtlasErrorBoundary` into a dedicated `BootOrchestrator` component, reducing entry point complexity.
 
 ---
 
