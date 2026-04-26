@@ -1,5 +1,5 @@
 // src/components/TaskCard.tsx
-// FIX v3.6.0: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
+// FIX v3.6.1: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SubTask, TaskStatus, Priority, type Citation } from "@types";

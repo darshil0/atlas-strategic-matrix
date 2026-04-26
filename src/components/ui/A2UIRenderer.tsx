@@ -1,5 +1,5 @@
 // src/components/A2UIRenderer.tsx
-// FIX v3.6.0: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
+// FIX v3.6.1: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
 import React from "react";
 import { motion } from "framer-motion";
 import { A2UIElement, A2UIComponentType, AGUIEvent } from "@lib/adk/protocol";

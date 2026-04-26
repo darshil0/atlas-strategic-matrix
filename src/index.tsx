@@ -1,8 +1,8 @@
 /**
- * ATLAS v3.6.0 - Production Entry Point
+ * ATLAS v3.6.1 - Production Entry Point
  * Glassmorphic MissionControl dashboard with error boundaries + loading states
  *
- * FIX v3.6.0: `LocalErrorBoundary` is now a proper React class-based error
+ * FIX v3.6.1: `LocalErrorBoundary` is now a proper React class-based error
  *   boundary (using `componentDidCatch` / `getDerivedStateFromError`). The
  *   previous implementation listened only to `window.error` events, which
  *   do NOT fire for React rendering errors caught during the render phase,
@@ -81,7 +81,7 @@ const AtlasErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
               Emergency Reboot
             </button>
             <p className="text-[11px] strat-label mt-6 text-slate-600">
-              ATLAS v{ENV.APP_VERSION || "3.6.0"}
+              ATLAS v{ENV.APP_VERSION || "3.6.1"}
             </p>
           </div>
         </div>
@@ -142,8 +142,8 @@ const BootLoader: React.FC<{ onReady: () => void }> = ({ onReady }) => {
             ATLAS
           </h1>
           <div className="flex items-center justify-center gap-2 text-sm font-black uppercase tracking-[0.3em] text-blue-400">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />v
-            {ENV.APP_VERSION || "3.6.0"}
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+            v{ENV.APP_VERSION || "3.6.1"}
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           </div>
           <p className="text-xs strat-label text-slate-600 font-mono">
@@ -258,10 +258,10 @@ const initAtlas = async () => {
   const root = createRoot(rootElement);
 
   if (ENV.DEBUG_MODE) {
-    console.group("🏛️ ATLAS v3.6.0 BOOT SEQUENCE");
+    console.group("🏛️ ATLAS v3.6.1 BOOT SEQUENCE");
     console.log("• React:", React.version);
     console.log("• Environment:", import.meta.env.MODE);
-    console.log("• App Version:", ENV.APP_VERSION || "3.6.0");
+    console.log("• App Version:", ENV.APP_VERSION || "3.6.1");
     console.groupEnd();
   }
 
@@ -305,7 +305,7 @@ initAtlas().catch((error) => {
 });
 
 if (import.meta.env.PROD) {
-  console.groupCollapsed("🏛️ ATLAS v3.6.0 • Production Build");
+  console.groupCollapsed("🏛️ ATLAS v3.6.1 • Production Build");
   console.log("• Status: Neural core online");
   console.log("• Tasks: 92+ enterprise objectives loaded");
   console.log("• Agents: Strategist + Analyst + Critic ready");

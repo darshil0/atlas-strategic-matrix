@@ -1,5 +1,5 @@
 /**
- * Atlas PlanExporter (v3.6.0) - Glassmorphic Mermaid + Export Suite
+ * Atlas PlanExporter (v3.6.1) - Glassmorphic Mermaid + Export Suite
  * Production-ready Mermaid.js diagrams for GitHub READMEs, Notion, Obsidian
  */
 
@@ -44,8 +44,8 @@ export const PlanExporter = {
 
     let mermaid = `\
 graph TD
-  %% Atlas v3.6.0 - Glassmorphic Strategic Roadmap
-  %% Generated: ${new Date().toISOString().split("T")[0]}
+  %% Atlas v3.6.1 - Glassmorphic Strategic Roadmap
+  %% Generated: ${new Date().toISOString().split('T')[0]}
 `;
 
     // Glassmorphic matching your design system
