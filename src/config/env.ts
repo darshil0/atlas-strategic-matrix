@@ -5,7 +5,7 @@
  * - Provides validation with actionable feedback.
  */
 
-import { PersistenceService } from "../services/persistenceService";
+import { PersistenceService } from "../services/core/persistence";
 
 interface EnvShape {
   GEMINI_API_KEY: string;

@@ -7,13 +7,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
-import { PersistenceService } from "./services/persistenceService";
-import { AtlasService } from "./services/geminiService";
+import { PersistenceService } from "@services/core/persistence";
+import { AtlasService } from "@services/ai/gemini";
 import { TaskStatus, Priority } from "./types";
 import "@testing-library/jest-dom";
 
 // Comprehensive mocks
-vi.mock("@/services/geminiService", () => ({
+vi.mock("@services/ai/gemini", () => ({
   AtlasService: {
     generatePlan: vi.fn(),
     executeSubtask: vi

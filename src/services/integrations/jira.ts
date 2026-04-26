@@ -10,7 +10,7 @@ import {
   JiraTicketResult,
   JiraSyncResult,
 } from "@types";
-import { PersistenceService } from "@services/persistenceService";
+import { PersistenceService } from "@services/core/persistence";
 import { TASK_BANK } from "@data/taskBank";
 
 /**

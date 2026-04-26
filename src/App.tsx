@@ -10,9 +10,9 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Message, Plan, SubTask, TaskStatus } from "@types";
-import { AtlasService } from "@services/geminiService";
-import { PersistenceService } from "@services/persistenceService";
-import { githubService, jiraService } from "@/services";
+import { AtlasService } from "@services/ai/gemini";
+import { PersistenceService } from "@services/core/persistence";
+import { githubService, jiraService } from "@services";
 import TaskBank from "@components/views/TaskBank";
 import SettingsModal from "@components/views/SettingsModal";
 import { Sidebar, SidebarViewType } from "@components/views/Sidebar";

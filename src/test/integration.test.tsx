@@ -5,7 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MissionControl } from '../lib/adk/orchestrator';
-import { PersistenceService } from '../services/persistenceService';
+import { PersistenceService } from '../services/core/persistence';
 import { AgentFactory } from '../lib/adk/factory';
 import { AgentPersona, Priority, TaskStatus, Plan, Message } from '@types';
 

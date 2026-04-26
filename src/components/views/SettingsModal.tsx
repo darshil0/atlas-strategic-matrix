@@ -1,7 +1,7 @@
 // src/components/SettingsModal.tsx
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { PersistenceService } from "@services/persistenceService";
+import { PersistenceService } from "@services/core/persistence";
 import { Settings, X } from "lucide-react";
 import { cn } from "@lib/utils";
 
