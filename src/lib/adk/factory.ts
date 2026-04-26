@@ -1,5 +1,5 @@
 /**
- * Atlas Agent Factory (v3.5.1) - Glassmorphic Multi-Agent Swarm
+ * Atlas Agent Factory (v3.6.1) - Glassmorphic Multi-Agent Swarm
  * TypeScript exhaustiveness + production agent lifecycle management
  */
 
@@ -47,13 +47,20 @@ export class AgentFactory {
   }
 
   private static agentPool: Partial<Record<AgentPersona, BaseAgent>> = {};
+  private static poolSize = 0;
+  private static readonly MAX_POOL_SIZE = 10;
 
   /**
    * Get-or-create agent with pooling (performance)
    */
   static getOrCreate(persona: AgentPersona): BaseAgent {
+    if (this.poolSize > AgentFactory.MAX_POOL_SIZE) {
+      this.dispose();
+    }
+
     if (!this.agentPool[persona]) {
       this.agentPool[persona] = this.create(persona);
+      this.poolSize++;
     }
     return this.agentPool[persona]!;
   }
@@ -72,6 +79,7 @@ export class AgentFactory {
    */
   static async dispose(): Promise<void> {
     this.agentPool = {};
+    this.poolSize = 0;
   }
 }
 

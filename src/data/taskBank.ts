@@ -1,5 +1,5 @@
 /**
- * Atlas Strategic Task Bank (v3.5.1) - 2026 Enterprise Roadmap
+ * Atlas Strategic Task Bank (v3.6.1) - 2026 Enterprise Roadmap
  * 90+ production-ready objectives across 6 strategic themes
  * 
  * Format: THEME-26-QX-NNN • Q1-Q4 2026 • Glassmorphic visualization ready

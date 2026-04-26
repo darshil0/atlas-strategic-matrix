@@ -1,5 +1,5 @@
 /**
- * Atlas App Component Tests (v3.5.1) - Glassmorphic E2E Integration
+ * Atlas App Component Tests (v3.6.1) - Glassmorphic E2E Integration
  * Production React Testing Library suite for MissionControl dashboard
  */
 

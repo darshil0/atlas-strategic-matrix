@@ -84,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> =({
               <ShieldCheck className="text-atlas-blue h-6 w-6" />
             </div>
             <h1 className="font-display font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-slate-500">
-              ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">v3.5.1</span>
+              ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">v3.6.1</span>
             </h1>
           </div>
           <button

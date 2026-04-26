@@ -4,6 +4,30 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.6.1] - 2026-04-26
+
+### 🚀 Core Architecture Stabilization & Integration
+
+This release focuses on hardening the Atlas "nervous system" through strict type safety, robust memory management, and concurrent state handling.
+
+### Added
+- **Integration Test Suite**: Introduced `src/test/integration.test.ts` validating MissionControl pipelines and failure cascade logic.
+- **GitHub Project Linking**: Native support for linking strategic issues to Atlas/Roadmap project boards.
+- **Jira Search & Epic Mapping**: Implemented bidirectional ticket discovery and automated linking to quarterly epics.
+
+### Changed
+- **Type System Audit**: Achieved 100% strict TypeScript compliance by removing all explicit `any` types and replacing them with `unknown` or specific interfaces.
+- **JSON Parsing Robustness**: Enhanced Gemini response parsing with multi-strategy extraction and markdown backtick stripping.
+- **Build Optimization**: Refined `vite.config.ts` chunking strategy for improved vendor bundle splitting.
+- **Version Unification**: Synchronized all internal telemetry and system instructions to **v3.6.1**.
+
+### Fixed
+- **Persistence Race Condition**: Implemented a mutex-based `writeQueue` in `PersistenceService` to prevent `localStorage` corruption during concurrent saves.
+- **Agent Pool Memory Leak**: Added lifecycle management to `AgentFactory` with automated disposal when the pool exceeds 10 active personas.
+- **Error Surface Visibility**: Refactored `handleSend` to extract and display detailed error messages directly in the UI.
+
+---
+
 ## [3.6.0] - 2026-04-03
 
 ### 🚀 Dependency Modernization & Robustness

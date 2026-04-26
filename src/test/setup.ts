@@ -1,5 +1,5 @@
 /**
- * Atlas Vitest Setup (v3.5.1) - Glassmorphic Test Environment
+ * Atlas Vitest Setup (v3.6.1) - Glassmorphic Test Environment
  * Production test configuration for MissionControl → AgentFactory → ReactFlow
  * Perfect mocks for PersistenceService, GitHub/Jira sync, localStorage encryption
  */
@@ -9,7 +9,7 @@ import { expect, afterEach, vi, beforeEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import { TaskStatus, Priority } from '@types';
-import type { Plan } from "@types";
+import type { Plan, Message } from "@types";
 
 // Extend Vitest expect with jest-dom matchers
 expect.extend(matchers);
@@ -77,6 +77,7 @@ Object.defineProperty(window, 'localStorage', {
 const mockState = {
   plan: null as Plan | null,
   secrets: {} as Record<string, string>,
+  messages: [] as Message[],
 };
 
 vi.mock('@config', async (importOriginal) => {
@@ -98,8 +99,8 @@ vi.mock('@services/persistenceService', () => ({
     savePlan: vi.fn((plan) => { mockState.plan = plan; }),
     getSecret: vi.fn((key) => mockState.secrets[key]),
     saveSecret: vi.fn((key, val) => { mockState.secrets[key] = val; }),
-    getMessages: vi.fn().mockReturnValue([]),
-    saveMessages: vi.fn(),
+    getMessages: vi.fn(() => mockState.messages),
+    saveMessages: vi.fn((msgs) => { mockState.messages = msgs; }),
     getSettings: vi.fn().mockReturnValue({}),
     saveSettings: vi.fn(),
     getGithubConfig: vi.fn().mockReturnValue(null),
@@ -108,12 +109,17 @@ vi.mock('@services/persistenceService', () => ({
     saveJiraConfig: vi.fn(),
     saveWorkflow: vi.fn(),
     getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002 }),
-    clearAll: vi.fn(() => { mockState.plan = null; mockState.secrets = {}; }),
+    clearAll: vi.fn(() => {
+      mockState.plan = null;
+      mockState.secrets = {};
+      mockState.messages = [];
+    }),
     getGithubApiKey: vi.fn(() => mockState.secrets["github_api_key_enc_v3.2"]),
     saveGithubApiKey: vi.fn((key) => { mockState.secrets["github_api_key_enc_v3.2"] = key; }),
+    getJiraApiKey: vi.fn(() => mockState.secrets["jira_api_key_enc_v3.2"]),
+    saveJiraApiKey: vi.fn((key) => { mockState.secrets["jira_api_key_enc_v3.2"] = key; }),
     getJiraDomain: vi.fn(),
     getJiraEmail: vi.fn(),
-    getJiraApiKey: vi.fn(),
     getGithubOwner: vi.fn(),
     getGithubRepo: vi.fn(),
   },
@@ -214,7 +220,7 @@ export const ATLAS_TEST_UTILS = {
    * Mock MissionControl response
    */
   mockMissionControlResponse: (): unknown => ({
-    text: '🏛️ ATLAS v3.5.1 SYNTHESIS COMPLETE\nQuality Score: 92/100',
+    text: '🏛️ ATLAS v3.6.1 SYNTHESIS COMPLETE\nQuality Score: 92/100',
     validation: {
       iterations: 2,
       finalScore: 92,
