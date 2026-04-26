@@ -111,13 +111,14 @@ npm run coverage         # Coverage report (85% threshold)
 
 ```
 src/
-├── components/          # UI Components (ui/, views/, cards/)
+├── components/          # UI Components (ui/, views/, cards/, core/)
 ├── lib/adk/             # Agent Development Kit (Core)
-├── services/            # Integrations (Gemini, GitHub, Jira)
+├── services/            # Layered services (ai/, core/, integrations/)
 ├── config/              # System & Environment Configuration
 ├── data/                # Static Strategic Data (TaskBank)
 ├── types/               # Strict TypeScript Definitions
-└── test/                # Integration & Smoke Tests
+├── styles/              # Global Tailwind CSS-first Styles
+└── test/                # Integration, Smoke & Unit Tests
 ```
 
 ---

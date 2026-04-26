@@ -10,7 +10,7 @@ All notable changes to this project are documented in this file. This project ad
 Hardening the Atlas "nervous system" through strict type safety, memory management, and concurrent state handling.
 
 ### Added
-- **Integration Test Suite**: Introduced `src/test/integration.test.ts` for MissionControl pipelines.
+- **Integration Test Suite**: Introduced `src/test/integration.test.tsx` for MissionControl pipelines.
 - **Enterprise Linking**: Native support for GitHub Project boards and Jira Epic mapping.
 
 ### Changed
@@ -27,6 +27,7 @@ Hardening the Atlas "nervous system" through strict type safety, memory manageme
 - **Project Reorganization**: Consolidated test infrastructure by moving `src/App.test.tsx` to `src/test/` and streamlined the root directory by removing redundant environment templates.
 - **Deep Structural Refinement**: Categorized the service layer into specialized subdirectories (`ai/`, `integrations/`, `core/`), relocated `index.css` to `src/styles/`, and moved global type declarations to `src/types/atlas.d.ts` for improved modularity.
 - **Boot Sequence Extraction**: Refactored `src/index.tsx` by extracting the `BootLoader` and `AtlasErrorBoundary` into a dedicated `BootOrchestrator` component, reducing entry point complexity.
+- **Test Infrastructure Consolidation**: Moved `src/App.test.tsx` to `src/test/App.test.tsx` to align with the centralized test directory structure.
 
 ---
 

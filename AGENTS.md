@@ -40,12 +40,13 @@ src/
 │   │   ├── uiBuilder.ts # Fluent API for UI
 │   │   └── exporter.ts # Mermaid/JSON export
 │   └── utils.ts        # Centralized utilities (cn helper)
-├── services/           # External API Integrations
-│   ├── geminiService.ts # Gemini 2.0 Flash integration
-│   ├── githubService.ts # GitHub Issues API
-│   └── jiraService.ts   # Jira Cloud REST API
+├── services/           # Layered services
+│   ├── ai/             # Gemini 2.0 Flash integration (gemini.ts)
+│   ├── integrations/   # External APIs (github.ts, jira.ts)
+│   └── core/           # Data persistence (persistence.ts)
 ├── config/             # System Configuration & Constants
-└── types/              # Global TypeScript Definitions
+├── types/              # Global TypeScript Definitions
+├── test/                # Integration, Smoke & Unit Tests (smoke.test.ts, App.test.tsx)
 ```
 
 ---
@@ -138,7 +139,9 @@ Maintain the **Zero Warning Baseline**. All PRs must pass `npm run lint`, `npm r
 
 - **Threshold**: 85% coverage for Lines, Functions, Branches, and Statements.
 - **Setup**: `src/test/setup.ts` contains necessary mocks for `scrollIntoView` and `crypto.randomUUID`.
-- **Integration**: `smoke.test.ts` verifies the full multi-agent pipeline and factory instantiation.
+- **Integration**: `src/test/smoke.test.ts` verifies the full multi-agent pipeline and factory instantiation.
+- **Integration UI**: `src/test/integration.test.tsx` for MissionControl pipelines.
+- **Unit UI**: `src/test/App.test.tsx` for core dashboard rendering and interactions.
 
 ---
 
