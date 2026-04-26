@@ -17,13 +17,20 @@
   --animate-pulse-ring: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
   @keyframes pulse-ring {
-    0% { transform: scale(0.33); opacity: 1; }
-    80%, 100% { transform: scale(1); opacity: 0; }
+    0% {
+      transform: scale(0.33);
+      opacity: 1;
+    }
+    80%,
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
   }
 }
 
 /**
- * ATLAS v3.5.1 - Glassmorphic Strategic Intelligence Theme
+ * ATLAS v3.6.0 - Glassmorphic Strategic Intelligence Theme
  * Production Tailwind CSS with premium glassmorphism, deep space gradients
  * Optimized for MissionControl dashboard + ReactFlow + A2UI protocol
  */
@@ -37,7 +44,7 @@
   --atlas-surface-alt: rgba(15, 23, 42, 0.4);
   --atlas-glass: rgba(17, 24, 39, 0.85);
   --atlas-glass-alt: rgba(30, 41, 59, 0.6);
-  
+
   /* Strategic accent system */
   --atlas-accent-primary: #3b82f6;
   --atlas-accent-secondary: #6366f1;
@@ -45,12 +52,12 @@
   --atlas-success: #10b981;
   --atlas-warning: #f59e0b;
   --atlas-critical: #ef4444;
-  
+
   /* Border & divider system */
   --atlas-border: rgba(255, 255, 255, 0.08);
   --atlas-border-hover: rgba(255, 255, 255, 0.15);
   --atlas-divider: rgba(71, 85, 105, 0.3);
-  
+
   /* Text hierarchy */
   --atlas-text-primary: #f8fafc;
   --atlas-text-secondary: #cbd5e1;
@@ -63,18 +70,30 @@
   * {
     border-color: color-mix(in srgb, white 10%, transparent);
   }
-  
+
   body {
     @apply bg-atlas-slate font-sans antialiased;
     font-feature-settings: '"cv11", "ss01"';
     background-image:
       url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E"),
-      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 0% 50%, rgba(120, 219, 255, 0.12) 0%, transparent 50%);
+      radial-gradient(
+        circle at 20% 80%,
+        rgba(120, 119, 198, 0.15) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(255, 119, 198, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 0% 50%,
+        rgba(120, 219, 255, 0.12) 0%,
+        transparent 50%
+      );
     background-attachment: fixed;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
@@ -120,9 +139,15 @@
   @apply w-2 h-2 bg-emerald-500 rounded-full animate-pulse;
 }
 
-@utility priority-high { @apply bg-gradient-to-r from-rose-500/20 to-orange-500/20 text-rose-400 border-rose-500/30; }
-@utility priority-medium { @apply bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-400 border-amber-500/30; }
-@utility priority-low { @apply bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30; }
+@utility priority-high {
+  @apply bg-gradient-to-r from-rose-500/20 to-orange-500/20 text-rose-400 border-rose-500/30;
+}
+@utility priority-medium {
+  @apply bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-400 border-amber-500/30;
+}
+@utility priority-low {
+  @apply bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30;
+}
 
 @utility strat-h1 {
   @apply text-3xl md:text-4xl font-black font-display bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent tracking-tight;
@@ -172,17 +197,23 @@
 @utility pulse-ring {
   @apply relative inline-block;
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -2px;
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, var(--atlas-accent-primary), var(--atlas-accent-secondary));
+    background: linear-gradient(
+      45deg,
+      var(--atlas-accent-primary),
+      var(--atlas-accent-secondary)
+    );
     border-radius: 50%;
     z-index: -1;
     animation: pulse-ring 2s linear infinite;
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
 }
@@ -214,7 +245,11 @@
     @apply bg-white/5 rounded-full border border-white/10;
   }
   &::-webkit-progress-value {
-    background: linear-gradient(90deg, var(--atlas-accent-primary), var(--atlas-accent-secondary));
+    background: linear-gradient(
+      90deg,
+      var(--atlas-accent-primary),
+      var(--atlas-accent-secondary)
+    );
     border-radius: 9999px;
   }
 }
@@ -246,8 +281,14 @@
 
 /* === BOOTSTRAP ANIMATIONS === */
 @keyframes atlas-boot {
-  0% { opacity: 0; transform: scale(0.95) translateY(20px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 @utility animate-atlas-boot {

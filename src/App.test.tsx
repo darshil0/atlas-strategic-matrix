@@ -1,5 +1,5 @@
 /**
- * Atlas App Component Tests (v3.5.1) - Glassmorphic E2E Integration
+ * Atlas App Component Tests (v3.6.0) - Glassmorphic E2E Integration
  * Production React Testing Library suite for MissionControl dashboard
  */
 
@@ -16,7 +16,9 @@ import "@testing-library/jest-dom";
 vi.mock("@/services/geminiService", () => ({
   AtlasService: {
     generatePlan: vi.fn(),
-    executeSubtask: vi.fn(),
+    executeSubtask: vi
+      .fn()
+      .mockResolvedValue({ text: "Mock subtask execution" }),
     summarizeMission: vi.fn(),
   },
 }));
@@ -53,8 +55,8 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
           priority: Priority.HIGH,
           category: "2026 Q1",
           dependencies: [],
-        }
-      ]
+        },
+      ],
     });
   });
 
@@ -65,17 +67,21 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
 
   it("handles strategic directive input", async () => {
     render(<App />);
-    const input = screen.getByPlaceholderText(/Enter your strategic directive/i);
+    const input = screen.getByPlaceholderText(
+      /Enter your strategic directive/i
+    );
     await user.type(input, "Build a starship");
 
     // Instead of clicking by name, let's find the button by its icon container
     const buttons = screen.getAllByRole("button");
-    const sendBtn = buttons.find(b => b.querySelector('svg.lucide-send'));
+    const sendBtn = buttons.find((b) => b.querySelector("svg.lucide-send"));
 
     if (sendBtn) {
       await user.click(sendBtn);
       await waitFor(() => {
-        expect(AtlasService.generatePlan).toHaveBeenCalledWith("Build a starship");
+        expect(AtlasService.generatePlan).toHaveBeenCalledWith(
+          "Build a starship"
+        );
       });
     }
   });
@@ -83,7 +89,9 @@ describe("🏛️ ATLAS App - Glassmorphic User Experience", () => {
   it("persists messages in localStorage", async () => {
     const saveSpy = vi.spyOn(PersistenceService, "saveMessages");
     render(<App />);
-    const input = screen.getByPlaceholderText(/Enter your strategic directive/i);
+    const input = screen.getByPlaceholderText(
+      /Enter your strategic directive/i
+    );
     await user.type(input, "Test persistence{enter}");
 
     await waitFor(() => {

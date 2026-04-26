@@ -1,19 +1,28 @@
 /**
- * Atlas Gemini Service Layer (v3.5.1) - Glassmorphic Enterprise LLM
+ * Atlas Gemini Service Layer (v3.6.0) - Glassmorphic Enterprise LLM
  * Production Gemini 2.0 integration for MissionControl → Agent swarm
  * JSON schema enforcement + A2UI extraction + TaskBank aware planning
  *
- * FIX v3.5.1: Corrected the timeout/race-condition pattern in `generatePlan`.
+ * FIX v3.6.0: Corrected the timeout/race-condition pattern in `generatePlan`.
  *   Previously, `Promise.race` was applied to `result.response` which is already
  *   resolved by the time we reach that line (it's the synchronous response object
  *   from `generateContent`). The timeout now correctly wraps the entire
  *   `generateContent` call so it can actually race against the timer.
  */
 
-import { GoogleGenerativeAI, SchemaType, GenerativeModel, ResponseSchema } from "@google/generative-ai";
+import {
+  GoogleGenerativeAI,
+  SchemaType,
+  GenerativeModel,
+  ResponseSchema,
+} from "@google/generative-ai";
 import { ATLAS_SYSTEM_INSTRUCTION, ENV } from "@config";
 import { Plan, SubTask, TaskStatus, Priority } from "@types";
-import { validateA2UIMessage, A2UIMessage, A2UI_PROTOCOL_VERSION } from "@lib/adk/protocol";
+import {
+  validateA2UIMessage,
+  A2UIMessage,
+  A2UI_PROTOCOL_VERSION,
+} from "@lib/adk/protocol";
 import { TASK_BANK } from "@data/taskBank";
 
 // Production API key validation
@@ -40,7 +49,8 @@ export class AtlasService {
   private static getModel(withA2UI = false): GenerativeModel {
     const systemInstruction = withA2UI
       ? `${ATLAS_SYSTEM_INSTRUCTION}\n\nALWAYS include A2UI glassmorphic UI responses using v${A2UI_PROTOCOL_VERSION} format.`
-      : ATLAS_SYSTEM_INSTRUCTION + "\n\nGenerate structured JSON matching TaskBank schema (AI-26-Q1-001 format).";
+      : ATLAS_SYSTEM_INSTRUCTION +
+        "\n\nGenerate structured JSON matching TaskBank schema (AI-26-Q1-001 format).";
 
     return genAI.getGenerativeModel({
       model: this.modelName,
@@ -58,7 +68,7 @@ export class AtlasService {
   /**
    * Generate 2026 Q1-Q4 strategic roadmap with TaskBank alignment.
    *
-   * FIX v3.5.1: The timeout race now wraps `generateContent` itself rather than
+   * FIX v3.6.0: The timeout race now wraps `generateContent` itself rather than
    * the already-resolved `result.response` property. This ensures the 45 s guard
    * actually fires if the network call hangs.
    */
@@ -80,22 +90,28 @@ export class AtlasService {
               status: {
                 type: SchemaType.STRING,
                 format: "enum",
-                enum: Object.values(TaskStatus) as string[]
+                enum: Object.values(TaskStatus) as string[],
               },
               priority: {
                 type: SchemaType.STRING,
                 format: "enum",
-                enum: Object.values(Priority) as string[]
+                enum: Object.values(Priority) as string[],
               },
               category: {
                 type: SchemaType.STRING,
                 format: "enum",
-                enum: ["2026 Q1", "2026 Q2", "2026 Q3", "2026 Q4", "2026 Vision"]
+                enum: [
+                  "2026 Q1",
+                  "2026 Q2",
+                  "2026 Q3",
+                  "2026 Q4",
+                  "2026 Vision",
+                ],
               },
               theme: {
                 type: SchemaType.STRING,
                 format: "enum",
-                enum: ["AI", "Cyber", "ESG", "Global", "Infra", "People"]
+                enum: ["AI", "Cyber", "ESG", "Global", "Infra", "People"],
               },
               dependencies: {
                 type: SchemaType.ARRAY,
@@ -110,13 +126,17 @@ export class AtlasService {
     };
 
     const requestPayload = {
-      contents: [{
-        role: "user",
-        parts: [{
-          text: `Generate 2026 enterprise roadmap for: "${userPrompt}"
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `Generate 2026 enterprise roadmap for: "${userPrompt}"
 
 TASK_BANK CONTEXT (90+ objectives):
-${TASK_BANK.slice(0, 10).map(t => `${t.id}: ${t.description.slice(0, 60)}...`).join("\n")}
+${TASK_BANK.slice(0, 10)
+  .map((t) => `${t.id}: ${t.description.slice(0, 60)}...`)
+  .join("\n")}
 
 REQUIREMENTS:
 • Use realistic Q1-Q4 categories (2026 Q1 has capacity for 12 HIGH priority)
@@ -124,9 +144,11 @@ REQUIREMENTS:
 • Create realistic cross-theme dependencies
 • Balance Q1 workload (max 12 HIGH priority)
 
-Return structured JSON matching schema exactly.`
-        }]
-      }],
+Return structured JSON matching schema exactly.`,
+            },
+          ],
+        },
+      ],
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema,
@@ -140,8 +162,13 @@ Return structured JSON matching schema exactly.`
           model.generateContent(requestPayload),
           new Promise<never>((_, reject) =>
             setTimeout(
-              () => reject(new Error(`Generation timed out after ${this.timeoutMs / 1000}s`)),
-              this.timeoutMs,
+              () =>
+                reject(
+                  new Error(
+                    `Generation timed out after ${this.timeoutMs / 1000}s`
+                  )
+                ),
+              this.timeoutMs
             )
           ),
         ]);
@@ -151,15 +178,26 @@ Return structured JSON matching schema exactly.`
         if (this.validatePlanQuality(plan, userPrompt)) {
           if (ENV.DEBUG_MODE) {
             console.group("🏛️ [AtlasService] PLAN GENERATED");
-            console.log("Q1 HIGH:", plan.tasks.filter(t => t.priority === Priority.HIGH && t.category === "2026 Q1").length);
+            console.log(
+              "Q1 HIGH:",
+              plan.tasks.filter(
+                (t) => t.priority === Priority.HIGH && t.category === "2026 Q1"
+              ).length
+            );
             console.log("Total Tasks:", plan.tasks.length);
-            console.log("Dependencies:", plan.tasks.filter(t => t.dependencies?.length).length);
+            console.log(
+              "Dependencies:",
+              plan.tasks.filter((t) => t.dependencies?.length).length
+            );
             console.groupEnd();
           }
           return plan;
         }
       } catch (error) {
-        console.warn(`[AtlasService] Attempt ${attempt}/${this.maxRetries} failed:`, error);
+        console.warn(
+          `[AtlasService] Attempt ${attempt}/${this.maxRetries} failed:`,
+          error
+        );
         if (attempt === this.maxRetries) throw error;
       }
     }
@@ -211,16 +249,21 @@ Return structured JSON matching schema exactly.`
   /**
    * MissionControl completion summary with Q1-Q4 metrics.
    */
-  static async summarizeMission(plan: Plan, executionHistory: string): Promise<string> {
+  static async summarizeMission(
+    plan: Plan,
+    executionHistory: string
+  ): Promise<string> {
     const model = this.getModel(false);
 
     const metrics = this.computeMissionMetrics(plan);
 
     const result = await model.generateContent({
-      contents: [{
-        role: "user",
-        parts: [{
-          text: `Generate executive mission summary:
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `Generate executive mission summary:
 
 GOAL: ${plan.goal}
 ${this.formatMetrics(metrics)}
@@ -229,9 +272,11 @@ EXECUTION HISTORY: ${executionHistory.slice(-1500)}
 Format as concise executive briefing with:
 • Q1-Q4 completion status
 • Critical path risks
-• Next action recommendations`
-        }]
-      }]
+• Next action recommendations`,
+            },
+          ],
+        },
+      ],
     });
 
     return (await result.response).text();
@@ -243,15 +288,25 @@ Format as concise executive briefing with:
     return (
       plan.tasks.length >= 8 &&
       plan.tasks.length <= 30 &&
-      plan.goal.trim().toLowerCase().includes(goal.toLowerCase().slice(0, 20)) &&
-      plan.tasks.some(t => t.category === "2026 Q1") &&
-      plan.tasks.filter(t => t.priority === Priority.HIGH).length >= 3
+      plan.goal
+        .trim()
+        .toLowerCase()
+        .includes(goal.toLowerCase().slice(0, 20)) &&
+      plan.tasks.some((t) => t.category === "2026 Q1") &&
+      plan.tasks.filter((t) => t.priority === Priority.HIGH).length >= 3
     );
   }
 
-  private static buildSubtaskContext(subtask: SubTask, plan: Plan, history: string): string {
+  private static buildSubtaskContext(
+    subtask: SubTask,
+    plan: Plan,
+    history: string
+  ): string {
     const q1HighRemaining = plan.tasks.filter(
-      t => t.priority === Priority.HIGH && t.category === "2026 Q1" && t.status !== TaskStatus.COMPLETED
+      (t) =>
+        t.priority === Priority.HIGH &&
+        t.category === "2026 Q1" &&
+        t.status !== TaskStatus.COMPLETED
     ).length;
 
     return `Execute subtask within 2026 roadmap context:
@@ -260,7 +315,7 @@ GOAL: ${plan.goal}
 TASK: ${subtask.id} "${subtask.description}"
 Q1 CAPACITY: ${q1HighRemaining}/12 HIGH priority remaining
 DEPENDENCIES: ${subtask.dependencies?.join(", ") || "None"}
-PLAN PROGRESS: ${plan.tasks.filter(t => t.status === TaskStatus.COMPLETED).length}/${plan.tasks.length}
+PLAN PROGRESS: ${plan.tasks.filter((t) => t.status === TaskStatus.COMPLETED).length}/${plan.tasks.length}
 
 RECENT HISTORY: ${history.slice(-800)}
 
@@ -269,26 +324,32 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
 
   private static computeMissionMetrics(plan: Plan): MissionMetrics {
     return {
-      completed: plan.tasks.filter(t => t.status === TaskStatus.COMPLETED).length,
+      completed: plan.tasks.filter((t) => t.status === TaskStatus.COMPLETED)
+        .length,
       total: plan.tasks.length,
-      q1Complete: plan.tasks.filter(t => t.category === "2026 Q1" && t.status === TaskStatus.COMPLETED).length,
-      q1Total: plan.tasks.filter(t => t.category === "2026 Q1").length,
-      highPriorityRemaining: plan.tasks.filter(
-        t => t.priority === Priority.HIGH && t.status !== TaskStatus.COMPLETED
+      q1Complete: plan.tasks.filter(
+        (t) => t.category === "2026 Q1" && t.status === TaskStatus.COMPLETED
       ).length,
-      criticalPathRisk: plan.tasks.filter(t => t.dependencies?.length && t.status === TaskStatus.PENDING).length,
+      q1Total: plan.tasks.filter((t) => t.category === "2026 Q1").length,
+      highPriorityRemaining: plan.tasks.filter(
+        (t) => t.priority === Priority.HIGH && t.status !== TaskStatus.COMPLETED
+      ).length,
+      criticalPathRisk: plan.tasks.filter(
+        (t) => t.dependencies?.length && t.status === TaskStatus.PENDING
+      ).length,
     };
   }
 
   private static parseResponse<T>(text: string): T {
-    const cleanText = text
-      .replace(/```(?:json)?\n?|\n?```/g, "")
-      .trim();
+    const cleanText = text.replace(/```(?:json)?\n?|\n?```/g, "").trim();
 
     try {
       return JSON.parse(cleanText) as T;
     } catch {
-      console.error("[AtlasService] JSON parse failed:", cleanText.slice(0, 200));
+      console.error(
+        "[AtlasService] JSON parse failed:",
+        cleanText.slice(0, 200)
+      );
       throw new Error("Failed to parse structured Gemini response");
     }
   }
@@ -309,7 +370,7 @@ Provide step-by-step execution guidance. Include glassmorphic A2UI when UI feedb
 
   private static formatMetrics(metrics: MissionMetrics): string {
     return `
-Q1: ${metrics.q1Complete}/${metrics.q1Total} (${Math.round(metrics.q1Complete / (metrics.q1Total || 1) * 100) || 0}%)
+Q1: ${metrics.q1Complete}/${metrics.q1Total} (${Math.round((metrics.q1Complete / (metrics.q1Total || 1)) * 100) || 0}%)
 Total: ${metrics.completed}/${metrics.total}
 HIGH Priority Remaining: ${metrics.highPriorityRemaining}
 Critical Path Risk: ${metrics.criticalPathRisk}`;

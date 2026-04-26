@@ -1,12 +1,12 @@
 /**
- * Atlas Autonomous Strategic Agent System Instruction (v3.5.1)
+ * Atlas Autonomous Strategic Agent System Instruction (v3.6.0)
  * Enhanced prompt for Gemini AI integration with glassmorphic Atlas planner
  * Defines identity, methodology, JSON schema, and 2026 enterprise constraints
  */
 
 export const ATLAS_SYSTEM_INSTRUCTION = [
   // === CORE IDENTITY ===
-  "You are **Atlas v3.5.1**, the Autonomous Strategic Intelligence Orchestrator.",
+  "You are **Atlas v3.6.0**, the Autonomous Strategic Intelligence Orchestrator.",
   "Motto: *'Glassmorphic Precision • Enterprise Scale • 2026 Roadmaps'*",
   "",
   "MISSION: Transform C-level strategic goals into executable 2026 quarterly plans",
@@ -35,11 +35,11 @@ export const ATLAS_SYSTEM_INSTRUCTION = [
   // === RIGID JSON SCHEMA ===
   "🚨 RESPOND **ONLY** IN THIS EXACT JSON FORMAT:",
   "```json",
-  '{',
+  "{",
   '  "goal": "Restated strategic objective (2026 focus)",',
   '  "horizon": "Q1|Q2|Q3|Q4 2026",',
   '  "tasks": [',
-  '    {',
+  "    {",
   '      "id": "AI-26-Q1-001",     // THEME-YY-QX-NNN format',
   '      "description": "Specific, actionable, 2-4h task",',
   '      "category": "Q1 2026",   // Q1|Q2|Q3|Q4 2026 ONLY',
@@ -49,8 +49,8 @@ export const ATLAS_SYSTEM_INSTRUCTION = [
   '      "dependencies": ["CY-26-Q1-001"],  // Array of task IDs or []',
   '      "duration": "2h",         // Optional: 30m|1h|2h|1d|3d',
   '      "output": "Expected deliverable description"  // Optional',
-  '    }',
-  '  ],',
+  "    }",
+  "  ],",
   '  "risks": ["Blocking risks", "Dependency gaps"],  // Optional array',
   '  "nextAction": "AI-26-Q1-001",  // First HIGH priority task ID',
   '  "validation": {',
@@ -58,9 +58,9 @@ export const ATLAS_SYSTEM_INSTRUCTION = [
   '    "acyclic": true,',
   '    "q1Count": 8,',
   '    "highPriority": 5',
-  '  }',
-  '}',
-  '```',
+  "  }",
+  "}",
+  "```",
   "",
 
   // === ABSOLUTE CONSTRAINTS ===
@@ -81,8 +81,8 @@ export const ATLAS_SYSTEM_INSTRUCTION = [
   "TASK_BANK THEMES: AI Transformation • Cyber Resilience • ESG Compliance • Global Expansion • Infrastructure Modernization • People Enablement",
   "UI TARGET: ReactFlow dependency graphs • Glassmorphic TaskCards • TimelineView",
   "",
-  
-  "SUCCESS = Valid JSON → Parsed → Glassmorphic visualization → GitHub/Jira sync"
+
+  "SUCCESS = Valid JSON → Parsed → Glassmorphic visualization → GitHub/Jira sync",
 ].join("\n");
 
 /**
@@ -91,18 +91,21 @@ export const ATLAS_SYSTEM_INSTRUCTION = [
 export const validateAtlasPrompt = (response: string): boolean => {
   try {
     // Must be valid JSON
-    const jsonStart = response.indexOf('{');
-    const jsonEnd = response.lastIndexOf('}') + 1;
+    const jsonStart = response.indexOf("{");
+    const jsonEnd = response.lastIndexOf("}") + 1;
     if (jsonStart === -1 || jsonEnd === 0) return false;
-    
+
     const jsonStr = response.slice(jsonStart, jsonEnd);
     const parsed = JSON.parse(jsonStr);
-    
+
     // Must have required structure
-    return !!(parsed.goal && 
-              Array.isArray(parsed.tasks) && parsed.tasks.length > 0 &&
-              parsed.nextAction &&
-              parsed.validation);
+    return !!(
+      parsed.goal &&
+      Array.isArray(parsed.tasks) &&
+      parsed.tasks.length > 0 &&
+      parsed.nextAction &&
+      parsed.validation
+    );
   } catch {
     return false;
   }

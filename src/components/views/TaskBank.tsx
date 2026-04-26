@@ -43,7 +43,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
   const themes = Object.keys(THEME_COLORS);
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ x: "100%" }}
       animate={{ x: 0 }}
       exit={{ x: "100%" }}
@@ -73,7 +73,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
       {/* Controls */}
       <div className="p-6 space-y-6 border-b border-white/5">
         {/* Search */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative"
@@ -89,7 +89,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
         </motion.div>
 
         {/* Theme Filters */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -106,7 +106,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
                 "px-3 py-2 rounded-xl text-xs font-mono font-black uppercase tracking-widest border transition-all backdrop-blur-sm",
                 !selectedTheme
                   ? "glass-1 border-atlas-blue/30 bg-atlas-blue/20 text-atlas-blue shadow-lg shadow-atlas-blue/20"
-                  : "glass-2 border-white/20 hover:border-white/40 text-slate-400 hover:text-slate-200",
+                  : "glass-2 border-white/20 hover:border-white/40 text-slate-400 hover:text-slate-200"
               )}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -121,7 +121,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
                   "px-3 py-2 rounded-xl text-xs font-mono font-black uppercase tracking-widest border transition-all backdrop-blur-sm",
                   selectedTheme === theme
                     ? `glass-1 ${THEME_COLORS[theme]} shadow-lg`
-                    : "glass-2 border-white/20 hover:border-white/40 text-slate-400 hover:text-slate-200",
+                    : "glass-2 border-white/20 hover:border-white/40 text-slate-400 hover:text-slate-200"
                 )}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -164,13 +164,14 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
               >
                 {/* Gradient overlay on hover */}
                 <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                
+
                 {/* Badges */}
                 <div className="flex gap-2 mb-4">
                   <span
                     className={cn(
                       "px-3 py-1.5 rounded-xl text-xs font-mono font-black border backdrop-blur-sm",
-                      THEME_COLORS[task.theme] || "text-slate-400 border-slate-500/30",
+                      THEME_COLORS[task.theme] ||
+                        "text-slate-400 border-slate-500/30"
                     )}
                   >
                     {task.theme}
@@ -178,7 +179,7 @@ const TaskBank: React.FC<TaskBankProps> = ({ onAddTask, onClose }) => {
                   <span
                     className={cn(
                       "px-3 py-1.5 rounded-xl text-xs font-mono font-black border backdrop-blur-sm",
-                      PRIORITY_COLORS[task.priority],
+                      PRIORITY_COLORS[task.priority]
                     )}
                   >
                     {task.priority}

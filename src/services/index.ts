@@ -1,5 +1,5 @@
 /**
- * Atlas Integration Hub (v3.5.1) - Glassmorphic Sync Orchestrator
+ * Atlas Integration Hub (v3.6.0) - Glassmorphic Sync Orchestrator
  * Single import for GitHub Issues + Jira Tickets bidirectional sync
  */
 
@@ -15,7 +15,7 @@ export const persistenceService = PersistenceService;
 export const atlasService = AtlasService;
 
 /**
- * Enterprise Synchronization Services (v3.5.1)
+ * Enterprise Synchronization Services (v3.6.0)
  * Orchestrates cross-platform strategic roadmap consistency
  */
 export const syncServices = {
@@ -44,7 +44,8 @@ export const syncServices = {
       console.error("Jira Sync Failed:", e);
     }
 
-    results.totalCreated = (results.github?.created || 0) + (results.jira?.created || 0);
+    results.totalCreated =
+      (results.github?.created || 0) + (results.jira?.created || 0);
 
     return results;
   },
@@ -62,8 +63,8 @@ export const syncServices = {
       if (owner && repo) {
         const ghUpdates = await githubService.importPlan(owner, repo);
         // Logic to merge status/priority from GH back to local plan
-        updatedPlan.tasks = updatedPlan.tasks.map(t => {
-          const match = ghUpdates.find(g => g.id === t.id);
+        updatedPlan.tasks = updatedPlan.tasks.map((t) => {
+          const match = ghUpdates.find((g) => g.id === t.id);
           return match ? { ...t, status: match.status } : t;
         });
       }
@@ -86,7 +87,7 @@ export const syncServices = {
 };
 
 /**
- * Enterprise Strategic Workflows (v3.5.1)
+ * Enterprise Strategic Workflows (v3.6.0)
  * Presets for common executive orchestration pipelines
  */
 export const WORKFLOW_PRESETS = [
@@ -126,7 +127,7 @@ jobs:
   sync-jira:
     runs-on: ubuntu-latest
     steps:
-      - uses: atlas-corp/atlas-sync-action@v3.5.1
+      - uses: atlas-corp/atlas-sync-action@v3.6.0
         with:
           jira-project: ATLAS2026
 `;

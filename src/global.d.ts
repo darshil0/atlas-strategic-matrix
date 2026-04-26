@@ -1,9 +1,8 @@
 /**
- * Atlas TypeScript Declarations (v3.5.1) - Production Type Definitions
+ * Atlas TypeScript Declarations (v3.6.0) - Production Type Definitions
  * Comprehensive typing for MissionControl ADK, Glassmorphic A2UI, ReactFlow
  * Centralized types for @types/plan.types → @lib/adk/* → @services/*
  */
-
 
 import type {
   SubTask,
@@ -14,7 +13,7 @@ import type {
   BankTask,
   AGUIEvent,
   A2UIMessage,
-  A2UIElement
+  A2UIElement,
 } from "@types";
 
 // === ATLAS A2UI PROTOCOL (Glassmorphic UI) ===
@@ -27,12 +26,12 @@ declare namespace ADK {
   enum AgentPersona {
     STRATEGIST = "STRATEGIST",
     ANALYST = "ANALYST",
-    CRITIC = "CRITIC"
+    CRITIC = "CRITIC",
   }
 
   enum AgentMode {
     AUTONOMOUS = "AUTONOMOUS",
-    COLLABORATIVE = "COLLABORATIVE"
+    COLLABORATIVE = "COLLABORATIVE",
   }
 
   interface AgentResponse {
@@ -46,9 +45,6 @@ declare namespace ADK {
     };
   }
 }
-
-
-
 
 // === GLOBAL TEST UTILITIES ===
 declare global {
@@ -71,7 +67,7 @@ export type {
   TaskStatus,
   Priority,
   BankTask,
-  AGUIEvent
+  AGUIEvent,
 };
 
 export { A2UI, ADK };

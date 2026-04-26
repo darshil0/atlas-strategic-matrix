@@ -33,7 +33,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
     const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+    const lastElement = focusableElements[
+      focusableElements.length - 1
+    ] as HTMLElement;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -63,11 +65,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
   }, [isOpen, onClose]);
 
   // Close on backdrop click
-  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  }, [onClose]);
+  const handleBackdropClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   const validateForm = useCallback(() => {
     const newErrors: Record<string, string> = {};
@@ -79,9 +84,10 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
 
     // Required GitHub fields
     if (!githubToken.trim()) newErrors.githubToken = "GitHub token required";
-    
+
     // Required Jira fields (if any Jira field is filled, all are required)
-    const hasJiraConfig = jiraDomain.trim() || jiraEmail.trim() || jiraToken.trim();
+    const hasJiraConfig =
+      jiraDomain.trim() || jiraEmail.trim() || jiraToken.trim();
     if (hasJiraConfig) {
       if (!jiraDomain.trim()) newErrors.jiraDomain = "Jira domain required";
       if (!jiraEmail.trim()) newErrors.jiraEmail = "Email required";
@@ -98,12 +104,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
     setIsLoading(true);
     try {
       // Save all settings
-      PersistenceService.saveGithubApiKey(githubTokenInputRef.current?.value || "");
-      PersistenceService.saveJiraDomain(jiraDomainInputRef.current?.value || "");
+      PersistenceService.saveGithubApiKey(
+        githubTokenInputRef.current?.value || ""
+      );
+      PersistenceService.saveJiraDomain(
+        jiraDomainInputRef.current?.value || ""
+      );
       PersistenceService.saveJiraEmail(jiraEmailInputRef.current?.value || "");
       PersistenceService.saveJiraApiKey(jiraTokenInputRef.current?.value || "");
       PersistenceService.saveDebugMode(debugMode);
-      
+
       // Show success feedback
       onClose();
     } catch (error) {
@@ -116,14 +126,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 glass-2 backdrop-blur-3xl"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
       aria-labelledby="settings-modal-title"
     >
-      <motion.div 
+      <motion.div
         ref={modalRef}
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -138,13 +148,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
               <Settings className="h-6 w-6 text-atlas-blue" />
             </div>
             <div>
-              <h2 
+              <h2
                 id="settings-modal-title"
                 className="text-2xl font-display font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent"
               >
                 Integration Settings
               </h2>
-              <p className="text-sm text-slate-400">Configure GitHub and Jira sync</p>
+              <p className="text-sm text-slate-400">
+                Configure GitHub and Jira sync
+              </p>
             </div>
           </div>
           <button
@@ -157,20 +169,31 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
         </div>
 
         {/* Security Warning */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="glass-2 border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-amber-500/5 text-yellow-200 px-5 py-4 rounded-2xl mb-8"
         >
           <div className="flex items-start gap-3">
             <div className="mt-0.5 flex-shrink-0">
-              <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1 0z" clipRule="evenodd" />
+              <svg
+                className="w-5 h-5 text-yellow-400"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1 0z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-1">Security Notice</h4>
-              <p className="text-xs leading-relaxed">Keys stored locally with Base64 obfuscation. Use backend proxy for production.</p>
+              <p className="text-xs leading-relaxed">
+                Keys stored locally with Base64 obfuscation. Use backend proxy
+                for production.
+              </p>
             </div>
           </div>
         </motion.div>
@@ -178,7 +201,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
         {/* Form Fields */}
         <div className="space-y-6">
           {/* GitHub Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
@@ -200,7 +223,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
           </motion.div>
 
           {/* Jira Section */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -239,7 +262,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
           </motion.div>
 
           {/* Debug Toggle */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -262,7 +285,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
         </div>
 
         {/* Action Buttons */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -280,7 +303,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
             disabled={isLoading || Object.keys(errors).length > 0}
             className={cn(
               "px-6 py-3 bg-gradient-to-r from-atlas-blue to-atlas-indigo text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl active:shadow-lg border border-atlas-blue/50 transition-all duration-200 flex items-center gap-2",
-              isLoading ? "opacity-70 cursor-not-allowed" : "hover:scale-[1.02] active:scale-[0.98]"
+              isLoading
+                ? "opacity-70 cursor-not-allowed"
+                : "hover:scale-[1.02] active:scale-[0.98]"
             )}
           >
             {isLoading ? (
@@ -309,31 +334,36 @@ const InputField = React.forwardRef<
     required?: boolean;
     type?: string;
   }
->(({ label, placeholder, defaultValue, error, required, type = "text" }, ref) => (
-  <div className="space-y-2">
-    <label className="block text-sm font-medium text-slate-300 mb-2">
-      {label} {required && <span className="text-rose-400">*</span>}
-    </label>
-    <input
-      ref={ref}
-      type={type}
-      placeholder={placeholder}
-      defaultValue={defaultValue || ""}
-      className={cn(
-        "w-full glass-2 border rounded-2xl px-4 py-3 text-sm text-white backdrop-blur-3xl transition-all duration-200 focus:outline-none focus:ring-2",
-        error 
-          ? "border-rose-500/50 ring-rose-500/30 bg-rose-500/5" 
-          : "border-white/20 hover:border-white/40 focus:ring-atlas-blue/50 focus:border-atlas-blue/50"
+>(
+  (
+    { label, placeholder, defaultValue, error, required, type = "text" },
+    ref
+  ) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-slate-300 mb-2">
+        {label} {required && <span className="text-rose-400">*</span>}
+      </label>
+      <input
+        ref={ref}
+        type={type}
+        placeholder={placeholder}
+        defaultValue={defaultValue || ""}
+        className={cn(
+          "w-full glass-2 border rounded-2xl px-4 py-3 text-sm text-white backdrop-blur-3xl transition-all duration-200 focus:outline-none focus:ring-2",
+          error
+            ? "border-rose-500/50 ring-rose-500/30 bg-rose-500/5"
+            : "border-white/20 hover:border-white/40 focus:ring-atlas-blue/50 focus:border-atlas-blue/50"
+        )}
+      />
+      {error && (
+        <p className="text-xs text-rose-400 font-mono mt-1 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 bg-rose-400 rounded-full animate-pulse" />
+          {error}
+        </p>
       )}
-    />
-    {error && (
-      <p className="text-xs text-rose-400 font-mono mt-1 flex items-center gap-1">
-        <span className="w-1.5 h-1.5 bg-rose-400 rounded-full animate-pulse" />
-        {error}
-      </p>
-    )}
-  </div>
-));
+    </div>
+  )
+);
 
 InputField.displayName = "InputField";
 

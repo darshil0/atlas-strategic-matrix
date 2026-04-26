@@ -1,18 +1,13 @@
 /**
- * ATLAS App (v3.5.1) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v3.6.0) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  *
- * FIX v3.5.1: `handleSend` catch block now surfaces the actual error message
+ * FIX v3.6.0: `handleSend` catch block now surfaces the actual error message
  *   instead of swallowing it behind a generic string. This makes failures
  *   debuggable in production without requiring the browser console to be open.
  */
 
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Message, Plan, SubTask, TaskStatus } from "@types";
 import { AtlasService } from "@services/geminiService";
@@ -35,7 +30,6 @@ import {
   Zap,
 } from "lucide-react";
 
-
 const missionControl = new MissionControl();
 
 const App: React.FC = () => {
@@ -53,7 +47,9 @@ const App: React.FC = () => {
   const [sidebarView, setSidebarView] = useState<SidebarViewType>("list");
   const [isTaskBankOpen, setIsTaskBankOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [exportedTasks, setExportedTasks] = useState<Record<string, { github?: string; jira?: string }>>({});
+  const [exportedTasks, setExportedTasks] = useState<
+    Record<string, { github?: string; jira?: string }>
+  >({});
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const taskRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -81,24 +77,32 @@ const App: React.FC = () => {
     PersistenceService.savePlan(currentPlan);
   }, [currentPlan]);
 
-  const addMessage = useCallback((
-    role: "user" | "assistant" | "system",
-    content: string,
-    a2ui?: A2UIMessage | string,
-  ) => {
-    const id = crypto.randomUUID();
-    const message: Message = {
-      id,
-      role,
-      content,
-      timestamp: Date.now(),
-      a2ui: typeof a2ui === "string" ? a2ui : a2ui ? JSON.stringify(a2ui) : undefined,
-    };
-    setMessages((prev) => [...prev, message]);
-  }, []);
+  const addMessage = useCallback(
+    (
+      role: "user" | "assistant" | "system",
+      content: string,
+      a2ui?: A2UIMessage | string
+    ) => {
+      const id = crypto.randomUUID();
+      const message: Message = {
+        id,
+        role,
+        content,
+        timestamp: Date.now(),
+        a2ui:
+          typeof a2ui === "string"
+            ? a2ui
+            : a2ui
+              ? JSON.stringify(a2ui)
+              : undefined,
+      };
+      setMessages((prev) => [...prev, message]);
+    },
+    []
+  );
 
   /**
-   * FIX v3.5.1: The catch block now surfaces the actual error message so that
+   * FIX v3.6.0: The catch block now surfaces the actual error message so that
    * failures are visible without opening DevTools. A generic fallback is still
    * shown for unknown error shapes.
    */
@@ -116,7 +120,8 @@ const App: React.FC = () => {
         addMessage("assistant", result.text, result.a2ui);
       } else {
         const taskToExecute = activeTaskId
-          ? currentPlan.tasks.find(t => t.id === activeTaskId) || currentPlan.tasks[0]
+          ? currentPlan.tasks.find((t) => t.id === activeTaskId) ||
+            currentPlan.tasks[0]
           : currentPlan.tasks[0];
 
         const response = await AtlasService.executeSubtask(
@@ -124,7 +129,11 @@ const App: React.FC = () => {
           currentPlan,
           messages.map((m) => `${m.role}: ${m.content}`).join("\n")
         );
-        addMessage("assistant", response.text, response.a2ui);
+        if (response && typeof response.text === "string") {
+          addMessage("assistant", response.text, response.a2ui);
+        } else {
+          throw new Error("Invalid response from AtlasService.executeSubtask");
+        }
       }
     } catch (err: unknown) {
       const errorMessage =
@@ -146,20 +155,28 @@ const App: React.FC = () => {
     }
   };
 
-  const handleLinkDependency = useCallback((source: string, target: string) => {
-    setCurrentPlan((prev) => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        tasks: prev.tasks.map((t) =>
-          t.id === target
-            ? { ...t, dependencies: [...new Set([...(t.dependencies || []), source])] }
-            : t
-        ),
-      };
-    });
-    addMessage("assistant", `✓ Linked ${source} → ${target}`);
-  }, [addMessage]);
+  const handleLinkDependency = useCallback(
+    (source: string, target: string) => {
+      setCurrentPlan((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          tasks: prev.tasks.map((t) =>
+            t.id === target
+              ? {
+                  ...t,
+                  dependencies: [
+                    ...new Set([...(t.dependencies || []), source]),
+                  ],
+                }
+              : t
+          ),
+        };
+      });
+      addMessage("assistant", `✓ Linked ${source} → ${target}`);
+    },
+    [addMessage]
+  );
 
   const handleFailureSimulation = async (taskId: string) => {
     if (!currentPlan) return;
@@ -167,7 +184,8 @@ const App: React.FC = () => {
     try {
       const result = await missionControl.simulateFailure(taskId, currentPlan);
       setSimulationResult(result);
-      addMessage("assistant",
+      addMessage(
+        "assistant",
         `⚠️ Risk Analysis: ${taskId} failure impacts ${result.cascade.length} tasks (${result.riskScore.toFixed(1)}% risk)`
       );
     } catch {
@@ -178,7 +196,9 @@ const App: React.FC = () => {
   const handleDecompose = (taskId: string) => {
     const task = currentPlan?.tasks.find((t) => t.id === taskId);
     if (!task) return;
-    handleSend(`Decompose task ${taskId}: ${task.description} into 3-5 subtasks.`);
+    handleSend(
+      `Decompose task ${taskId}: ${task.description} into 3-5 subtasks.`
+    );
   };
 
   const handleExportTask = async (taskId: string, type: "github" | "jira") => {
@@ -186,10 +206,12 @@ const App: React.FC = () => {
     if (!task) return;
 
     try {
-      setExportedTasks((prev: Record<string, { github?: string; jira?: string }>) => ({
-        ...prev,
-        [taskId]: { ...prev[taskId], [type]: "pending" }
-      }));
+      setExportedTasks(
+        (prev: Record<string, { github?: string; jira?: string }>) => ({
+          ...prev,
+          [taskId]: { ...prev[taskId], [type]: "pending" },
+        })
+      );
 
       let exportUrl = "";
       if (type === "github") {
@@ -200,21 +222,25 @@ const App: React.FC = () => {
         exportUrl = result.webUrl || "";
       }
 
-      setExportedTasks((prev: Record<string, { github?: string; jira?: string }>) => ({
-        ...prev,
-        [taskId]: { ...prev[taskId], [type]: exportUrl }
-      }));
+      setExportedTasks(
+        (prev: Record<string, { github?: string; jira?: string }>) => ({
+          ...prev,
+          [taskId]: { ...prev[taskId], [type]: exportUrl },
+        })
+      );
       addMessage("assistant", `🚀 Successfully exported ${taskId} to ${type}`);
     } catch {
-      setExportedTasks((prev: Record<string, { github?: string; jira?: string }>) => {
-        const next = { ...prev };
-        if (next[taskId]) {
-          const taskExports = { ...next[taskId] };
-          delete taskExports[type];
-          next[taskId] = taskExports;
+      setExportedTasks(
+        (prev: Record<string, { github?: string; jira?: string }>) => {
+          const next = { ...prev };
+          if (next[taskId]) {
+            const taskExports = { ...next[taskId] };
+            delete taskExports[type];
+            next[taskId] = taskExports;
+          }
+          return next;
         }
-        return next;
-      });
+      );
       addMessage("assistant", `❌ Export to ${type} failed`);
     }
   };
@@ -223,8 +249,14 @@ const App: React.FC = () => {
     if (!currentPlan) return;
     setIsThinking(true);
     try {
-      await AtlasService.summarizeMission(currentPlan, "Initiating global sync");
-      addMessage("assistant", "🏛️ Roadmap synchronized across enterprise hubs.");
+      await AtlasService.summarizeMission(
+        currentPlan,
+        "Initiating global sync"
+      );
+      addMessage(
+        "assistant",
+        "🏛️ Roadmap synchronized across enterprise hubs."
+      );
     } catch {
       addMessage("assistant", "⚠️ Sync failed.");
     } finally {
@@ -285,10 +317,14 @@ const App: React.FC = () => {
                   Gemini 2.0 Flash Core Active
                 </motion.div>
                 <h2 className="text-4xl md:text-6xl font-display font-black tracking-tighter text-white leading-[1.1]">
-                  Architect your enterprise <span className="bg-clip-text text-transparent bg-gradient-to-r from-atlas-blue via-atlas-blue to-purple-400">future.</span>
+                  Architect your enterprise{" "}
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-atlas-blue via-atlas-blue to-purple-400">
+                    future.
+                  </span>
                 </h2>
                 <p className="text-slate-400 text-lg max-w-lg mx-auto leading-relaxed">
-                  Atlas decomposes C-level goals into tactical roadmaps with autonomous agent oversight.
+                  Atlas decomposes C-level goals into tactical roadmaps with
+                  autonomous agent oversight.
                 </p>
               </div>
 
@@ -297,7 +333,7 @@ const App: React.FC = () => {
                   "Design a 2026 AI readiness roadmap for a global bank",
                   "Plan a SOC 2 transition for a remote-first unicorn",
                   "Draft a 6G infrastructure shift for APAC market",
-                  "Create sustainable ESG reporting for manufacturing"
+                  "Create sustainable ESG reporting for manufacturing",
                 ].map((prompt, i) => (
                   <motion.button
                     key={i}
@@ -332,10 +368,12 @@ const App: React.FC = () => {
                       m.role === "user" ? "flex-row-reverse" : "flex-row"
                     )}
                   >
-                    <div className={cn(
-                      "h-12 w-12 shrink-0 glass-2 rounded-2xl flex items-center justify-center border border-white/10 shadow-xl self-start",
-                      m.role === "user" ? "bg-white/10" : "bg-atlas-blue/10"
-                    )}>
+                    <div
+                      className={cn(
+                        "h-12 w-12 shrink-0 glass-2 rounded-2xl flex items-center justify-center border border-white/10 shadow-xl self-start",
+                        m.role === "user" ? "bg-white/10" : "bg-atlas-blue/10"
+                      )}
+                    >
                       {m.role === "user" ? (
                         <div className="h-6 w-6 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 shadow-lg" />
                       ) : (
@@ -343,16 +381,20 @@ const App: React.FC = () => {
                       )}
                     </div>
 
-                    <div className={cn(
-                      "flex-1 space-y-6",
-                      m.role === "user" ? "text-right" : "text-left"
-                    )}>
-                      <div className={cn(
-                        "inline-block px-10 py-7 rounded-[2.5rem] text-lg leading-relaxed shadow-2xl backdrop-blur-3xl",
-                        m.role === "user"
-                          ? "glass-2 border-white/10 text-white selection:bg-white/20"
-                          : "glass-1 border-white/5 text-slate-200 selection:bg-atlas-blue/20"
-                      )}>
+                    <div
+                      className={cn(
+                        "flex-1 space-y-6",
+                        m.role === "user" ? "text-right" : "text-left"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "inline-block px-10 py-7 rounded-[2.5rem] text-lg leading-relaxed shadow-2xl backdrop-blur-3xl",
+                          m.role === "user"
+                            ? "glass-2 border-white/10 text-white selection:bg-white/20"
+                            : "glass-1 border-white/5 text-slate-200 selection:bg-atlas-blue/20"
+                        )}
+                      >
                         {m.content}
                       </div>
 
@@ -378,7 +420,11 @@ const App: React.FC = () => {
                         key={i}
                         className="w-2 h-2 rounded-full bg-atlas-blue/40"
                         animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
-                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                        }}
                       />
                     ))}
                   </div>
@@ -386,7 +432,11 @@ const App: React.FC = () => {
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                      transition={{
+                        duration: 0.5,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                      }}
                     >
                       Synthesizing Strategic Response...
                     </motion.span>
@@ -447,15 +497,21 @@ const App: React.FC = () => {
 
       {/* Task Bank Modal */}
       {isTaskBankOpen && (
-        <TaskBank onClose={() => setIsTaskBankOpen(false)} onAddTask={(task) => {
-          handleLinkDependency(task.id, activeTaskId || "");
-          setIsTaskBankOpen(false);
-        }} />
+        <TaskBank
+          onClose={() => setIsTaskBankOpen(false)}
+          onAddTask={(task) => {
+            handleLinkDependency(task.id, activeTaskId || "");
+            setIsTaskBankOpen(false);
+          }}
+        />
       )}
 
       {/* Settings Modal */}
       {isSettingsOpen && (
-        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
       )}
     </div>
   );
