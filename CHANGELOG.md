@@ -19,13 +19,14 @@ This release focuses on hardening the Atlas "nervous system" through strict type
 - **Type System Audit**: Achieved 100% strict TypeScript compliance by removing all explicit `any` types and replacing them with `unknown` or specific interfaces.
 - **JSON Parsing Robustness**: Enhanced Gemini response parsing with multi-strategy extraction and markdown backtick stripping.
 - **Build Optimization**: Refined `vite.config.ts` chunking strategy for improved vendor bundle splitting.
-- **Version Unification**: Synchronized all internal telemetry and system instructions to **v3.6.1**.
+- **Version Unification**: Synchronized all internal telemetry, system instructions, environment templates, HTML metadata, and lockfiles to **v3.6.1**.
 
 ### Fixed
 - **Persistence Race Condition**: Implemented a mutex-based `writeQueue` in `PersistenceService` to prevent `localStorage` corruption during concurrent saves.
 - **Agent Pool Memory Leak**: Added lifecycle management to `AgentFactory` with automated disposal when the pool exceeds 10 active personas.
 - **Error Surface Visibility**: Refactored `handleSend` to extract and display detailed error messages directly in the UI.
 - **Git Merge Conflicts**: Resolved widespread codebase conflicts, successfully aligning `v3.6.0` modernization upgrades with the `v3.6.1` core functionality improvements.
+- **Production Logging Hygiene**: Guarded raw debug logs in `A2UIRenderer` event handlers with `ENV.DEBUG_MODE` checks to prevent leaks in production environments.
 
 ---
 
