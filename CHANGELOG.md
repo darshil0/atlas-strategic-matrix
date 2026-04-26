@@ -25,6 +25,7 @@ This release focuses on hardening the Atlas "nervous system" through strict type
 - **Persistence Race Condition**: Implemented a mutex-based `writeQueue` in `PersistenceService` to prevent `localStorage` corruption during concurrent saves.
 - **Agent Pool Memory Leak**: Added lifecycle management to `AgentFactory` with automated disposal when the pool exceeds 10 active personas.
 - **Error Surface Visibility**: Refactored `handleSend` to extract and display detailed error messages directly in the UI.
+- **Git Merge Conflicts**: Resolved widespread codebase conflicts, successfully aligning `v3.6.0` modernization upgrades with the `v3.6.1` core functionality improvements.
 
 ---
 
