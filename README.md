@@ -90,6 +90,30 @@ npm run dev
 
 The application will launch at `http://localhost:3000`.
 
+### Environment Variables
+
+| Variable | Required | Description |
+| :--- | :--- | :--- |
+| `VITE_GEMINI_API_KEY` | Yes | Google Gemini API Key |
+| `VITE_GITHUB_TOKEN` | No | Personal Access Token for GitHub |
+| `VITE_JIRA_DOMAIN` | No | Jira Cloud Domain (e.g. `company.atlassian.net`) |
+| `VITE_JIRA_EMAIL` | No | Jira Account Email |
+| `VITE_JIRA_API_TOKEN` | No | Jira API Token |
+
+## 🚀 Deployment
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+The output will be in the `dist` directory. For production deployments, it is highly recommended to use a backend proxy for API keys to avoid exposing them in the client bundle.
+
+### Content Security Policy (CSP)
+
+Atlas includes a minimal CSP in `index.html`. If you use additional external resources, you may need to update the `connect-src` or `img-src` directives.
+
 ---
 
 ## 🧪 Development Workflow

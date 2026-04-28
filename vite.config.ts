@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import compression from "vite-plugin-compression";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -15,7 +16,17 @@ export default defineConfig(({ mode }) => {
       host: true,
       strictPort: true,
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      compression({
+        algorithm: "gzip",
+        ext: ".gz",
+      }),
+      compression({
+        algorithm: "brotliCompress",
+        ext: ".br",
+      }),
+    ],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
