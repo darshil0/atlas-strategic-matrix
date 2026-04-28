@@ -158,12 +158,17 @@ Atlas features a custom glassmorphic theme designed for high-density strategic d
 
 ## 🗺️ Roadmap
 
-### Current Version (v3.6.2) ✅
+### Current Version (v3.6.3) ✅
+- **Zero Warning Baseline Restoration**: Achieved 0 warnings across `lint`, `type-check`, and `test` by resolving peer dependency conflicts and fixing React Hook dependencies.
+- **Fast Refresh Compliance**: Refactored UI helpers into `src/components/ui/TaskIcons.tsx` and updated entry points to ensure seamless development experience.
+- **Type Safety Hardening**: Eliminated unsafe non-null assertions (`!`) across the codebase, replacing them with robust error handling and proper null checks.
+- **Dependency Optimization**: Pinned ESLint and related plugins to compatible versions (`v9.17.0`) to ensure stable, repeatable builds without legacy flags.
+- **Project Modularization**: Further separated UI logic from configuration, enhancing maintainability and reducing circular dependency risks.
+
+### Previous Release (v3.6.2)
 - **Configuration Hardening**: Fixed all config file naming conventions (`.eslintrc`, `.gitignore`, etc.) for proper tool auto-discovery.
-- **React 19 ESLint Compliance**: Added React-specific plugins (`eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`) with strict Hook rules enforcement.
-- **Test Configuration Consolidation**: Eliminated duplicate test configs between Vite and Vitest, establishing `vitest.config.ts` as single source of truth.
-- **TypeScript Parser Enhancement**: Explicitly configured JSX support in ESLint parser for accurate linting.
-- **Zero Warning Restoration**: Achieved full Zero Warning Baseline compliance across all configuration files.
+- **React 19 ESLint Compliance**: Added React-specific plugins with strict Hook rules enforcement.
+- **Test Configuration Consolidation**: Established `vitest.config.ts` as the single source of truth for testing.
 
 ### Previous Release (v3.6.1)
 - **Type Safety Audit**: 100% strict compliance across all core modules (Zero Warning Baseline).
