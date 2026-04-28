@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.6.1 continues the **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
+The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orchestration framework designed for enterprise strategic planning. It implements a collaborative synthesis pipeline where specialized AI agents work together to transform C-level directives into executable 2026 quarterly roadmaps. v3.6.3 continues the **Zero Warning Baseline**, strictly enforced result interfaces, and formalized identity sync between code and reasoning.
 
 ---
 
@@ -10,7 +10,7 @@ The **Atlas Agent Development Kit (ADK)** is a production-ready multi-agent orch
 
 ### Multi-Agent Synthesis Pipeline
 
-The pipeline uses a **three-agent swarm** with iterative refinement. MissionControl orchestrates the flow, ensuring the Strategist's plans are validated by the Analyst and optimized by the Critic until an acceptance threshold (Score >= 85) is met.
+The pipeline uses a **three-agent swarm** with iterative refinement. MissionControl orchestrates the flow, ensuring the Strategist's plans are validated by the Analyst and optimized by the Critic until an acceptance threshold (Score >= 85) is met or 3 iterations are reached.
 
 ```mermaid
 graph TD
@@ -36,9 +36,10 @@ All external integrations and core utilities are built on a robust service layer
 ```
 src/
 ├── components/          # Categorized UI Components
-│   ├── ui/             # A2UI glassmorphic primitives (A2UIRenderer.tsx)
+│   ├── ui/             # Glassmorphic primitives (A2UIRenderer.tsx, TaskIcons.tsx)
 │   ├── views/          # Dashboard modules (DependencyGraph, Timeline)
-│   └── cards/          # Specialized domain components (TaskCard)
+│   ├── cards/          # Specialized domain components (TaskCard)
+│   └── core/           # Framework components (BootOrchestrator.tsx, AtlasErrorBoundary.tsx)
 ├── lib/
 │   ├── adk/            # Agent Development Kit (Core Orchestration)
 │   │   ├── agents.ts   # Agent implementations
@@ -50,11 +51,12 @@ src/
 │   └── utils.ts        # Centralized utilities (cn helper)
 ├── services/           # Layered services
 │   ├── ai/             # Gemini 2.0 Flash integration (gemini.ts)
-│   ├── integrations/   # External APIs (github.ts, jira.ts)
-│   └── core/           # Data persistence (persistence.ts)
+│   ├── integrations/   # External APIs (github.com, jira.ts)
+│   └── core/           # Data persistence, base classes (PersistenceService.ts, RetryableAPIService.ts)
 ├── config/             # System Configuration & Constants
-├── types/              # Global TypeScript Definitions
-├── test/                # Integration, Smoke & Unit Tests (smoke.test.ts, App.test.tsx)
+├── styles/             # Global Tailwind v4 styles (index.css)
+├── types/              # Global TypeScript Definitions (atlas.d.ts)
+├── test/               # Integration, Smoke & Unit Tests (App.test.tsx, setup.ts)
 ```
 
 ---
@@ -63,14 +65,16 @@ src/
 
 ### 1. PersistenceService (`src/services/core/persistence.ts`)
 - **Atomic Operations**: Uses a custom `Mutex` and non-recursive `processQueue` to handle asynchronous `localStorage` writes, preventing race conditions.
-- **Security**: Implements XOR-based obfuscation (key `0xaa`) combined with Base64 encoding for client-side secret storage.
+- **Security**: Implements XOR-based obfuscation (key `0xaa`) combined with Base64 encoding for client-side secret storage to maintain backward compatibility.
 - **Quota Management**: Proactively monitors storage usage (5MB limit) and surfaces warnings when >90% capacity is reached.
 
 ### 2. MissionControl (`src/lib/adk/orchestrator.ts`)
 - **Failure Simulation**: Includes a `simulateFailure` engine that calculates impact cascades across the DAG, identifying high-priority risks.
-- **Swarm Logic**: Orchestrates the multi-agent loop with iterative feedback injection.
+- **Swarm Logic**: Orchestrates the multi-agent loop (Strategist → Analyst → Critic) with iterative feedback injection until Score >= 85.
+- **Agent Lifecycle**: `AgentFactory` (`src/lib/adk/factory.ts`) manages a static pool of 10 agents and provides a `dispose()` method for memory cleanup.
 
 ### 3. Integration Layer (`src/services/integrations/`)
+- **RetryableAPIService**: Base class providing exponential backoff and batch-based concurrency control.
 - **GitHub**: Automated milestone creation (Q1-Q4) and project board linking via `addToProject`.
 - **Jira**: Bidirectional ticket discovery via encoded JQL and automated linking of stories to quarterly epics.
 - **Concurrency**: Inherits from `RetryableAPIService` to enforce batch-based processing (max 3 concurrent requests).
@@ -129,22 +133,27 @@ npm run type-check
 
 ### 1. Zero Warning Baseline
 Maintain the **Zero Warning Baseline**. All PRs must pass `npm run lint`, `npm run type-check`, and `npm test` with 0 warnings or errors.
+- **ESLint**: Pinned to `v9.17.0` to avoid peer dependency conflicts with `eslint-plugin-react`.
+- **Type Safety**: Avoid non-null assertions (`!`). Use proper null checks or exhaustive error handling.
+- **Fast Refresh**: Separate functional components from static constants (e.g., icons in `src/components/ui/TaskIcons.tsx`).
 
 ### 2. Dependency Management
+- **Zod**: Included in `package.json` but currently unused in source. Zod-based runtime validation for LLM outputs is a planned enhancement.
 - Prefer stable, widely adopted versions.
 - Do not introduce new dependencies without justification.
-- Update lockfiles (`package-lock.json`) whenever dependencies change.
 
 ### 3. Coding Conventions
 - Use **TypeScript** strictly; avoid `any`.
+- **TS 6.0 Compatibility**: The project uses `"ignoreDeprecations": "6.0"` in `tsconfig.json` to maintain support for the `baseUrl` property.
 - Utilize the `cn` helper from `@lib/utils` for Tailwind class merging.
 - **Tailwind v4**: The project uses CSS-first configuration via `@theme` and `@utility` in `src/styles/index.css`. Use `@tailwindcss/postcss` for processing.
 - Follow the categorized component structure: `ui/`, `views/`, `cards/`.
 - Keep services stateless; fetch configuration from `persistenceService` on each call.
 
 ### 4. Build Configuration (Vite 8)
-- **manualChunks**: Use the functional API in `vite.config.ts` for strict typing and correct chunking.
+- **manualChunks**: Must use the functional API in `vite.config.ts` for strict typing and correct chunking strategy.
 - **Compression**: Gzip/Brotli compression is enabled via `vite-plugin-compression` for production builds.
+- **Security**: CSP is implemented in `index.html`. Production builds disable sourcemaps.
 
 ### 5. A2UI Protocol
 - Follow the **A2UI Protocol v1.1** for streaming UI components.
@@ -171,17 +180,16 @@ Maintain the **Zero Warning Baseline**. All PRs must pass `npm run lint`, `npm r
 ## 🧪 Testing Strategy
 
 - **Threshold**: 85% coverage for Lines, Functions, Branches, and Statements. Strictly enforced in `vitest.config.ts`.
-- **Setup**: `src/test/setup.ts` contains necessary mocks for `scrollIntoView` and `crypto.randomUUID` (using a counter to ensure unique IDs and avoid React duplicate key warnings).
-- **Service Mocks**: The test suite uses comprehensive mock implementations for core services (`PersistenceService`, `GeminiService`) to achieve high reliability.
-- **Integration**: `src/test/smoke.test.ts` verifies the full multi-agent pipeline and factory instantiation.
-- **Integration UI**: `src/test/integration.test.tsx` for MissionControl pipelines.
-- **Unit UI**: `src/test/App.test.tsx` for core dashboard rendering and interactions.
+- **Setup**: `src/test/setup.ts` contains necessary mocks for `scrollIntoView` and `crypto.randomUUID`.
+- **Service Mocks**: The test suite uses comprehensive mock implementations for core services to achieve high reliability.
+- **Integration**: `src/test/smoke.test.ts` verifies the full multi-agent pipeline.
+- **Frontend Verification**: Playwright scripts should wait for the `BootLoader` transition (2.6s - 5s). A `.env` file with a mock `VITE_GEMINI_API_KEY` is required for local verification.
 
 ---
 
 <div align="center">
 
-**Atlas Agent Development Kit v3.6.1**
+**Atlas Agent Development Kit v3.6.3**
 
 *Powered by Google Gemini 2.0 Flash*
 
