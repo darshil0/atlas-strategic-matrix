@@ -2,23 +2,17 @@
  * ATLAS App (v3.6.3) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  *
- * FIX v3.6.3: `handleSend` catch block now surfaces the actual error message
- *   instead of swallowing it behind a generic string. This makes failures
- *   debuggable in production without requiring the browser console to be open.
+ * REFACTOR: Logic extracted into modular hooks (src/hooks/)
  */
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Message, Plan, SubTask, TaskStatus } from "@types";
+import { SubTask, TaskStatus } from "@types";
 import { AtlasService } from "@services/ai/gemini";
-import { PersistenceService } from "@services/core/persistence";
-import { githubService, jiraService } from "./services";
 import TaskBank from "@components/views/TaskBank";
 import SettingsModal from "@components/views/SettingsModal";
 import { Sidebar, SidebarViewType } from "@components/views/Sidebar";
 import { A2UIRenderer } from "@components/ui/A2UIRenderer";
-import { A2UIMessage } from "@lib/adk/protocol";
-import { MissionControl } from "@lib/adk/orchestrator";
 import { cn } from "@lib/utils";
 import {
   ChevronRight,
@@ -30,122 +24,44 @@ import {
   Zap,
 } from "lucide-react";
 
-const missionControl = new MissionControl();
+// Hooks
+import { useAtlasCore } from "./hooks/useAtlasCore";
+import { usePersistence } from "./hooks/usePersistence";
+import { useExport } from "./hooks/useExport";
+import { useScrollToBottom } from "./hooks/useScrollToBottom";
 
 const App: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  // Core State & Handlers
+  const {
+    messages,
+    setMessages,
+    currentPlan,
+    setCurrentPlan,
+    isThinking,
+    setIsThinking,
+    activeTaskId,
+    setActiveTaskId,
+    simulationResult,
+    setSimulationResult,
+    addMessage,
+    handleSend,
+    handleLinkDependency,
+    handleFailureSimulation,
+  } = useAtlasCore();
+
+  // Hooks Integration
+  usePersistence(messages, setMessages, currentPlan, setCurrentPlan);
+  const { exportedTasks, handleExportTask } = useExport(currentPlan, addMessage);
+  const [chatEndRef] = useScrollToBottom<HTMLDivElement>([messages, isThinking]);
+
+  // UI State
   const [input, setInput] = useState("");
-  const [isThinking, setIsThinking] = useState(false);
-  const [currentPlan, setCurrentPlan] = useState<Plan | null>(null);
-  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
-  const [isWhatIfEnabled, setIsWhatIfEnabled] = useState(false);
-  const [simulationResult, setSimulationResult] = useState<{
-    cascade: string[];
-    riskScore: number;
-    impactedHighPriority: number;
-  } | null>(null);
   const [sidebarView, setSidebarView] = useState<SidebarViewType>("list");
   const [isTaskBankOpen, setIsTaskBankOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [exportedTasks, setExportedTasks] = useState<
-    Record<string, { github?: string; jira?: string }>
-  >({});
-
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const [isWhatIfEnabled, setIsWhatIfEnabled] = useState(false);
+  
   const taskRefs = useRef<Record<string, HTMLDivElement | null>>({});
-
-  const scrollToBottom = useCallback(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isThinking, scrollToBottom]);
-
-  useEffect(() => {
-    const savedMessages = PersistenceService.getMessages();
-    const savedPlan = PersistenceService.getPlan();
-    if (savedMessages.length > 0) setMessages(savedMessages);
-    if (savedPlan) setCurrentPlan(savedPlan);
-  }, []);
-
-  useEffect(() => {
-    PersistenceService.saveMessages(messages);
-  }, [messages]);
-
-  useEffect(() => {
-    PersistenceService.savePlan(currentPlan);
-  }, [currentPlan]);
-
-  const addMessage = useCallback(
-    (
-      role: "user" | "assistant" | "system",
-      content: string,
-      a2ui?: A2UIMessage | string
-    ) => {
-      const id = crypto.randomUUID();
-      const message: Message = {
-        id,
-        role,
-        content,
-        timestamp: Date.now(),
-        a2ui:
-          typeof a2ui === "string"
-            ? a2ui
-            : a2ui
-              ? JSON.stringify(a2ui)
-              : undefined,
-      };
-      setMessages((prev) => [...prev, message]);
-    },
-    []
-  );
-
-  /**
-   * FIX v3.6.3: The catch block now surfaces the actual error message so that
-   * failures are visible without opening DevTools. A generic fallback is still
-   * shown for unknown error shapes.
-   */
-  const handleSend = async (text: string) => {
-    if (!text.trim()) return;
-
-    addMessage("user", text);
-    setInput("");
-    setIsThinking(true);
-
-    try {
-      if (!currentPlan) {
-        const result = await missionControl.processCollaborativeInput(text);
-        setCurrentPlan(result.plan || null);
-        addMessage("assistant", result.text, result.a2ui);
-      } else {
-        const taskToExecute = activeTaskId
-          ? currentPlan.tasks.find((t) => t.id === activeTaskId) ||
-            currentPlan.tasks[0]
-          : currentPlan.tasks[0];
-
-        const response = await AtlasService.executeSubtask(
-          taskToExecute,
-          currentPlan,
-          messages.map((m) => `${m.role}: ${m.content}`).join("\n")
-        );
-        if (response && typeof response.text === "string") {
-          addMessage("assistant", response.text, response.a2ui);
-        } else {
-          throw new Error("Invalid response from AtlasService.executeSubtask");
-        }
-      }
-    } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "An unexpected error occurred. Please try again.";
-      addMessage("assistant", `⚠️ Error: ${errorMessage}`);
-      console.error("[Atlas] handleSend error:", err);
-    } finally {
-      setIsThinking(false);
-    }
-  };
 
   const handleTaskClick = (taskId: string) => {
     setActiveTaskId(taskId);
@@ -155,108 +71,18 @@ const App: React.FC = () => {
     }
   };
 
-  const handleLinkDependency = useCallback(
-    (source: string, target: string) => {
-      setCurrentPlan((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          tasks: prev.tasks.map((t) =>
-            t.id === target
-              ? {
-                  ...t,
-                  dependencies: [
-                    ...new Set([...(t.dependencies || []), source]),
-                  ],
-                }
-              : t
-          ),
-        };
-      });
-      addMessage("assistant", `✓ Linked ${source} → ${target}`);
-    },
-    [addMessage]
-  );
-
-  const handleFailureSimulation = async (taskId: string) => {
-    if (!currentPlan) return;
-
-    try {
-      const result = await missionControl.simulateFailure(taskId, currentPlan);
-      setSimulationResult(result);
-      addMessage(
-        "assistant",
-        `⚠️ Risk Analysis: ${taskId} failure impacts ${result.cascade.length} tasks (${result.riskScore.toFixed(1)}% risk)`
-      );
-    } catch {
-      addMessage("assistant", "⚠️ Simulation failed");
-    }
-  };
-
   const handleDecompose = (taskId: string) => {
     const task = currentPlan?.tasks.find((t) => t.id === taskId);
     if (!task) return;
-    handleSend(
-      `Decompose task ${taskId}: ${task.description} into 3-5 subtasks.`
-    );
-  };
-
-  const handleExportTask = async (taskId: string, type: "github" | "jira") => {
-    const task = currentPlan?.tasks.find((t) => t.id === taskId);
-    if (!task) return;
-
-    try {
-      setExportedTasks(
-        (prev: Record<string, { github?: string; jira?: string }>) => ({
-          ...prev,
-          [taskId]: { ...prev[taskId], [type]: "pending" },
-        })
-      );
-
-      let exportUrl = "";
-      if (type === "github") {
-        const result = await githubService.createIssue(task);
-        exportUrl = result.htmlUrl;
-      } else {
-        const result = await jiraService.createTicket(task);
-        exportUrl = result.webUrl || "";
-      }
-
-      setExportedTasks(
-        (prev: Record<string, { github?: string; jira?: string }>) => ({
-          ...prev,
-          [taskId]: { ...prev[taskId], [type]: exportUrl },
-        })
-      );
-      addMessage("assistant", `🚀 Successfully exported ${taskId} to ${type}`);
-    } catch {
-      setExportedTasks(
-        (prev: Record<string, { github?: string; jira?: string }>) => {
-          const next = { ...prev };
-          if (next[taskId]) {
-            const taskExports = { ...next[taskId] };
-            delete taskExports[type];
-            next[taskId] = taskExports;
-          }
-          return next;
-        }
-      );
-      addMessage("assistant", `❌ Export to ${type} failed`);
-    }
+    handleSend(`Decompose task ${taskId}: ${task.description} into 3-5 subtasks.`);
   };
 
   const handleSyncAll = async () => {
     if (!currentPlan) return;
     setIsThinking(true);
     try {
-      await AtlasService.summarizeMission(
-        currentPlan,
-        "Initiating global sync"
-      );
-      addMessage(
-        "assistant",
-        "🏛️ Roadmap synchronized across enterprise hubs."
-      );
+      await AtlasService.summarizeMission(currentPlan, "Initiating global sync");
+      addMessage("assistant", "🏛️ Roadmap synchronized across enterprise hubs.");
     } catch {
       addMessage("assistant", "⚠️ Sync failed.");
     } finally {
@@ -297,7 +123,6 @@ const App: React.FC = () => {
         taskRefs={taskRefs}
       />
 
-      {/* Main Chat Interface */}
       <section className="flex-1 flex flex-col relative">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-[10%] right-[10%] w-[500px] h-[500px] bg-atlas-blue/5 blur-[120px] rounded-full animate-pulse" />
@@ -323,8 +148,7 @@ const App: React.FC = () => {
                   </span>
                 </h2>
                 <p className="text-slate-400 text-lg max-w-lg mx-auto leading-relaxed">
-                  Atlas decomposes C-level goals into tactical roadmaps with
-                  autonomous agent oversight.
+                  Atlas decomposes C-level goals into tactical roadmaps with autonomous agent oversight.
                 </p>
               </div>
 
@@ -368,12 +192,10 @@ const App: React.FC = () => {
                       m.role === "user" ? "flex-row-reverse" : "flex-row"
                     )}
                   >
-                    <div
-                      className={cn(
-                        "h-12 w-12 shrink-0 glass-2 rounded-2xl flex items-center justify-center border border-white/10 shadow-xl self-start",
-                        m.role === "user" ? "bg-white/10" : "bg-atlas-blue/10"
-                      )}
-                    >
+                    <div className={cn(
+                      "h-12 w-12 shrink-0 glass-2 rounded-2xl flex items-center justify-center border border-white/10 shadow-xl self-start",
+                      m.role === "user" ? "bg-white/10" : "bg-atlas-blue/10"
+                    )}>
                       {m.role === "user" ? (
                         <div className="h-6 w-6 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 shadow-lg" />
                       ) : (
@@ -381,20 +203,13 @@ const App: React.FC = () => {
                       )}
                     </div>
 
-                    <div
-                      className={cn(
-                        "flex-1 space-y-6",
-                        m.role === "user" ? "text-right" : "text-left"
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "inline-block px-10 py-7 rounded-[2.5rem] text-lg leading-relaxed shadow-2xl backdrop-blur-3xl",
-                          m.role === "user"
-                            ? "glass-2 border-white/10 text-white selection:bg-white/20"
-                            : "glass-1 border-white/5 text-slate-200 selection:bg-atlas-blue/20"
-                        )}
-                      >
+                    <div className={cn("flex-1 space-y-6", m.role === "user" ? "text-right" : "text-left")}>
+                      <div className={cn(
+                        "inline-block px-10 py-7 rounded-[2.5rem] text-lg leading-relaxed shadow-2xl backdrop-blur-3xl",
+                        m.role === "user"
+                          ? "glass-2 border-white/10 text-white selection:bg-white/20"
+                          : "glass-1 border-white/5 text-slate-200 selection:bg-atlas-blue/20"
+                      )}>
                         {m.content}
                       </div>
 
@@ -403,9 +218,7 @@ const App: React.FC = () => {
                           <A2UIRenderer
                             elements={JSON.parse(m.a2ui).elements}
                             onEvent={(event) => {
-                              if (import.meta.env.DEV) {
-                                console.log("A2UI Event:", event);
-                              }
+                              if (import.meta.env.DEV) console.log("A2UI Event:", event);
                             }}
                           />
                         </div>
@@ -422,11 +235,7 @@ const App: React.FC = () => {
                         key={i}
                         className="w-2 h-2 rounded-full bg-atlas-blue/40"
                         animate={{ scale: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                          delay: i * 0.2,
-                        }}
+                        transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
                       />
                     ))}
                   </div>
@@ -434,11 +243,7 @@ const App: React.FC = () => {
                     <motion.span
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{
-                        duration: 0.5,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      }}
+                      transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
                     >
                       Synthesizing Strategic Response...
                     </motion.span>
@@ -457,7 +262,7 @@ const App: React.FC = () => {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend(input)}
+                onKeyDown={(e) => e.key === "Enter" && handleSend(input).then(() => setInput(""))}
                 placeholder="Enter your strategic directive..."
                 className="flex-1 bg-transparent border-none focus:ring-0 text-lg px-6 placeholder:text-slate-600 font-medium"
               />
@@ -470,7 +275,7 @@ const App: React.FC = () => {
                   <FileJson className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => handleSend(input)}
+                  onClick={() => handleSend(input).then(() => setInput(""))}
                   disabled={!input.trim() || isThinking}
                   className="h-14 w-14 bg-atlas-blue text-white rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                 >
@@ -497,7 +302,6 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* Task Bank Modal */}
       {isTaskBankOpen && (
         <TaskBank
           onClose={() => setIsTaskBankOpen(false)}
@@ -508,12 +312,8 @@ const App: React.FC = () => {
         />
       )}
 
-      {/* Settings Modal */}
       {isSettingsOpen && (
-        <SettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-        />
+        <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       )}
     </div>
   );
