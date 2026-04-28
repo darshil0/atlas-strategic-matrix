@@ -1,4 +1,4 @@
-import { SYSTEM_CONSTANTS } from "../../config/constants";
+import { SYSTEM_CONSTANTS } from "@config";
 
 /**
  * Base service with retry logic and exponential backoff

@@ -7,13 +7,15 @@
 import { SubTask, TaskStatus, Priority, GithubSyncResult } from "@types";
 import { PersistenceService } from "@services/core/persistence";
 import { TASK_BANK } from "@data/taskBank";
-import { ENV } from "@config";
+import { ENV, SYSTEM_CONSTANTS } from "@config";
+import { RetryableAPIService } from "../core/RetryableAPIService";
 
 // GitHub REST API v1.1.7 (Jan 2026)
-export class GithubService {
+export class GithubService extends RetryableAPIService {
   private static readonly GITHUB_API_BASE = "https://api.github.com";
-  private static readonly GITHUB_API_VERSION = "2022-11-28";
-  private static readonly USER_AGENT = "Atlas-Strategic-Agent/3.6.1";
+  private static readonly GITHUB_API_VERSION = SYSTEM_CONSTANTS.GITHUB_API_VERSION;
+  private static readonly USER_AGENT = `Atlas-Strategic-Agent/${ENV.APP_VERSION}`;
+  private static readonly MAX_CONCURRENT = SYSTEM_CONSTANTS.MAX_CONCURRENT_API_CALLS;
 
   /**
    * Create GitHub Issue from Atlas SubTask with glassmorphic labels
@@ -28,27 +30,29 @@ export class GithubService {
     const config = this.getValidatedConfig();
     const issueData = this.buildGlassmorphicIssuePayload(task, config);
 
-    const response = await fetch(
-      `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${config.apiKey}`,
-          "User-Agent": GithubService.USER_AGENT,
-        },
-        body: JSON.stringify(issueData),
+    const issue = await this.withRetry(async () => {
+      const response = await fetch(
+        `${GithubService.GITHUB_API_BASE}/repos/${config.owner}/${config.repo}/issues`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-GitHub-Api-Version": GithubService.GITHUB_API_VERSION,
+            Accept: "application/vnd.github+json",
+            Authorization: `Bearer ${config.apiKey}`,
+            "User-Agent": GithubService.USER_AGENT,
+          },
+          body: JSON.stringify(issueData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await this.parseErrorResponse(response);
+        throw new Error(`GitHub API [${response.status}]: ${errorData.message}`);
       }
-    );
 
-    if (!response.ok) {
-      const errorData = await this.parseErrorResponse(response);
-      throw new Error(`GitHub API [${response.status}]: ${errorData.message}`);
-    }
-
-    const issue = (await response.json()) as GitHubIssue;
+      return (await response.json()) as GitHubIssue;
+    });
 
     if (ENV.DEBUG_MODE) {
       console.group("🏛️ [GitHubService] Issue Created");
@@ -125,38 +129,32 @@ export class GithubService {
     };
 
     if (dryRun) {
-      console.log(
-        `[GitHubService] Dry-run: Would sync ${tasks.length} tasks to ${config.owner}/${config.repo}`
-      );
       return results;
     }
 
     // Pre-create Q1-Q4 milestones
     await this.ensureMilestones(config);
 
-    for (const task of tasks) {
+    // Concurrent execution in batches
+    await this.inBatches(tasks, GithubService.MAX_CONCURRENT, async (task) => {
       try {
-        // Skip if already synced (check GitHub first)
         const existing = await this.findExistingIssue(config, task.id);
         if (existing) {
           results.skipped++;
-          continue;
+          return;
         }
 
         const issue = await this.createIssue(task);
-        results.created++;
-
-        // Link to GitHub Project (Atlas 2026 Roadmap)
         await this.addToProject(config, issue.issueNumber);
+        results.created++;
       } catch (error) {
         results.failed.push({
           success: false,
           taskId: task.id,
-          error: (error as Error).message,
+          error: error instanceof Error ? error.message : String(error),
         });
-        console.warn(`[GitHubService] Failed to sync ${task.id}:`, error);
       }
-    }
+    });
 
     return results;
   }

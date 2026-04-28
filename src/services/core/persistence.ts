@@ -9,6 +9,54 @@
 import { Plan, Message, Priority, TaskStatus } from "@types";
 import { ENV } from "@config";
 
+/**
+ * Simple Mutex to handle asynchronous locks and ensure mutually exclusive execution of code blocks.
+ */
+class Mutex {
+  private mutex = Promise.resolve();
+  private timeoutMs = 5000;
+
+  /**
+   * Acquires the lock. Returns an unlock function that must be called to release the lock.
+   */
+  async lock(): Promise<() => void> {
+    let begin: (value: void | PromiseLike<void>) => void;
+    const unlock = new Promise<void>((resolve) => {
+      begin = resolve;
+    });
+    const prev = this.mutex;
+    this.mutex = prev.then(() => unlock);
+
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Mutex lock timeout")), this.timeoutMs)
+    );
+
+    try {
+      await Promise.race([prev, timeoutPromise]);
+    } catch (e) {
+      // If timeout, we still need to unlock to not block next ones if possible,
+      // but the state might be corrupted.
+      begin();
+      throw e;
+    }
+
+    return () => begin();
+  }
+
+  /**
+   * Executes the provided callback exclusively, ensuring no other code block using the same
+   * mutex can run at the same time.
+   */
+  async runExclusive<T>(callback: () => Promise<T>): Promise<T> {
+    const unlock = await this.lock();
+    try {
+      return await callback();
+    } finally {
+      unlock();
+    }
+  }
+}
+
 // Typed storage schema for perfect TypeScript inference
 const ATLAS_STORAGE_KEYS = {
   // Core application state
@@ -38,6 +86,7 @@ const ATLAS_STORAGE_KEYS = {
 export class PersistenceService {
   private static savePlanQueue: (Plan | null)[] = [];
   private static isProcessingQueue = false;
+  private static queueMutex = new Mutex();
 
   /**
    * Save 2026 strategic plan with non-recursive queue pattern to prevent race conditions.
@@ -48,8 +97,14 @@ export class PersistenceService {
   }
 
   private static async processQueue(): Promise<void> {
-    if (this.isProcessingQueue) return;
-    this.isProcessingQueue = true;
+    // Atomic-like check and set using Mutex
+    const shouldStart = await this.queueMutex.runExclusive(async () => {
+      if (this.isProcessingQueue) return false;
+      this.isProcessingQueue = true;
+      return true;
+    });
+
+    if (!shouldStart) return;
 
     while (this.savePlanQueue.length > 0) {
       const plan = this.savePlanQueue.shift();
@@ -477,6 +532,12 @@ export class PersistenceService {
     );
   }
 
+  /**
+   * Encoding for localStorage persistence.
+   * WARNING: This is NOT secure encryption. Persistence is only for convenience.
+   * For production, a Secret Management Service (e.g., HashiCorp Vault, AWS Secrets Manager)
+   * or a secure backend proxy is REQUIRED. Never store production secrets in localStorage.
+   */
   private static encrypt(data: string): string {
     // Simple obfuscation (not crypto-strength)
     return btoa(
