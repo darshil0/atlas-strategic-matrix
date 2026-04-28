@@ -1,4 +1,4 @@
-# 🧠 Atlas Strategic Agent v3.6.0: A Technical Deep Dive
+# 🧠 Atlas Strategic Agent v3.6.3: A Technical Deep Dive
 
 ## What You're Actually Looking At
 
