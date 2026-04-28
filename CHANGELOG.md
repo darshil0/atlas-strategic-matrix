@@ -4,6 +4,30 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.6.2] - 2026-04-28
+
+### 🔧 Build Tooling & Configuration Hardening
+Critical fixes to configuration infrastructure ensuring proper tool discovery, React 19 compliance, and elimination of configuration drift.
+
+### Fixed
+- **Configuration File Naming**: Corrected all config files to standard conventions (`.env.example`, `.gitignore`, `.prettierrc`, `eslint.config.ts`, `vite.config.ts`, `vitest.config.ts`, `postcss.config.js`, `tailwind.config.ts`) - tools now properly auto-discover configurations.
+- **ESLint React Support**: Added missing React 19 plugins (`eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`) with strict Hook rules enforcement to prevent runtime violations.
+- **Test Configuration Duplication**: Removed duplicate test configuration from `vite.config.ts`, consolidating all test settings in `vitest.config.ts` as the single source of truth.
+- **TypeScript Parser Configuration**: Explicitly configured `tseslint.parser` with JSX support in `parserOptions.ecmaFeatures` for proper JSX/TSX linting.
+- **ESLint Global Scope**: Replaced incorrect `globals.jest` with correct `globals.browser`, `globals.node`, and `globals.es2022` to eliminate false "undefined variable" warnings in Vitest tests.
+- **Config File Linting**: Added `*.config.{js,ts}` to ESLint ignore patterns to prevent unnecessary linting of build configuration files.
+
+### Changed
+- **package.json**: Added `eslint-plugin-react@^7.37.2`, `eslint-plugin-react-hooks@^5.1.0`, and `eslint-plugin-react-refresh@^0.4.16` to devDependencies.
+- **ESLint Rules**: Enforced `react-hooks/rules-of-hooks` as error (was not configured), `react-hooks/exhaustive-deps` as warning, and `react-refresh/only-export-components` for Fast Refresh compliance.
+
+### Technical Debt Resolved
+- **Zero Warning Baseline**: Restored full compliance with strict linting standards across all configuration files.
+- **Tool Discovery**: Eliminated manual configuration path specification requirements through standard naming conventions.
+- **Configuration Drift**: Prevented future conflicts between Vite and Vitest test settings.
+
+---
+
 ## [3.6.1] - 2026-04-26
 
 ### 🚀 Core Architecture Stabilization
