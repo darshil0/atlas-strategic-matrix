@@ -18,12 +18,23 @@ Imagine you're a CEO who just declared, “I need to dominate the AI market in 2
 
 **Atlas is the answer to that moment.**
 
-It’s not just another project management tool. It’s an AI-powered reality check that transforms ambitious “change the world” statements into executable quarterly roadmaps—complete with tasks, dependencies, risk assessments, and timeline validation.
+It’s an AI-powered reality check that transforms ambitious “change the world” statements into executable quarterly roadmaps—complete with tasks, dependencies, risk assessments, and timeline validation.
 
-Think of it as three brutally honest consultants working 24/7:
-*   **🎙️ The Strategist**: Breaks your vision into actionable pieces (milestones, dependencies).
-*   **📊 The Analyst**: Asks, “Is this actually feasible?” (scoring, capacity, TaskBank alignment).
-*   **🔍 The Critic**: Finds every flaw before reality does (DAG validation, acyclic constraints).
+> [!IMPORTANT]
+> **Zero Warning Baseline**: v3.6.3 strictly enforces a zero-warning policy across TypeScript, ESLint, and Vitest, ensuring enterprise-grade stability and "technically pristine" execution.
+
+---
+
+## ✨ Key Capabilities
+
+| Feature | Description | Stack |
+| :--- | :--- | :--- |
+| **A2UI Protocol v1.1** | Real-time streaming of glassmorphic UI directly from LLM reasoning | React 19 + Framer Motion |
+| **What-If Engine** | Failure cascade modeling with risk scoring across the dependency DAG | Custom BFS DAG Analysis |
+| **Enterprise Sync** | Native bidirectional synchronization with GitHub Issues and Jira Cloud | REST API v3 / ADF |
+| **Glassmorphic UI** | Premium backdrop-blur design system for high-density strategic data | Tailwind 4.2 |
+| **Persistence** | Mutex-guarded encrypted storage with atomic write protection | Custom Persistence Layer |
+| **TaskBank** | 90+ pre-calculated 2026 strategic objectives (AI, Cyber, ESG, etc.) | Neural Alignment |
 
 ---
 
@@ -46,112 +57,92 @@ graph TD
     F --> F3[Mermaid/JSON]
 ```
 
-### Specialized Agent Personas
+### 🎭 Specialized Agent Personas
 
-| Agent | Role | Output |
-| :--- | :--- | :--- |
-| **🎙️ The Strategist** | Decomposes "North Star" goals into Q1-Q4 2026 workstreams | Strategic milestones with dependencies |
-| **🔬 The Analyst** | Performs feasibility scoring and TASK_BANK alignment | Risk assessments and capacity analysis |
-| **⚖️ The Critic** | Stress-tests roadmaps for acyclic graph validation | DAG optimization and quality scores |
+Think of these as three brutally honest consultants working 24/7 on your roadmap:
 
----
-
-## 🧱 Core Service Implementations
-
-### 1. PersistenceService (`src/services/core/persistence.ts`)
-- **Atomic Operations**: Uses a custom `Mutex` and non-recursive `processQueue` to handle asynchronous `localStorage` writes, preventing race conditions.
-- **Security**: Implements XOR-based obfuscation (key `0xaa`) combined with Base64 encoding for client-side secret storage.
-- **Quota Management**: Proactively monitors storage usage (5MB limit) and surfaces warnings when >90% capacity is reached.
-
-### 2. MissionControl (`src/lib/adk/orchestrator.ts`)
-- **Failure Simulation**: BFS-based engine that calculates impact cascades across the DAG, identifying high-priority risks.
-- **Swarm Logic**: Orchestrates the multi-agent loop with iterative feedback until a quality threshold of **Score >= 85** is reached.
-- **Agent Lifecycle**: `AgentFactory` manages a static pool of agents with automated disposal to prevent memory leaks.
-
-### 3. Integration Layer (`src/services/integrations/`)
-- **RetryableAPIService**: Base class providing exponential backoff and batch-based concurrency control (max 3 concurrent requests).
-- **GitHub**: Automated milestone creation (Q1-Q4) and project board linking via `addToProject`.
-- **Jira**: Bidirectional ticket discovery via encoded JQL and automated linking of stories to quarterly epics.
+1.  **🎙️ The Strategist**: The visionary architect. Decomposes "North Star" goals into Q1-Q4 2026 workstreams with strict hierarchical dependencies.
+2.  **📊 The Analyst**: The pragmatist. Performs feasibility scoring (0-100), identifies Q1 capacity bottlenecks, and aligns tasks with the **TASK_BANK**.
+3.  **🔍 The Critic**: The gatekeeper. Stress-tests roadmaps for acyclic graph validation (no circular loops) and enforces the **85-point acceptance threshold**.
 
 ---
 
-## 🧠 Technical Deep Dive & Tech Stack
+## 🧠 Technical Deep Dive
 
-### Why it works: The "Aha!" Moment
-Executives are great at vision, but the gap between vision and execution is where strategies fail. Atlas was built to think like an experienced operator: **synthesize, validate, iterate, and challenge assumptions.**
+### 🧱 Core Service Layers
 
-### The Stack: Key Decisions
-*   **TypeScript (Strict)**: 100% compliance. No `any`. Strict interfaces like `AnalystResult` ensure data integrity across the swarm.
-*   **React 19**: Utilizes concurrent rendering for high-density dependency graphs.
-*   **Vite 8.0**: Near-instant hot reload (~50ms) with optimized `manualChunks` for production.
-*   **Tailwind CSS v4.2**: CSS-first configuration via `@theme`. Features a custom glassmorphic design system (`glass-1/2`).
-*   **Gemini 2.0 Flash**: Selected for structured JSON output and low latency. Hardened `parseResponse` logic handles inconsistent LLM formatting.
+#### 1. Persistence & Atomic Writes
+The `PersistenceService` implements a custom `Mutex` to ensure atomic operations on `localStorage`. It features XOR-based obfuscation (key `0xaa`) to protect secrets while maintaining client-side compatibility.
 
-### A2UI Protocol v1.1
-Instead of returning raw data, the AI returns UI component schemas.
-```json
-{
-  "type": "mission_control_status",
-  "props": { "score": 92, "iterations": 2, "q1HighCount": 5 }
-}
+#### 2. MissionControl Orchestration
+The swarm logic orchestrates the **Strategist → Analyst → Critic** loop. If the quality score falls below 85, the Critic's feedback is injected back into the Strategist for iterative refinement (capped at 3 iterations).
+
+#### 3. Resilience & Concurrency
+The `RetryableAPIService` base class provides exponential backoff and enforces a **batch limit of 3 concurrent requests** to prevent rate-limiting during large-scale enterprise synchronizations.
+
+### 🚀 The Tech Stack: Engineering Decisions
+*   **TypeScript (Strict)**: 100% compliance. Zero `any` usage.
+*   **React 19**: Leverages concurrent rendering for fluid graph interactions.
+*   **Tailwind CSS 4.2**: CSS-first configuration via `@theme` for a premium glassmorphic experience.
+*   **Gemini 2.0 Flash**: Selected for its high-performance JSON output and 1M+ token context window.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- **Node.js** 20+ (LTS)
+- **Google Gemini API Key** ([Get your key](https://ai.google.dev/gemini-api/docs/api-key))
+
+### 2. Quick Start
+```bash
+# Clone & Install
+git clone https://github.com/darshil0/atlas-strategic-agent.git
+cd atlas-strategic-agent
+npm install
+
+# Setup Environment
+cp .env.example .env
+# Add VITE_GEMINI_API_KEY to .env
+
+# Launch
+npm run dev
 ```
-The `UIBuilder` fluent API allows agents to construct complex glassmorphic interfaces in real-time.
 
----
-
-## 🧪 Development & Testing
-
-### Available Scripts
+### 3. Development Commands
 ```bash
 npm run dev              # Start dev server (localhost:3000)
-npm run build            # Production build with type checking
 npm run lint             # ESLint Zero Warning check
 npm run type-check       # Strict TypeScript check
-npm test                 # Run Vitest suite
-npm run coverage         # Coverage report (85% threshold)
+npm test                 # Run Vitest integration suite
 ```
-
-### Testing Strategy
-- **Threshold**: 85% coverage minimum across all metrics.
-- **Infrastructure**: `src/test/setup.ts` handles global environment (Canvas, ResizeObserver, crypto) while `src/test/test-utils.ts` provides shared domain mocks.
-- **Zero Warning Baseline**: Strict enforcement of 0 warnings across all dev scripts.
 
 ---
 
 ## ⚠️ Guardrails & Conventions
 
-1.  **Zero Warning Baseline**: All PRs must pass `lint`, `type-check`, and `test` with 0 warnings.
-2.  **Type Safety**: Avoid non-null assertions (`!`). Use proper null checks.
-3.  **Fast Refresh**: Keep functional components separate from static constants (see `src/components/ui/TaskIcons.tsx`).
-4.  **Security**: Use XOR-based obfuscation for secrets; never store raw API keys in plain text.
-5.  **Acyclic DAGs**: The Critic agent strictly enforces no circular dependencies in the 2026 roadmap.
+> [!TIP]
+> Maintain the **Zero Warning Baseline**. All pull requests must pass `lint`, `type-check`, and `test` with **zero warnings** or errors.
+
+*   **Type Safety**: Never use non-null assertions (`!`). Use proper null checks or exhaustive error handling.
+*   **Service Layer**: Keep services stateless; fetch configuration from `persistenceService` on each call.
+*   **Fast Refresh**: Separate functional components (like icons) from static constants to ensure a seamless dev experience.
+*   **DAG Integrity**: The Critic agent strictly enforces acyclic graph constraints to prevent "dependency hell."
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Roadmap & Changelog
 
-### Current Version (v3.6.3) ✅
-- **Zero Warning Baseline Achievement**: Restored 100% compliance across `lint`, `type-check`, and `test` suites.
-- **Test Suite Modularization**: Decoupled `setup.ts` and introduced `src/test/test-utils.ts` for stable integration testing.
-- **Neural Core Optimization**: Fixed asynchronous property access patterns in `GeminiService` for lower latency.
-- **Fast Refresh & Modular UI**: Refactored icons and entry points for strict React 19 compatibility.
+### v3.6.3 ✅ (Current)
+- **Zero Warning Baseline Achievement**: 100% verified compliance across the entire ADK stack.
+- **Test Suite Modularization**: Decoupled `setup.ts` and introduced `test-utils.ts` for stable integration testing.
+- **Neural Core Optimization**: Fixed improper asynchronous patterns in `GeminiService` for lower latency.
+- **Vite 8 & React 19**: Full stack modernization with optimized manual chunking for production.
 
-### Planned 🚀
-- **V4.0.0**: Monte Carlo risk modeling with probability distributions.
-- **V4.1.0**: Real-time collaborative synthesis via WebSockets.
-- **V4.2.0**: Intelligent resource optimizer for headcount/budget.
-
----
-
-## 📜 Changelog (v3.6.3 Highlights)
-
-- **Fixed**: Vitest "failed to find the current suite" errors through `setup.ts` decoupling.
-- **Fixed**: Asynchronous property access bug in `GeminiService.summarizeMission`.
-- **Improved**: Standardized `ICONS` mocks to prevent React reconciliation errors.
-- **Changed**: Moved UI logic to `src/components/ui/TaskIcons.tsx` for Fast Refresh compliance.
-- **Hardened**: 100% strict TypeScript compliance across core ADK and persistence layers.
-
-*For full history, see the archived `CHANGELOG.md`.*
+### v4.0.0 🚀 (Planned)
+- **Monte Carlo Simulations**: Advanced risk modeling with probability distributions.
+- **Real-time Collaboration**: Multi-user synthesis via WebSockets.
+- **Autonomous Execution**: AI-driven task completion and verification.
 
 ---
 
