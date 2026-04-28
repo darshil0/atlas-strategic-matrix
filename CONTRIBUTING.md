@@ -152,7 +152,9 @@ If you encounter conflicts during the rebase, resolve them carefully and continu
 - Prefer interfaces over types for object shapes.
 - Use explicit return types for functions.
 - Avoid `any`; use `unknown` if the type is truly unknown.
+- Avoid non-null assertions (`!`); use proper null checks.
 - Use const assertions where appropriate.
+- **Zero Warning Baseline**: Ensure all code passes `npm run lint` and `npm run type-check` with 0 warnings before submitting.
 
 **Example:**
 
@@ -230,20 +232,16 @@ npm run test:ui
 
 ```typescript
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
 import { TaskCard } from './TaskCard';
+
+// NOTE: describe, it, expect, and vi are provided globally via vitest.config.ts
+// Do NOT import them from 'vitest' in test files.
 
 describe('TaskCard', () => {
   it('renders task title', () => {
     const task = { id: '1', title: 'Test Task', priority: 'high' as const };
     render(<TaskCard task={task} onUpdate={vi.fn()} />);
     expect(screen.getByText('Test Task')).toBeInTheDocument();
-  });
-
-  it('calls onUpdate when edited', () => {
-    const onUpdate = vi.fn();
-    const task = { id: '1', title: 'Test Task', priority: 'high' as const };
-    render(<TaskCard task={task} onUpdate={onUpdate} />);
   });
 });
 ```
@@ -455,17 +453,17 @@ Understanding the project structure will help you navigate the codebase:
 ```text
 atlas-strategic-agent/
 ├── src/
-│   ├── components/
-│   ├── config/
-│   ├── data/
+│   ├── components/      # ui/, views/, cards/, core/
+│   ├── config/          # Environment & System constants
+│   ├── data/            # Static Strategic Data (TaskBank)
 │   ├── lib/
-│   │   └── adk/
-│   ├── services/
-│   ├── types/
-│   └── test/
-├── docs/
+│   │   └── adk/         # Core Multi-Agent Orchestration
+│   ├── services/        # ai/, core/, integrations/
+│   ├── styles/          # Global Tailwind v4 CSS
+│   ├── types/           # Global atlas.d.ts
+│   └── test/            # Integration & Smoke Tests
 ├── public/
-└── [config files]
+└── [config files]       # vite, vitest, eslint, tailwind
 ```
 
 ---
