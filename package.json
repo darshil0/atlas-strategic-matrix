@@ -1,6 +1,6 @@
 {
   "name": "atlas-strategic-agent",
-  "version": "3.6.1",
+  "version": "3.6.3",
   "type": "module",
   "description": "Enterprise-grade autonomous strategic orchestrator with multi-agent collaborative synthesis.",
   "scripts": {

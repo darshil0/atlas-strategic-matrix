@@ -1,5 +1,5 @@
 /**
- * ATLAS v3.6.1 - Production Entry Point
+ * ATLAS v3.6.3 - Production Entry Point
  * Glassmorphic MissionControl dashboard with error boundaries + loading states
  */
 
@@ -57,7 +57,7 @@ const initAtlas = async () => {
   const root = createRoot(rootElement);
 
   if (ENV.DEBUG_MODE) {
-    console.group("🏛️ ATLAS v3.6.1 BOOT SEQUENCE");
+    console.group("🏛️ ATLAS v3.6.3 BOOT SEQUENCE");
     console.log("• React:", React.version);
     console.log("• Environment:", import.meta.env.MODE);
     console.log("• App Version:", ENV.APP_VERSION || "3.6.1");
@@ -89,7 +89,7 @@ initAtlas().catch((error) => {
 });
 
 if (import.meta.env.PROD) {
-  console.groupCollapsed("🏛️ ATLAS v3.6.1 • Production Build");
+  console.groupCollapsed("🏛️ ATLAS v3.6.3 • Production Build");
   console.log("• Status: Neural core online");
   console.log("• Tasks: 92+ enterprise objectives loaded");
   console.log("• Agents: Strategist + Analyst + Critic ready");

@@ -1,9 +1,8 @@
 /**
- * Atlas Integration Tests (v3.6.1)
+ * Atlas Integration Tests (v3.6.3)
  * Validates MissionControl swarm, Failure cascades, and Persistence
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MissionControl } from '../lib/adk/orchestrator';
 import { PersistenceService } from '../services/core/persistence';
 import { AgentFactory } from '../lib/adk/factory';

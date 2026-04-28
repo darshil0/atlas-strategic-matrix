@@ -1,19 +1,18 @@
 /**
- * Atlas Core Integration Test Suite (v3.6.1) - Glassmorphic Smoke Tests
+ * Atlas Core Integration Test Suite (v3.6.3) - Glassmorphic Smoke Tests
  * Production test coverage for MissionControl → AgentFactory → PersistenceService
  * Validates full ADK stack + GitHub/Jira sync + ReactFlow data flow
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { AgentFactory, MissionControl } from "../lib/adk";
 import { AgentPersona } from "../types";
 import { PersistenceService } from "../services/core/persistence";
 import { syncServices } from "../services";
-import { ATLAS_TEST_UTILS } from "../test/setup";
+import { ATLAS_TEST_UTILS } from "./test-utils";
 
 // Integration tests for full Atlas ADK stack
 
-describe("🏛️ ATLAS v3.6.1 - Production Integration Tests", () => {
+describe("🏛️ ATLAS v3.6.3 - Production Integration Tests", () => {
   beforeEach(() => {
     ATLAS_TEST_UTILS.resetAtlasMocks();
   });

@@ -1,5 +1,5 @@
 /**
- * Atlas BootOrchestrator (v3.6.1)
+ * Atlas BootOrchestrator (v3.6.3)
  * Extracts boot logic and error boundaries from the entry point
  */
 

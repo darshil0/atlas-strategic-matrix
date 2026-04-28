@@ -1,5 +1,5 @@
 /**
- * Runtime environment helper for Atlas Strategic Agent (v3.6.1)
+ * Runtime environment helper for Atlas Strategic Agent (v3.6.3)
  * - Coerces import.meta.env values to known ENV keys safely.
  * - Integrates PersistenceService for user-configurable settings.
  * - Provides validation with actionable feedback.

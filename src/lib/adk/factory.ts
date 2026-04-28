@@ -1,5 +1,5 @@
 /**
- * Atlas Agent Factory (v3.6.1) - Glassmorphic Multi-Agent Swarm
+ * Atlas Agent Factory (v3.6.3) - Glassmorphic Multi-Agent Swarm
  * TypeScript exhaustiveness + production agent lifecycle management
  */
 

@@ -1,9 +1,9 @@
 /**
- * Atlas Gemini Service Layer (v3.6.1) - Glassmorphic Enterprise LLM
+ * Atlas Gemini Service Layer (v3.6.3) - Glassmorphic Enterprise LLM
  * Production Gemini 2.0 integration for MissionControl → Agent swarm
  * JSON schema enforcement + A2UI extraction + TaskBank aware planning
  *
- * FIX v3.6.1: Corrected the timeout/race-condition pattern in `generatePlan`.
+ * FIX v3.6.3: Corrected the timeout/race-condition pattern in `generatePlan`.
  *   Previously, `Promise.race` was applied to `result.response` which is already
  *   resolved by the time we reach that line (it's the synchronous response object
  *   from `generateContent`). The timeout now correctly wraps the entire
@@ -68,7 +68,7 @@ export class AtlasService {
   /**
    * Generate 2026 Q1-Q4 strategic roadmap with TaskBank alignment.
    *
-   * FIX v3.6.1: The timeout race now wraps `generateContent` itself rather than
+   * FIX v3.6.3: The timeout race now wraps `generateContent` itself rather than
    * the already-resolved `result.response` property. This ensures the 45 s guard
    * actually fires if the network call hangs.
    */
@@ -279,7 +279,7 @@ Format as concise executive briefing with:
       ],
     });
 
-    return (await result.response).text();
+    return result.response.text();
   }
 
   // === PRIVATE IMPLEMENTATION ===

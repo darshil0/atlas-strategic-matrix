@@ -1,5 +1,5 @@
 /**
- * Atlas Agent Swarm (v3.6.1) - Glassmorphic Multi-Agent System
+ * Atlas Agent Swarm (v3.6.3) - Glassmorphic Multi-Agent System
  * Strategist → Analyst → Critic pipeline for 2026 enterprise roadmaps
  */
 
@@ -63,7 +63,7 @@ export class StrategistAgent extends BaseAgent {
 
   getInitialUI(): A2UIMessage {
     return new UIBuilder()
-      .card("🏛️ Strategist Agent v3.6.1")
+      .card("🏛️ Strategist Agent v3.6.3")
       .text("Ready for autonomous goal decomposition and dependency synthesis.")
       .build();
   }
@@ -88,7 +88,7 @@ export class ArchitectAgent extends BaseAgent {
     _context: AgentExecutionContext = {}
   ): Promise<R> {
     return {
-      stack: ["React 19", "Vite 7", "TypeScript 5.9"],
+      stack: ["React 19", "Vite 8", "TypeScript 6"],
       deployment: "Edge Functions",
       scalability: "High",
     } as unknown as R;

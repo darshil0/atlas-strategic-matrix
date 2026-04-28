@@ -1,9 +1,8 @@
 /**
- * Atlas App Component Tests (v3.6.1) - Glassmorphic E2E Integration
+ * Atlas App Component Tests (v3.6.3) - Glassmorphic E2E Integration
  * Production React Testing Library suite for MissionControl dashboard
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "../App";

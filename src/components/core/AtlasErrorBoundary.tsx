@@ -1,5 +1,5 @@
 /**
- * Atlas Error Boundary (v3.6.1)
+ * Atlas Error Boundary (v3.6.3)
  * Centralized React error boundary for MissionControl → Glassmorphic UI
  */
 
