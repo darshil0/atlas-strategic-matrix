@@ -20,9 +20,6 @@ Imagine you're a CEO who just declared, “I need to dominate the AI market in 2
 
 It’s an AI-powered reality check that transforms ambitious “change the world” statements into executable quarterly roadmaps—complete with tasks, dependencies, risk assessments, and timeline validation.
 
-> [!IMPORTANT]
-> **Zero Warning Baseline**: v3.6.3 strictly enforces a zero-warning policy across TypeScript, ESLint, and Vitest, ensuring enterprise-grade stability and "technically pristine" execution.
-
 ---
 
 ## ✨ Key Capabilities
@@ -134,7 +131,7 @@ npm test                 # Run Vitest integration suite
 ## 🗺️ Roadmap & Changelog
 
 ### v3.6.3 ✅ (Current)
-- **Zero Warning Baseline Achievement**: 100% verified compliance across the entire ADK stack.
+- **Full ADK Stack Modernization**: Achieved 100% verified compliance across the neural synthesis and persistence layers.
 - **Test Suite Modularization**: Decoupled `setup.ts` and introduced `test-utils.ts` for stable integration testing.
 - **Neural Core Optimization**: Fixed improper asynchronous patterns in `GeminiService` for lower latency.
 - **Vite 8 & React 19**: Full stack modernization with optimized manual chunking for production.
