@@ -17,6 +17,7 @@ Comprehensive cleanup of linting warnings, refactoring for Fast Refresh complian
 - **Dependency Conflicts**: Pinned ESLint to `v9.17.0` to resolve peer dependency mismatches with `eslint-plugin-react`.
 - **Fast Refresh Compliance**: Refactored `src/config/ui.tsx` logic into `src/components/ui/TaskIcons.tsx`.
 - **Type Safety**: Replaced forbidden non-null assertions (`!`) with robust error handling across the ADK core.
+- **Unused Variable Cleanup**: Eliminated redundant imports and unused variables in `src/test/setup.ts` to achieve 100% clean output in `lint` and `type-check`.
 
 ### Changed
 - **Documentation Strategy**: Consolidated `README.md`, `AGENTS.md`, and `technical-deep-dive.md` into a single, high-fidelity `README.md` to establish a single source of truth for the ADK architecture and technical standards.

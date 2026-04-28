@@ -12,7 +12,6 @@
 // src/test/setup.ts
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
-import { TaskStatus, Priority } from '@types';
 import type { Plan, Message } from "@types";
 
 // Extend Vitest expect with jest-dom matchers
