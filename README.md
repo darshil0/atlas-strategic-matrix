@@ -1,4 +1,4 @@
-# 🌌 Atlas Strategic Agent v3.6.1
+# 🌌 Atlas Strategic Agent v3.6.2
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue?style=for-the-badge&logo=typescript)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
@@ -49,7 +49,7 @@ graph TD
 | **⚖️ The Critic** | Stress-tests roadmaps for acyclic graph validation | DAG optimization and quality scores |
 
 > [!IMPORTANT]
-> **Zero Warning Baseline**: v3.6.1 strictly enforces a zero-warning policy across TypeScript, ESLint, and Vitest, ensuring enterprise-grade stability.
+> **Zero Warning Baseline**: v3.6.2 strictly enforces a zero-warning policy across TypeScript, ESLint, and Vitest, ensuring enterprise-grade stability.
 
 ---
 
@@ -158,7 +158,14 @@ Atlas features a custom glassmorphic theme designed for high-density strategic d
 
 ## 🗺️ Roadmap
 
-### Current Version (v3.6.1) ✅
+### Current Version (v3.6.2) ✅
+- **Configuration Hardening**: Fixed all config file naming conventions (`.eslintrc`, `.gitignore`, etc.) for proper tool auto-discovery.
+- **React 19 ESLint Compliance**: Added React-specific plugins (`eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`) with strict Hook rules enforcement.
+- **Test Configuration Consolidation**: Eliminated duplicate test configs between Vite and Vitest, establishing `vitest.config.ts` as single source of truth.
+- **TypeScript Parser Enhancement**: Explicitly configured JSX support in ESLint parser for accurate linting.
+- **Zero Warning Restoration**: Achieved full Zero Warning Baseline compliance across all configuration files.
+
+### Previous Release (v3.6.1)
 - **Type Safety Audit**: 100% strict compliance across all core modules (Zero Warning Baseline).
 - **Memory Management**: Automated agent disposal in `AgentFactory`.
 - **Persistence Layer**: Mutex-guarded `writeQueue` with non-recursive processing for data integrity.
