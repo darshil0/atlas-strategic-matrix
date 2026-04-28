@@ -20,7 +20,7 @@ class Mutex {
    * Acquires the lock. Returns an unlock function that must be called to release the lock.
    */
   async lock(): Promise<() => void> {
-    let begin: (value: void | PromiseLike<void>) => void;
+    let begin!: (value: void | PromiseLike<void>) => void;
     const unlock = new Promise<void>((resolve) => {
       begin = resolve;
     });

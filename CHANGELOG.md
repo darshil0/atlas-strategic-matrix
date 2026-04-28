@@ -19,9 +19,11 @@ Hardening the Atlas "nervous system" through strict type safety, memory manageme
 - **Version Unification**: Synchronized all core files (env, metadata, lockfiles) to **v3.6.1**.
 
 ### Fixed
-- **Persistence Mutex**: Implemented `writeQueue` in `PersistenceService` to prevent storage corruption.
-- **Memory Management**: Added automated agent disposal to `AgentFactory`.
-- **UI Error Surfacing**: Refactored `handleSend` to extract and display detailed error messages.
+- **Persistence Mutex**: Implemented `writeQueue` with non-recursive processing in `PersistenceService` to prevent storage corruption and race conditions.
+- **Memory Management**: Added automated agent disposal to `AgentFactory` to optimize resource usage.
+- **UI Error Surfacing**: Refactored `handleSend` in `App.tsx` to extract and display detailed error messages, improving production debuggability.
+- **Type Safety**: Resolved `strictNullChecks` violations in `Mutex` implementation (src/services/core/persistence.ts).
+- **Cleanup**: Removed redundant `env.example` file in favor of `.env.example`.
 - **Git Merge Conflicts**: Resolved widespread codebase conflicts, successfully aligning `v3.6.0` modernization upgrades with the `v3.6.1` core functionality improvements.
 - **Production Logging Hygiene**: Guarded raw debug logs in `A2UIRenderer` event handlers with `ENV.DEBUG_MODE` checks to prevent leaks in production environments.
 - **Project Reorganization**: Consolidated test infrastructure by moving `src/App.test.tsx` to `src/test/` and streamlined the root directory by removing redundant environment templates.

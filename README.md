@@ -18,7 +18,7 @@
 - **A2UI Protocol v1.1** - A high-performance protocol for streaming glassmorphic UI components directly from LLM reasoning.
 - **What-If Simulations** - Advanced failure cascade modeling to visualize risk propagation and critical path bottlenecks.
 - **Enterprise-Ready** - Seamless bidirectional synchronization with GitHub Issues API v3 and Jira Cloud REST API.
-- **Premium UX** - A state-of-the-art glassmorphic interface built with React 19, Framer Motion 12, and Tailwind CSS 4.2.
+- **Premium UX** - A state-of-the-art glassmorphic interface built with React 19, Framer Motion 12, and Tailwind CSS v4.
 
 ---
 
@@ -159,11 +159,11 @@ Atlas features a custom glassmorphic theme designed for high-density strategic d
 ## 🗺️ Roadmap
 
 ### Current Version (v3.6.1) ✅
-- **Type Safety Audit**: 100% strict compliance across all core modules.
+- **Type Safety Audit**: 100% strict compliance across all core modules (Zero Warning Baseline).
 - **Memory Management**: Automated agent disposal in `AgentFactory`.
-- **Persistence Layer**: Mutex-guarded `writeQueue` for data integrity.
-- **Error Surface**: Detailed error extraction and UI reporting.
-- **Sync Enhancements**: Full GitHub Issue linking and Jira Epic mapping.
+- **Persistence Layer**: Mutex-guarded `writeQueue` with non-recursive processing for data integrity.
+- **Error Surface**: Detailed error extraction and UI reporting in `handleSend`.
+- **Sync Enhancements**: Full GitHub Issue linking and Jira Epic mapping with exponential backoff.
 
 ### Planned 🚀
 - **V4.0.0**: Monte Carlo risk modeling with probability distributions.
