@@ -16,13 +16,11 @@ Think of it as three brutally honest consultants working 24/7:
 
 ---
 
-## v3.6.3 Update: Fast Refresh & Stability
-*April 2026*
-
-Finalizing the production-grade experience:
-* **Fast Refresh Compliance**: Separated functional UI icons from configuration to ensure seamless development.
-* **Non-Null Assertion Cleanup**: Replaced unsafe `!` operators with robust error handling across core agent orchestration.
-* **ESLint Stabilization**: Resolved peer dependency conflicts by pinning `eslint` to v9.17.0.
+* **v3.6.3: Architectural Stabilization & Testing Rigor**
+  * **Vitest Suite Decoupling**: Resolved "failed to find the current suite" errors by decoupling `src/test/setup.ts` from test imports. Shared helpers and mock plans were migrated to `src/test/test-utils.ts` to prevent internal suite state corruption during the hoisted transform phase.
+  * **Neural Core Optimization**: Fixed an improper `await` pattern in `GeminiService.summarizeMission` where synchronous response properties were being unnecessarily awaited, reducing neural core initialization latency.
+  * **Zero Warning Baseline Achievement**: Achieved 100% compliance across `lint`, `type-check`, and `test` suites through strict dependency pinning (ESLint v9.17.0) and global Vitest type definitions.
+  * **Icon Registry Mocks**: Standardized `ICONS` mocks in the test environment to resolve React reconciliation errors during virtual DOM hydration.
 
 ## v3.6.2 Update: Configuration Hardening
 *April 2026*
@@ -360,9 +358,11 @@ Predefined strategic objectives reduce hallucination:
 
 ## Testing Strategy
 
-* **Vitest** for fast execution
-* **85% coverage minimum**
-* Focus on integration tests over excessive unit tests
+* **Vitest** for fast, concurrent execution with global API injection.
+* **85% coverage minimum** enforced via `vitest.config.ts`.
+* **Decoupled Infrastructure**: `setup.ts` provides the global environment (Canvas, ResizeObserver, crypto) while `test-utils.ts` provides the domain-specific data mocks (Plans, Missions) to avoid import-time side effects.
+* **Enterprise Mocks**: Full mock implementations for GitHub/Jira sync layers to ensure reliable local verification.
+* **Neural Verification**: Mocks for `AtlasService` provide consistent, schema-valid JSON to test the A2UI rendering engine.
 
 ---
 
