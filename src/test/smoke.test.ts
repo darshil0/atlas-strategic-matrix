@@ -58,8 +58,8 @@ describe("🏛️ ATLAS v3.6.1 - Production Integration Tests", () => {
     const loadedPlan = PersistenceService.getPlan();
 
     expect(loadedPlan).toMatchObject(mockPlan);
-    expect(loadedPlan!.tasks).toHaveLength(2);
-    expect(loadedPlan!.tasks[0].id).toBe("AI-26-Q1-001");
+    expect(loadedPlan?.tasks).toHaveLength(2);
+    expect(loadedPlan?.tasks[0]?.id).toBe("AI-26-Q1-001");
   });
 
   it("🔄 Sync services health check passes", async () => {
@@ -94,8 +94,11 @@ describe("🏛️ ATLAS v3.6.1 - Production Integration Tests", () => {
     );
 
     // 2. Persistence roundtrip
-    PersistenceService.savePlan(result.plan!);
-    const persistedPlan = PersistenceService.getPlan()!;
+    if (result.plan) {
+      PersistenceService.savePlan(result.plan);
+    }
+    const persistedPlan = PersistenceService.getPlan();
+    if (!persistedPlan) throw new Error("Plan not persisted");
 
     // 3. Sync services
     const syncResult = await syncServices.syncToAll(persistedPlan);

@@ -14,6 +14,7 @@ import "./ui";
 export * from "./env"; // 🌐 Environment (Gemini, GitHub, Jira)
 export * from "./system"; // ⚙️  System constants (tasks, priorities)
 export * from "./ui"; // 🎨 UI components + design tokens
+export * from "../components/ui/TaskIcons";
 
 /**
  * App bootstrap helper - validates full config stack
