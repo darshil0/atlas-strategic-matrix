@@ -180,10 +180,11 @@ Maintain the **Zero Warning Baseline**. All PRs must pass `npm run lint`, `npm r
 ## 🧪 Testing Strategy
 
 - **Threshold**: 85% coverage for Lines, Functions, Branches, and Statements. Strictly enforced in `vitest.config.ts`.
-- **Setup**: `src/test/setup.ts` contains necessary mocks for `scrollIntoView` and `crypto.randomUUID`.
+- **Infrastructure**: Shared test helpers and mock plans are housed in `src/test/test-utils.ts` to ensure stability across the multi-agent swarm.
+- **Setup**: `src/test/setup.ts` provides a global Vitest environment with mocks for `ResizeObserver`, `crypto`, and A2UI serializers. It must remain decoupled from test imports to prevent internal suite corruption.
 - **Service Mocks**: The test suite uses comprehensive mock implementations for core services to achieve high reliability.
 - **Integration**: `src/test/smoke.test.ts` verifies the full multi-agent pipeline.
-- **Frontend Verification**: Playwright scripts should wait for the `BootLoader` transition (2.6s - 5s). A `.env` file with a mock `VITE_GEMINI_API_KEY` is required for local verification.
+- **Frontend Verification**: A mock `.env` file with `VITE_GEMINI_API_KEY` is required for local verification of the `BootLoader` transition (2.6s - 5s).
 
 ---
 

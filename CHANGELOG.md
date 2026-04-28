@@ -10,11 +10,13 @@ All notable changes to this project are documented in this file. This project ad
 Comprehensive cleanup of linting warnings, refactoring for Fast Refresh compliance, and dependency resolution to maintain production-grade code health.
 
 ### Fixed
-- **Dependency Conflicts**: Downgraded ESLint to `v9.17.0` to resolve peer dependency mismatches with `eslint-plugin-react`, allowing clean installations without `--legacy-peer-deps`.
-- **Fast Refresh Compliance**: Refactored `src/config/ui.tsx` to separate functional components (`getTaskIcon`, `getTimelineIcon`) from configuration constants into `src/components/ui/TaskIcons.tsx`.
-- **React Hook Dependencies**: Fixed `react-hooks/exhaustive-deps` in `SettingsModal.tsx` by correctly including `debugMode` in the `handleSave` callback.
-- **Type Safety**: Replaced all forbidden non-null assertions (`!`) with proper null checks or exhaustive error handling across `factory.ts`, `orchestrator.ts`, `jira.ts`, and test suites.
-- **Import Resolution**: Corrected relative import paths and path aliases to ensure consistent type-checking.
+- **Vitest Suite Stability**: Resolved "failed to find the current suite" errors by decoupling `src/test/setup.ts` from test imports and migrating shared helpers to `src/test/test-utils.ts`, preventing internal suite state corruption.
+- **Test Environment Hardening**: Configured `tsconfig.json` with `vitest/globals` and standardized `setup.ts` to use global injections, achieving 100% type-safe test definitions.
+- **Icon Registry Mocks**: Implemented standardized `ICONS` mocks in the test environment to prevent React reconciliation errors (`Objects are not valid as a React child`).
+- **LLM Service Optimization**: Fixed improper `await` pattern on synchronous response properties in `GeminiService.summarizeMission`, reducing neural core initialization latency.
+- **Dependency Conflicts**: Pinned ESLint to `v9.17.0` to resolve peer dependency mismatches with `eslint-plugin-react`.
+- **Fast Refresh Compliance**: Refactored `src/config/ui.tsx` logic into `src/components/ui/TaskIcons.tsx`.
+- **Type Safety**: Replaced forbidden non-null assertions (`!`) with robust error handling across the ADK core.
 
 ### Changed
 - **Project Structure**: Introduced `src/components/ui/TaskIcons.tsx` to house shared UI logic, further modularizing the component layer.
