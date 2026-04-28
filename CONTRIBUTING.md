@@ -181,7 +181,7 @@ function createTask(props: any) {
 ### React Components
 
 - Use functional components with hooks.
-- Extract custom hooks for reusable logic.
+- **Logic Extraction**: Move complex state, orchestration, and side-effects into specialized hooks (e.g., `src/hooks/`). Keep the `App` component as a lean layout orchestrator.
 - Keep components small and focused.
 - Use proper prop typing with interfaces.
 - Implement proper error boundaries where appropriate.
@@ -456,6 +456,7 @@ atlas-strategic-agent/
 │   ├── components/      # ui/, views/, cards/, core/
 │   ├── config/          # Environment & System constants
 │   ├── data/            # Static Strategic Data (TaskBank)
+│   ├── hooks/           # Modular logic extraction (useAtlasCore, useExport)
 │   ├── lib/
 │   │   └── adk/         # Core Multi-Agent Orchestration
 │   ├── services/        # ai/, core/, integrations/
