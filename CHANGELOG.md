@@ -4,6 +4,28 @@ All notable changes to this project are documented in this file. This project ad
 
 ---
 
+## [3.6.3] - 2026-04-29
+
+### 🔧 Build Tooling & Zero Warning Baseline Restoration
+Comprehensive cleanup of linting warnings, refactoring for Fast Refresh compliance, and dependency resolution to maintain production-grade code health.
+
+### Fixed
+- **Dependency Conflicts**: Downgraded ESLint to `v9.17.0` to resolve peer dependency mismatches with `eslint-plugin-react`, allowing clean installations without `--legacy-peer-deps`.
+- **Fast Refresh Compliance**: Refactored `src/config/ui.tsx` to separate functional components (`getTaskIcon`, `getTimelineIcon`) from configuration constants into `src/components/ui/TaskIcons.tsx`.
+- **React Hook Dependencies**: Fixed `react-hooks/exhaustive-deps` in `SettingsModal.tsx` by correctly including `debugMode` in the `handleSave` callback.
+- **Type Safety**: Replaced all forbidden non-null assertions (`!`) with proper null checks or exhaustive error handling across `factory.ts`, `orchestrator.ts`, `jira.ts`, and test suites.
+- **Import Resolution**: Corrected relative import paths and path aliases to ensure consistent type-checking.
+
+### Changed
+- **Project Structure**: Introduced `src/components/ui/TaskIcons.tsx` to house shared UI logic, further modularizing the component layer.
+- **Entry Point**: Exported `Root` component in `src/index.tsx` to satisfy Vite's Fast Refresh requirements for entry points.
+
+### Technical Debt Resolved
+- **Zero Warning Baseline**: Achieved 0 warnings across `lint`, `type-check`, and `test`.
+- **Code Robustness**: Eliminated potential runtime crashes by removing unsafe non-null assertions in core agent orchestration logic.
+
+---
+
 ## [3.6.2] - 2026-04-28
 
 ### 🔧 Build Tooling & Configuration Hardening

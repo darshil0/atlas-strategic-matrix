@@ -67,7 +67,11 @@ export class AgentFactory {
       this.agentPool[persona] = this.create(persona);
       this.poolSize++;
     }
-    return this.agentPool[persona]!;
+    const agent = this.agentPool[persona];
+    if (!agent) {
+      throw new Error(`🚨 Failed to create or retrieve agent for persona: ${persona}`);
+    }
+    return agent;
   }
 
   /**

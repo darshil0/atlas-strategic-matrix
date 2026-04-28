@@ -121,7 +121,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [validateForm, onClose]);
+  }, [validateForm, onClose, debugMode]);
 
   if (!isOpen) return null;
 

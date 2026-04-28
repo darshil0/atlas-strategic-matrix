@@ -15,7 +15,7 @@ import {
 } from "./components/core/BootOrchestrator";
 
 // === PRODUCTION RENDERING ===
-const Root: React.FC = () => {
+export const Root: React.FC = () => {
   const [showLoader, setShowLoader] = useState(true);
 
   const handleReady = useCallback(() => {

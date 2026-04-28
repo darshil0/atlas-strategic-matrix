@@ -119,8 +119,8 @@ export class MissionControl {
     const visited = new Set<string>();
 
     while (queue.length > 0) {
-      const currentId = queue.shift()!;
-      if (visited.has(currentId)) continue;
+      const currentId = queue.shift();
+      if (!currentId || visited.has(currentId)) continue;
       visited.add(currentId);
       cascade.add(currentId);
 

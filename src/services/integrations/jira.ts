@@ -134,8 +134,8 @@ export class JiraService extends RetryableAPIService {
 
           if (task.priority === Priority.HIGH && task.category) {
             const epicKey = await this.getEpicKey(config, task.category);
-            if (epicKey) {
-              await this.linkToEpic(config, result.issueKey!, epicKey);
+            if (epicKey && result.issueKey) {
+              await this.linkToEpic(config, result.issueKey, epicKey);
             }
           }
         } else {
