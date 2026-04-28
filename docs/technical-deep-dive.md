@@ -16,23 +16,43 @@ Think of it as three brutally honest consultants working 24/7:
 
 ---
 
-## v3.6.0 Update: The “Zero Warning” Milestone
+## v3.6.3 Update: Fast Refresh & Stability
+*April 2026*
 
-*January 2026*
+Finalizing the production-grade experience:
+* **Fast Refresh Compliance**: Separated functional UI icons from configuration to ensure seamless development.
+* **Non-Null Assertion Cleanup**: Replaced unsafe `!` operators with robust error handling across core agent orchestration.
+* **ESLint Stabilization**: Resolved peer dependency conflicts by pinning `eslint` to v9.17.0.
+
+## v3.6.2 Update: Configuration Hardening
+*April 2026*
+
+* **Tool Auto-Discovery**: Corrected configuration file naming conventions (`.env.example`, `eslint.config.ts`).
+* **React 19 Rules**: Enforced strict Hook rules and React 19 specific linting patterns.
+
+## v3.6.1 Update: Persistence & Concurrency
+*April 2026*
+
+* **Atomic Writes**: Introduced a Mutex-guarded `writeQueue` in `PersistenceService` to prevent storage corruption.
+* **Batch Concurrency**: `RetryableAPIService` now enforces a limit of 3 concurrent requests during bulk sync.
+* **Memory Management**: Automated agent disposal in `AgentFactory` to prevent leaks during long sessions.
+
+## v3.6.0 Update: The “Zero Warning” Milestone
+*April 2026*
 
 This release marks the shift from “feature complete” to **technically pristine**, built on four pillars:
 
 1. **Zero Warning Baseline**
-   Every ESLint warning across 15,000+ lines of code was eliminated—unused variables, module resolution issues, legacy path aliases. A strict pre-commit pipeline now enforces a zero-warning standard.
+   Every ESLint warning was eliminated. A strict pre-commit pipeline now enforces a zero-warning standard.
 
 2. **100% Core Type Safety**
-   We removed all `any` usage in core systems. Every agent execution, service call, and state transition is governed by strict interfaces (`AnalystResult`, `JiraSyncResult`, etc.).
+   We removed all `any` usage in core systems. Every transition is governed by strict interfaces (`AnalystResult`, `JiraSyncResult`).
 
 3. **Synchronized Reasoning**
-   The AI system instruction is now version-aligned. The agent explicitly knows it is Atlas v3.6.0, ensuring consistency with platform constraints.
+   The AI system instruction is now version-aligned. The agent explicitly knows it is Atlas v3.6.3, ensuring consistency with platform constraints.
 
 4. **Service Layer Modernization**
-   `GithubService` and `JiraService` were redesigned with strongly typed result patterns for robust error handling and reliable synchronization.
+   `GithubService` and `JiraService` were redesigned with strongly typed result patterns and exponential backoff.
 
 ---
 
@@ -88,31 +108,29 @@ interface Task {
 ### React 19: Powerful but Demanding
 
 **Pros**
-
-* Improved concurrent rendering
-* Better performance with complex graphs
+* Improved concurrent rendering and specialized `use` hooks.
+* Better performance with complex dependency graphs.
 
 **Cons**
-
-* Ecosystem incompatibilities
-* Required patching outdated dependencies
+* Ecosystem incompatibilities with legacy UI libraries.
+* Required patching outdated peer dependencies.
 
 **Lesson**: Cutting-edge tools require fallback strategies. Maintain backward compatibility.
 
 ---
 
-### Vite 7.3: Fast Feedback Loops
+### Vite 8.0: Fast Feedback Loops
 
-* Near-instant hot reload (~50ms)
-* Native ES module support
+* Near-instant hot reload (~50ms) using native ESM.
+* **Update**: v8.0 introduces better functional API for `manualChunks` to ensure strict typing.
 
 **Gotcha**: Environment variables must use `VITE_` prefix.
 
 ---
 
-### Tailwind CSS 4.1
+### Tailwind CSS 4.2
 
-Utility-first styling reduces context switching:
+Utility-first styling reduces context switching. v4.2 moves to a CSS-first configuration:
 
 ```tsx
 <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-8 shadow-2xl">
@@ -158,51 +176,66 @@ interface LLMProvider {
 User Input → MissionControl → Strategist / Analyst / Critic → UI
 ```
 
-Each agent has a single responsibility, improving clarity and output quality.
+Each agent has a single responsibility, improving clarity and output quality. The `AgentFactory` manages agent lifecycles:
+
+* **Pooling**: Static `agentPool` with a `MAX_POOL_SIZE` of 10 to limit resource consumption.
+* **Cleanup**: Explicit `dispose()` method to clear the pool and prevent memory leaks.
 
 ---
 
 ### Orchestration Logic
 
+`MissionControl` utilizes a collaborative synthesis pipeline (Strategist → Analyst → Critic) with an iterative refinement loop until a quality threshold of **Score >= 85** is reached (capped at 3 iterations).
+
 ```typescript
-class MissionControl {
-  async orchestrate(input: ExecutiveInput): Promise<Roadmap> {
-    const strategist = this.getAgent(AgentPersona.STRATEGIST);
-    let proposal = await strategist.execute(input.goal);
+// src/lib/adk/orchestrator.ts
+while (iterations < maxIterations && review.score < scoreThreshold) {
+  iterations++;
+  currentPlan = await strategist.execute<Plan>(feedbackPrompt, {
+    ...context,
+    plan: currentPlan,
+    criticFeedback: review,
+    analysis,
+  });
+  // ... re-evaluate with Analyst and Critic
+}
+```
 
-    let iterations = 0;
-    while (iterations < 3) {
-      const criticResult = await this.critic.execute(input.goal, { plan: proposal });
-      if (criticResult.score >= 85) break;
+---
 
-      iterations++;
-      proposal = await strategist.execute(criticResult.feedback, { plan: proposal });
-    }
+### A2UI Protocol v1.1
 
-    const analysis = await this.analyst.execute(input.goal, { plan: proposal });
-    return { ...proposal, analysis };
+Instead of returning raw data, the AI returns UI component schemas that are rendered by the glassmorphic engine.
+
+```json
+{
+  "type": "mission_control_status",
+  "props": {
+    "score": 92,
+    "iterations": 2,
+    "q1HighCount": 5
   }
 }
 ```
 
-**Fix implemented**: iteration cap prevents infinite refinement loops.
+**Refinement**: v1.1 introduces specialized components like `mission_control_status` and enhanced `glassmorphic_card` props with fluent `UIBuilder` support.
 
 ---
 
-### A2UI Protocol
+### Failure Simulation
 
-Instead of returning raw data, the AI returns UI components:
+Models cascading task risk across the Directed Acyclic Graph (DAG) using a BFS-based traversal.
 
-```json
-{
-  "type": "glassmorphic_card",
-  "props": { "title": "Q1 2026: Foundation" }
+```typescript
+// src/lib/adk/orchestrator.ts
+async simulateFailure(taskId: string, plan: Plan) {
+  const cascade = new Set<string>();
+  const queue = [taskId];
+  // ... BFS traversal to find all dependents
+  const riskScore = (impactedTasks.length / plan.tasks.length) * 100;
+  return { cascade, riskScore, impactedHighPriority };
 }
 ```
-
-**Benefit**: Context-aware UI rendering.
-
-**Risk**: Requires strict schema validation and component whitelisting.
 
 ---
 
@@ -236,36 +269,6 @@ function detectCycles(tasks: Task[]): boolean {
 
 ---
 
-### Failure Simulation
-
-Models cascading task risk:
-
-```typescript
-function simulateFailure(taskId: string, roadmap: Roadmap): Impact {
-  const impacted = new Set<string>();
-  const queue = [taskId];
-
-  while (queue.length) {
-    const current = queue.shift()!;
-    impacted.add(current);
-
-    const dependents = roadmap.tasks.filter(t =>
-      t.dependencies.includes(current)
-    );
-
-    queue.push(...dependents.map(d => d.id));
-  }
-
-  return {
-    totalImpacted: impacted.size,
-    quartersDelayed: calculateDelays(impacted),
-    criticalPathBroken: isCriticalPath(taskId),
-  };
-}
-```
-
----
-
 ## Integration Layer
 
 ### Challenges
@@ -285,19 +288,24 @@ export interface JiraSyncResult {
 }
 ```
 
-### Retry Logic
+**Feature**: `GithubService` now supports automated task linking to repository project boards via the `addToProject` method during synchronization.
+
+### Retry & Concurrency Control
+
+The `RetryableAPIService` base class provides a standardized resilience layer for all external integrations.
 
 ```typescript
-async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await fn();
-    } catch {
-      if (i === retries - 1) throw;
-      await sleep(2 ** i * 1000);
-    }
-  }
-  throw new Error('Unreachable');
+// src/services/core/RetryableAPIService.ts
+protected async withRetry<T>(operation: () => Promise<T>): Promise<T> {
+  // Exponential backoff: 1s, 2s, 4s...
+}
+
+protected async inBatches<T, R>(
+  items: T[],
+  batchSize: number,
+  processor: (item: T) => Promise<R>
+): Promise<R[]> {
+  // Enforces MAX_CONCURRENT_API_CALLS = 3
 }
 ```
 
@@ -305,14 +313,32 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
 
 ## Data Layer
 
-### Local Storage
+### Persistence & Atomic Writes
 
-Base64 encoding prevents accidental exposure—not true security.
-
-**Fix for Unicode issue**:
+The `PersistenceService` implements a `Mutex` to ensure atomic operations on `localStorage`, specifically for the strategic plan `writeQueue`. It also monitors storage quotas (5MB limit) and surfaces warnings when usage exceeds 90%.
 
 ```typescript
-const encoded = btoa(encodeURIComponent(JSON.stringify(data)));
+// src/services/core/persistence.ts
+private static async processQueue(): Promise<void> {
+  const shouldStart = await this.queueMutex.runExclusive(async () => {
+    if (this.isProcessingQueue) return false;
+    this.isProcessingQueue = true;
+    return true;
+  });
+  // ... process sequential shift() from queue
+}
+```
+
+### Security & Obfuscation
+
+While `localStorage` is not a secure vault, Atlas implements XOR-based obfuscation (key `0xaa`) and Base64 encoding to prevent casual shoulder-surfing of API keys.
+
+```typescript
+private static encrypt(data: string): string {
+  return btoa(
+    data.replace(/./g, (c) => String.fromCharCode(c.charCodeAt(0) ^ 0xaa))
+  );
+}
 ```
 
 ---
