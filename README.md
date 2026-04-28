@@ -128,6 +128,27 @@ npm test                 # Run Vitest integration suite
 
 ---
 
+## 🌐 Browser Support & Performance
+
+| Browser | Support | Notes |
+| :--- | :--- | :--- |
+| **Chrome / Edge** | ✅ Optimized | Full support for backdrop-blur and concurrent rendering |
+| **Firefox** | ✅ Supported | Requires `layout.css.backdrop-filter.enabled` for glassmorphic effects |
+| **Safari** | ✅ Supported | Optimized for WebKit rendering |
+
+> [!TIP]
+> **Performance**: Atlas uses GPU-accelerated CSS filters. On lower-end devices, the `DEBUG_MODE` flag can be used to disable heavy transparency effects if performance degradation is observed.
+
+---
+
+## 🛡️ Security & Privacy
+
+*   **Secret Obfuscation**: Atlas implements XOR-based obfuscation (key `0xaa`) for client-side storage of GitHub/Jira tokens. 
+*   **Production Note**: For high-security enterprise environments, it is recommended to transition to a backend OAuth proxy.
+*   **Data Isolation**: All strategic planning data remains in `localStorage` and is never sent to external servers except for the official GitHub/Jira APIs.
+
+---
+
 ## 🗺️ Roadmap & Changelog
 
 ### v3.6.3 ✅ (Current)

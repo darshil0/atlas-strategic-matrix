@@ -476,6 +476,40 @@ We especially welcome first-time contributors. Look for issues labeled `good fir
 
 ---
 
+## 🛡️ Security Policy
+
+### Reporting a Vulnerability
+
+If you discover a security vulnerability within Atlas, please send an email to [contact@darshilshah.com](mailto:contact@darshilshah.com). All security vulnerabilities will be promptly addressed.
+
+### Supported Versions
+
+| Version | Supported |
+| :--- | :--- |
+| v3.6.x | ✅ Current |
+| v3.5.x | ❌ End of Life |
+
+---
+
+## 🔍 Code Review Guidelines
+
+All pull requests must undergo a formal code review. Reviewers should focus on:
+1. **Logic & Correctness**: Does the code achieve the intended goal?
+2. **Readability**: Is the code self-documenting and easy to follow?
+3. **Test Coverage**: Does the PR maintain the 85% coverage threshold?
+4. **Zero Warning Baseline**: Does the code introduce any new lint/type warnings?
+
+---
+
+## 📝 Documentation Standards
+
+- Use clear, professional language (Google Style).
+- Document all public API methods with JSDoc.
+- Update `README.md` if the PR introduces new features or architectural changes.
+- Ensure all diagrams (Mermaid) are synchronized with the implementation.
+
+---
+
 ## Getting Help
 
 ### Communication Channels
