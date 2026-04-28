@@ -12,17 +12,22 @@
 
 ---
 
-## 🎯 What Makes Atlas Different?
+## 🎯 Executive Summary
 
-- **Multi-Agent Synthesis** - specialized Strategist, Analyst, and Critic agents collaborate in a real-time synthesis pipeline.
-- **A2UI Protocol v1.1** - A high-performance protocol for streaming glassmorphic UI components directly from LLM reasoning.
-- **What-If Simulations** - Advanced failure cascade modeling to visualize risk propagation and critical path bottlenecks.
-- **Enterprise-Ready** - Seamless bidirectional synchronization with GitHub Issues API v3 and Jira Cloud REST API.
-- **Premium UX** - A state-of-the-art glassmorphic interface built with React 19, Framer Motion 12, and Tailwind CSS v4.
+Imagine you're a CEO who just declared, “I need to dominate the AI market in 2026!” Your leadership team nods enthusiastically—then everyone stares at each other wondering: *What does that actually mean? What do we build first? Who does what? When?*
+
+**Atlas is the answer to that moment.**
+
+It’s not just another project management tool. It’s an AI-powered reality check that transforms ambitious “change the world” statements into executable quarterly roadmaps—complete with tasks, dependencies, risk assessments, and timeline validation.
+
+Think of it as three brutally honest consultants working 24/7:
+*   **🎙️ The Strategist**: Breaks your vision into actionable pieces (milestones, dependencies).
+*   **📊 The Analyst**: Asks, “Is this actually feasible?” (scoring, capacity, TaskBank alignment).
+*   **🔍 The Critic**: Finds every flaw before reality does (DAG validation, acyclic constraints).
 
 ---
 
-## 🏗️ Architecture & Multi-Agent Engine
+## 🏗️ Architecture: The Agent Development Kit (ADK)
 
 Atlas implements a collaborative synthesis pipeline where specialized agents work together to ensure plan quality and technical feasibility.
 
@@ -41,141 +46,95 @@ graph TD
     F --> F3[Mermaid/JSON]
 ```
 
-### Specialized Personas
+### Specialized Agent Personas
+
 | Agent | Role | Output |
-|-------|------|--------|
+| :--- | :--- | :--- |
 | **🎙️ The Strategist** | Decomposes "North Star" goals into Q1-Q4 2026 workstreams | Strategic milestones with dependencies |
 | **🔬 The Analyst** | Performs feasibility scoring and TASK_BANK alignment | Risk assessments and capacity analysis |
 | **⚖️ The Critic** | Stress-tests roadmaps for acyclic graph validation | DAG optimization and quality scores |
 
-> [!IMPORTANT]
-> **Zero Warning Baseline**: v3.6.2 strictly enforces a zero-warning policy across TypeScript, ESLint, and Vitest, ensuring enterprise-grade stability.
+---
+
+## 🧱 Core Service Implementations
+
+### 1. PersistenceService (`src/services/core/persistence.ts`)
+- **Atomic Operations**: Uses a custom `Mutex` and non-recursive `processQueue` to handle asynchronous `localStorage` writes, preventing race conditions.
+- **Security**: Implements XOR-based obfuscation (key `0xaa`) combined with Base64 encoding for client-side secret storage.
+- **Quota Management**: Proactively monitors storage usage (5MB limit) and surfaces warnings when >90% capacity is reached.
+
+### 2. MissionControl (`src/lib/adk/orchestrator.ts`)
+- **Failure Simulation**: BFS-based engine that calculates impact cascades across the DAG, identifying high-priority risks.
+- **Swarm Logic**: Orchestrates the multi-agent loop with iterative feedback until a quality threshold of **Score >= 85** is reached.
+- **Agent Lifecycle**: `AgentFactory` manages a static pool of agents with automated disposal to prevent memory leaks.
+
+### 3. Integration Layer (`src/services/integrations/`)
+- **RetryableAPIService**: Base class providing exponential backoff and batch-based concurrency control (max 3 concurrent requests).
+- **GitHub**: Automated milestone creation (Q1-Q4) and project board linking via `addToProject`.
+- **Jira**: Bidirectional ticket discovery via encoded JQL and automated linking of stories to quarterly epics.
 
 ---
 
-## ✨ Key Capabilities
+## 🧠 Technical Deep Dive & Tech Stack
 
-| Feature | Description | Stack |
-|---------|-------------|-------|
-| **A2UI Protocol** | Real-time streaming of UI from LLM responses | React 19 + Framer Motion |
-| **What-If Engine** | Failure cascade modeling with risk scoring | Custom DAG analysis |
-| **Enterprise Sync** | Native GitHub & Jira integration with ADF support | REST API v3 |
-| **Glassmorphic UI** | Premium backdrop-blur design system | Tailwind 4.2 |
-| **Persistence** | Mutex-guarded encrypted localStorage | Custom persistence layer |
-| **TaskBank** | 90+ pre-calculated 2026 strategic objectives | AI, Cyber, ESG, etc. |
+### Why it works: The "Aha!" Moment
+Executives are great at vision, but the gap between vision and execution is where strategies fail. Atlas was built to think like an experienced operator: **synthesize, validate, iterate, and challenge assumptions.**
 
----
+### The Stack: Key Decisions
+*   **TypeScript (Strict)**: 100% compliance. No `any`. Strict interfaces like `AnalystResult` ensure data integrity across the swarm.
+*   **React 19**: Utilizes concurrent rendering for high-density dependency graphs.
+*   **Vite 8.0**: Near-instant hot reload (~50ms) with optimized `manualChunks` for production.
+*   **Tailwind CSS v4.2**: CSS-first configuration via `@theme`. Features a custom glassmorphic design system (`glass-1/2`).
+*   **Gemini 2.0 Flash**: Selected for structured JSON output and low latency. Hardened `parseResponse` logic handles inconsistent LLM formatting.
 
-## 🚀 Getting Started
-
-### Prerequisites
-- **Node.js** 20+ (LTS recommended)
-- **npm** 10+
-- **Google Gemini API Key** ([Get your key](https://ai.google.dev/gemini-api/docs/api-key))
-
-### Quick Start
-```bash
-# 1. Clone & Install
-git clone https://github.com/darshil0/atlas-strategic-agent.git
-cd atlas-strategic-agent
-npm install
-
-# 2. Environment Setup
-cp .env.example .env
-# Add your VITE_GEMINI_API_KEY to .env
-
-# 3. Launch
-npm run dev
+### A2UI Protocol v1.1
+Instead of returning raw data, the AI returns UI component schemas.
+```json
+{
+  "type": "mission_control_status",
+  "props": { "score": 92, "iterations": 2, "q1HighCount": 5 }
+}
 ```
-
-The application will launch at `http://localhost:3000`.
-
-### Environment Variables
-
-| Variable | Required | Description |
-| :--- | :--- | :--- |
-| `VITE_GEMINI_API_KEY` | Yes | Google Gemini API Key |
-| `VITE_GITHUB_TOKEN` | No | Personal Access Token for GitHub |
-| `VITE_JIRA_DOMAIN` | No | Jira Cloud Domain (e.g. `company.atlassian.net`) |
-| `VITE_JIRA_EMAIL` | No | Jira Account Email |
-| `VITE_JIRA_API_TOKEN` | No | Jira API Token |
-
-## 🚀 Deployment
-
-To create a production build:
-
-```bash
-npm run build
-```
-
-The output will be in the `dist` directory. For production deployments, it is highly recommended to use a backend proxy for API keys to avoid exposing them in the client bundle.
-
-### Content Security Policy (CSP)
-
-Atlas includes a minimal CSP in `index.html`. If you use additional external resources, you may need to update the `connect-src` or `img-src` directives.
+The `UIBuilder` fluent API allows agents to construct complex glassmorphic interfaces in real-time.
 
 ---
 
-## 🧪 Development Workflow
+## 🧪 Development & Testing
 
 ### Available Scripts
 ```bash
-npm run dev              # Start dev server
+npm run dev              # Start dev server (localhost:3000)
 npm run build            # Production build with type checking
-npm run preview          # Preview production build
 npm run lint             # ESLint Zero Warning check
 npm run type-check       # Strict TypeScript check
 npm test                 # Run Vitest suite
 npm run coverage         # Coverage report (85% threshold)
 ```
 
----
-
-## 📂 Project Structure
-
-```
-src/
-├── components/          # UI Components (ui/, views/, cards/, core/)
-├── lib/adk/             # Agent Development Kit (Core)
-├── services/            # Layered services (ai/, core/, integrations/)
-├── config/              # System & Environment Configuration
-├── data/                # Static Strategic Data (TaskBank)
-├── types/               # Strict TypeScript Definitions
-├── styles/              # Global Tailwind CSS-first Styles
-└── test/                # Integration, Smoke & Unit Tests
-```
+### Testing Strategy
+- **Threshold**: 85% coverage minimum across all metrics.
+- **Infrastructure**: `src/test/setup.ts` handles global environment (Canvas, ResizeObserver, crypto) while `src/test/test-utils.ts` provides shared domain mocks.
+- **Zero Warning Baseline**: Strict enforcement of 0 warnings across all dev scripts.
 
 ---
 
-## 🎨 Design System
+## ⚠️ Guardrails & Conventions
 
-Atlas features a custom glassmorphic theme designed for high-density strategic data:
-- **Glass-1/2**: Backdrop-blur surfaces with dynamic lighting.
-- **Typography**: Inter (UI), JetBrains Mono (Technical), Outfit (Display).
-- **Theming**: Dark-first palette with `atlas-blue` accents.
+1.  **Zero Warning Baseline**: All PRs must pass `lint`, `type-check`, and `test` with 0 warnings.
+2.  **Type Safety**: Avoid non-null assertions (`!`). Use proper null checks.
+3.  **Fast Refresh**: Keep functional components separate from static constants (see `src/components/ui/TaskIcons.tsx`).
+4.  **Security**: Use XOR-based obfuscation for secrets; never store raw API keys in plain text.
+5.  **Acyclic DAGs**: The Critic agent strictly enforces no circular dependencies in the 2026 roadmap.
 
 ---
 
 ## 🗺️ Roadmap
 
 ### Current Version (v3.6.3) ✅
-- **Zero Warning Baseline Achievement**: Restored 100% compliance across `lint`, `type-check`, and `test` suites by resolving Vitest initialization conflicts and pinning compatible dependencies.
-- **Test Suite Modularization**: Decoupled `setup.ts` and introduced `src/test/test-utils.ts` to provide a robust, stable foundation for multi-agent integration testing.
-- **Neural Core Optimization**: Fixed asynchronous property access patterns in `GeminiService` to ensure lower latency and higher reliability during strategic plan generation.
-- **Fast Refresh & Modular UI**: Successfully refactored UI icons and entry points for better development experience and strict React 19 compatibility.
-- **Type Safety Hardening**: Eliminated unsafe non-null assertions (`!`) across core ADK and persistence layers.
-
-### Previous Release (v3.6.2)
-- **Configuration Hardening**: Fixed all config file naming conventions (`.eslintrc`, `.gitignore`, etc.) for proper tool auto-discovery.
-- **React 19 ESLint Compliance**: Added React-specific plugins with strict Hook rules enforcement.
-- **Test Configuration Consolidation**: Established `vitest.config.ts` as the single source of truth for testing.
-
-### Previous Release (v3.6.1)
-- **Type Safety Audit**: 100% strict compliance across all core modules (Zero Warning Baseline).
-- **Memory Management**: Automated agent disposal in `AgentFactory`.
-- **Persistence Layer**: Mutex-guarded `writeQueue` with non-recursive processing for data integrity.
-- **Error Surface**: Detailed error extraction and UI reporting in `handleSend`.
-- **Sync Enhancements**: Full GitHub Issue linking and Jira Epic mapping with exponential backoff.
+- **Zero Warning Baseline Achievement**: Restored 100% compliance across `lint`, `type-check`, and `test` suites.
+- **Test Suite Modularization**: Decoupled `setup.ts` and introduced `src/test/test-utils.ts` for stable integration testing.
+- **Neural Core Optimization**: Fixed asynchronous property access patterns in `GeminiService` for lower latency.
+- **Fast Refresh & Modular UI**: Refactored icons and entry points for strict React 19 compatibility.
 
 ### Planned 🚀
 - **V4.0.0**: Monte Carlo risk modeling with probability distributions.
@@ -184,16 +143,15 @@ Atlas features a custom glassmorphic theme designed for high-density strategic d
 
 ---
 
-## 📚 Documentation
-- **[AGENTS.md](./AGENTS.md)** - Multi-agent ADK reference.
-- **[CHANGELOG.md](./CHANGELOG.md)** - Full version history.
-- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines.
-- **[Technical Deep Dive](./docs/technical-deep-dive.md)** - Engineering insights.
+## 📜 Changelog (v3.6.3 Highlights)
 
----
+- **Fixed**: Vitest "failed to find the current suite" errors through `setup.ts` decoupling.
+- **Fixed**: Asynchronous property access bug in `GeminiService.summarizeMission`.
+- **Improved**: Standardized `ICONS` mocks to prevent React reconciliation errors.
+- **Changed**: Moved UI logic to `src/components/ui/TaskIcons.tsx` for Fast Refresh compliance.
+- **Hardened**: 100% strict TypeScript compliance across core ADK and persistence layers.
 
-## 📄 License
-MIT License - See [LICENSE](./LICENSE) for details.
+*For full history, see the archived `CHANGELOG.md`.*
 
 ---
 
@@ -203,6 +161,6 @@ MIT License - See [LICENSE](./LICENSE) for details.
 
 *Transforming executive vision into executable reality*
 
-[Report Bug](https://github.com/darshil0/atlas-strategic-agent/issues) · [Request Feature](https://github.com/darshil0/atlas-strategic-agent/issues)
+[Report Bug](https://github.com/darshil0/atlas-strategic-agent/issues) · [License: MIT](./LICENSE)
 
 </div>
