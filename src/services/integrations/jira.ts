@@ -12,13 +12,16 @@ import {
 } from "@types";
 import { PersistenceService } from "@services/core/persistence";
 import { TASK_BANK } from "@data/taskBank";
+import { RetryableAPIService } from "../core/RetryableAPIService";
+import { SYSTEM_CONSTANTS, ENV } from "@config";
 
 /**
  * Jira Cloud REST API v3 - Production enterprise integration
  */
-export class JiraService {
-  private static readonly API_VERSION = "3";
-  private static readonly USER_AGENT = "Atlas-Strategic-Agent/3.6.1";
+export class JiraService extends RetryableAPIService {
+  private static readonly API_VERSION = SYSTEM_CONSTANTS.JIRA_API_VERSION;
+  private static readonly USER_AGENT = `Atlas-Strategic-Agent/${ENV.APP_VERSION}`;
+  private static readonly MAX_CONCURRENT = SYSTEM_CONSTANTS.MAX_CONCURRENT_API_CALLS;
 
   /**
    * Create Jira Issue from Atlas SubTask with glassmorphic epic linking
@@ -31,23 +34,24 @@ export class JiraService {
         config.projectKey
       );
 
-      const response = await fetch(
-        `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue`,
-        {
-          method: "POST",
-          headers: this.getHeaders(config),
-          body: JSON.stringify(issueData),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await this.parseJiraError(response);
-        throw new Error(
-          `Jira API [${response.status}]: ${errorData.errorMessages?.[0] || response.statusText}`
+      const issue = await this.withRetry(async () => {
+        const response = await fetch(
+          `https://${config.domain}.atlassian.net/rest/api/${JiraService.API_VERSION}/issue`,
+          {
+            method: "POST",
+            headers: this.getHeaders(config),
+            body: JSON.stringify(issueData),
+          }
         );
-      }
 
-      const issue = await response.json();
+        if (!response.ok) {
+          const errorData = await this.parseJiraError(response);
+          const message = errorData.errorMessages?.[0] || response.statusText;
+          throw new Error(`Jira API [${response.status}]: ${message}`);
+        }
+
+        return await response.json();
+      });
 
       return {
         success: true,
@@ -115,12 +119,13 @@ export class JiraService {
 
     await this.ensureQuarterlyEpics(config);
 
-    for (const task of tasks) {
+    // Concurrent execution in batches
+    await this.inBatches(tasks, JiraService.MAX_CONCURRENT, async (task) => {
       try {
         const existing = await this.findExistingTicket(config, task.id);
         if (existing) {
           results.skipped++;
-          continue;
+          return;
         }
 
         const result = await this.createTicket(task);
@@ -143,7 +148,7 @@ export class JiraService {
           error: (error as Error).message,
         });
       }
-    }
+    });
 
     return results;
   }

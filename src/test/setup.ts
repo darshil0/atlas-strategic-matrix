@@ -122,6 +122,7 @@ vi.mock("@services/core/persistence", () => ({
     saveJiraApiKey: vi.fn((key) => { mockState.secrets["jira_api_key_enc_v3.2"] = key; }),
     getJiraDomain: vi.fn(),
     getJiraEmail: vi.fn(),
+    getJiraProjectKey: vi.fn(),
     getGithubOwner: vi.fn(),
     getGithubRepo: vi.fn(),
   },
