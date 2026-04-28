@@ -19,6 +19,7 @@ Comprehensive cleanup of linting warnings, refactoring for Fast Refresh complian
 - **Type Safety**: Replaced forbidden non-null assertions (`!`) with robust error handling across the ADK core.
 
 ### Changed
+- **Documentation Strategy**: Consolidated `README.md`, `AGENTS.md`, and `technical-deep-dive.md` into a single, high-fidelity `README.md` to establish a single source of truth for the ADK architecture and technical standards.
 - **Project Structure**: Introduced `src/components/ui/TaskIcons.tsx` to house shared UI logic, further modularizing the component layer.
 - **Entry Point**: Exported `Root` component in `src/index.tsx` to satisfy Vite's Fast Refresh requirements for entry points.
 
