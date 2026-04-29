@@ -20,7 +20,8 @@ Comprehensive cleanup of linting warnings, refactoring for Fast Refresh complian
 - **Unused Variable Cleanup**: Eliminated redundant imports and unused variables in `src/test/setup.ts` to achieve 100% clean output in `lint` and `type-check`.
 
 ### Changed
-- **Documentation Strategy**: Consolidated `README.md`, `AGENTS.md`, and `technical-deep-dive.md` into a single, high-fidelity `README.md` to establish a single source of truth for the ADK architecture and technical standards.
+- **Architectural Refinement**: Decoupled core logic from `App.tsx` into a modular **`src/hooks/`** layer (`useAtlasCore`, `useExport`, `usePersistence`, `useScrollToBottom`), transforming the entry point into a declarative layout orchestrator.
+- **Documentation Strategy**: Consolidated all architectural and technical documentation into a single, high-fidelity `README.md` to establish a single source of truth for the ADK architecture and technical standards.
 - **Project Structure**: Introduced `src/components/ui/TaskIcons.tsx` to house shared UI logic, further modularizing the component layer.
 - **Entry Point**: Exported `Root` component in `src/index.tsx` to satisfy Vite's Fast Refresh requirements for entry points.
 
