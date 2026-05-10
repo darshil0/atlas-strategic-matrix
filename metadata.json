@@ -1,0 +1,6 @@
+{
+  "name": "Atlas",
+  "description": "Strategic planning mission control and automated quarterly roadmap generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["AI_AGENTS", "DEVELOPER_TOOLS"]
+}

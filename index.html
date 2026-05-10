@@ -1,51 +1,13 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/atlas-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com https://*.atlassian.net https://generativelanguage.googleapis.com;">
-
-    <!-- Keep version in sync with package.json (3.6.3) -->
-    <title>Atlas Strategic Agent | v3.6.3</title>
-    <meta
-      name="description"
-      content="Elite Autonomous Strategic Orchestrator with Multi-Agent Collaborative Synthesis."
-    />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Atlas Strategic Agent" />
-    <meta
-      property="og:description"
-      content="Autonomous strategic reasoning powered by Gemini 2.0 Flash."
-    />
-    <meta property="og:image" content="/og-preview.png" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
+    <title>My Google AI Studio App</title>
   </head>
-
   <body>
-    <div id="loader">
-      <div class="pulse-ring"></div>
-    </div>
-
     <div id="root"></div>
-
-    <script type="module" src="/src/index.tsx"></script>
-
-    <script>
-      window.addEventListener("load", () => {
-        const loader = document.getElementById("loader");
-        if (loader) {
-          loader.style.opacity = "0";
-          setTimeout(() => loader.remove(), 500);
-        }
-      });
-    </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
+

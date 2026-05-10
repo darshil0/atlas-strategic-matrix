@@ -1,58 +1,26 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx",
-
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
-
-    "noEmit": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-
-    "forceConsistentCasingInFileNames": true,
-    "ignoreDeprecations": "6.0",
-
-    /* Strictness & Quality */
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "skipLibCheck": true,
-
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
     "paths": {
-      "@/*": ["src/*"],
-      "@adk/*": ["src/lib/adk/*"],
-      "@services/*": ["src/services/*"],
-      "@types": ["src/types/index.ts"],
-      "@config": ["src/config/index.ts"],
-      "@data/*": ["src/data/*"],
-      "@lib/*": ["src/lib/*"],
-      "@components/*": ["src/components/*"]
+      "@/*": [
+        "./*"
+      ]
     },
-
-    "types": [
-      "vite/client",
-      "node",
-      "vitest/globals"
-    ]
-  },
-  "include": [
-    "src/**/*",
-    "vite.config.ts",
-    "vitest.config.ts",
-    "eslint.config.ts",
-    "tailwind.config.ts"
-  ],
-  "exclude": ["node_modules", "dist"]
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  }
 }

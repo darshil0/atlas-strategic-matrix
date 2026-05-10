@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // -------------------------------------------------------------------------
+    // PILLAR 3: Global Helpers
+    // -------------------------------------------------------------------------
+    function isSignedIn() { return request.auth != null; }
+    
+    // PILLAR 6: PII & Identity Guard
+    function isEmailVerified() { 
+      // Mandatory per guidelines for production-ready apps
+      return request.auth.token.email_verified == true; 
+    }
+    
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // PILLAR 0: Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // PILLAR 1 & 2: Entity Validation (Projects)
+    // -------------------------------------------------------------------------
+    function isValidMilestone(m) {
+      return m.id is string 
+        && m.title is string && m.title.size() <= 200
+        && m.description is string && m.description.size() <= 2000
+        && m.status in ['todo', 'in-progress', 'done', 'blocked']
+        && m.dependencies is list
+        && (m.riskLevel == null || m.riskLevel in ['low', 'medium', 'high'])
+        && (m.feasibilityScore == null || m.feasibilityScore is number);
+    }
+
+    function isValidWorkstream(ws) {
+      return ws.id is string
+        && ws.name is string && ws.name.size() <= 100
+        && ws.description is string && ws.description.size() <= 1000
+        && ws.milestones is list;
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['name', 'directive', 'ownerId', 'vision', 'workstreams', 'createdAt'])
+        && data.ownerId == request.auth.uid
+        && data.name is string && data.name.size() <= 500
+        && data.directive is string && data.directive.size() <= 5000
+        && data.vision is string
+        && data.workstreams is list
+        && (data.workstreams.size() == 0 || isValidWorkstream(data.workstreams[0]))
+        // Terminal state lock (Pillar 3/Tiered Logic) handled in match block
+        && (data.createdAt == request.time || data.createdAt is timestamp || data.createdAt is string);
+    }
+
+    match /projects/{projectId} {
+      // PILLAR 8: Secure List Queries
+      allow get: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+        && isEmailVerified() 
+        && isValidId(projectId)
+        && isValidProject(incoming());
+      
+      allow update: if isSignedIn() 
+        && isEmailVerified() 
+        && resource.data.ownerId == request.auth.uid 
+        && incoming().ownerId == resource.data.ownerId // PILLAR 9: Immutable Owner
+        && incoming().createdAt == existing().createdAt // PILLAR 9: Immutable CreatedAt
+        && isValidProject(incoming());
+
+      allow delete: if isSignedIn() 
+        && resource.data.ownerId == request.auth.uid;
+        
+      // Nested collections
+      match /workstreams/{workstreamId} {
+        allow read, write: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid;
+      }
+    }
+  }
+}

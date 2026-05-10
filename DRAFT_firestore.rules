@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // -------------------------------------------------------------------------
+    // GLOBAL HELPERS
+    // -------------------------------------------------------------------------
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(ownerId) { return isSignedIn() && request.auth.uid == ownerId; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // ENTITY VALIDATORS
+    // -------------------------------------------------------------------------
+    
+    function isValidProject(data) {
+      return data.keys().hasAll(['name', 'directive', 'ownerId']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 500 &&
+             data.directive is string && data.directive.size() > 0 && data.directive.size() <= 2000 &&
+             data.ownerId == request.auth.uid;
+    }
+
+    function isValidWorkstream(data) {
+      return data.keys().hasAll(['projectId', 'name']) &&
+             data.projectId is string && data.name is string && data.name.size() <= 500;
+    }
+
+    function isValidMilestone(data) {
+      return data.keys().hasAll(['workstreamId', 'quarter', 'title']) &&
+             data.workstreamId is string &&
+             data.quarter is string &&
+             data.title is string && data.title.size() <= 500;
+    }
+
+    function isValidInteraction(data) {
+      return data.keys().hasAll(['projectId', 'agentType', 'content']) &&
+             data.projectId is string &&
+             data.agentType in ['Strategist', 'Analyst', 'Critic'] &&
+             data.content is string;
+    }
+
+    // -------------------------------------------------------------------------
+    // RULES
+    // -------------------------------------------------------------------------
+
+    match /projects/{projectId} {
+      allow get: if isSignedIn() && isOwner(existing().ownerId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidProject(incoming());
+      allow update: if isSignedIn() && isOwner(existing().ownerId) && isValidProject(incoming()) &&
+                      incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isOwner(existing().ownerId);
+
+      match /workstreams/{workstreamId} {
+        allow read: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid;
+        allow create: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid && isValidWorkstream(incoming());
+        allow update: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid && isValidWorkstream(incoming());
+        allow delete: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid;
+
+        match /milestones/{milestoneId} {
+          allow read: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid;
+          allow create: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid && isValidMilestone(incoming());
+          allow update: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid && isValidMilestone(incoming());
+          allow delete: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid;
+        }
+      }
+
+      match /interactions/{interactionId} {
+        allow read: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid;
+        allow create: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.ownerId == request.auth.uid && isValidInteraction(incoming());
+      }
+    }
+  }
+}

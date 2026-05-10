@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "A high-level strategic initiative",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "directive": { "type": "string", "description": "The executive directive" },
+        "vision": { "type": "string", "description": "The AI-expanded vision statement" },
+        "status": { "type": "string", "enum": ["draft", "active", "completed"] },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "directive", "ownerId"]
+    },
+    "Workstream": {
+      "title": "Workstream",
+      "description": "A specific area of focus within a project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "projectId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "leadAgent": { "type": "string", "enum": ["Strategist", "Analyst", "Critic"] }
+      },
+      "required": ["projectId", "name"]
+    },
+    "Milestone": {
+      "title": "Milestone",
+      "description": "A specific deliverable or goal in a roadmap",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "workstreamId": { "type": "string" },
+        "quarter": { "type": "string", "description": "e.g., Q1 2026" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "dependencies": { "type": "array", "items": { "type": "string" } },
+        "status": { "type": "string", "enum": ["todo", "in-progress", "done", "blocked"] },
+        "riskLevel": { "type": "string", "enum": ["low", "medium", "high"] },
+        "feasibilityScore": { "type": "number" },
+        "criticFeedback": { "type": "string" },
+        "githubIssueUrl": { "type": "string" },
+        "jiraIssueKey": { "type": "string" }
+      },
+      "required": ["workstreamId", "quarter", "title"]
+    },
+    "AgentInteraction": {
+      "title": "AgentInteraction",
+      "description": "Logs of agent reasoning and feedback",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "projectId": { "type": "string" },
+        "agentType": { "type": "string", "enum": ["Strategist", "Analyst", "Critic"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["projectId", "agentType", "content"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Root collection for strategic projects"
+    },
+    "/projects/{projectId}/workstreams/{workstreamId}": {
+      "schema": "Workstream",
+      "description": "Workstreams for a project"
+    },
+    "/projects/{projectId}/workstreams/{workstreamId}/milestones/{milestoneId}": {
+      "schema": "Milestone",
+      "description": "Milestones within a workstream"
+    },
+    "/projects/{projectId}/interactions/{interactionId}": {
+      "schema": "AgentInteraction",
+      "description": "Logs of agent reasoning"
+    }
+  }
+}
