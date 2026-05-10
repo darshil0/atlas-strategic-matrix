@@ -121,6 +121,7 @@ export interface AgentExecutionContext {
   previousPlan?: Plan | null; // Iteration history
   criticFeedback?: CriticResult; // Refinement input
   taskBank?: BankTask[]; // 90+ enterprise objectives
+  analysis?: AnalystResult; // Analyst feedback
   [key: string]: unknown;
 }
 
@@ -156,6 +157,7 @@ export interface FailureCascadeResult {
   cascade: string[];
   riskScore: number;
   impactedHighPriority: number;
+  a2ui?: A2UIMessage;
 }
 
 // === A2UI GLASSMORPHIC PROTOCOL ===
