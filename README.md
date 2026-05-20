@@ -1,4 +1,4 @@
-# ATLAS Strategic Matrix v3.6.3
+# ATLAS Strategic Matrix v3.6.4
 
 > **Enterprise-grade strategic roadmap orchestration platform powered by autonomous agent swarms**
 
@@ -355,7 +355,7 @@ Built with ❤️ by [Darshil Shah](https://github.com/darshil0) and the open-so
 
 <div align="center">
 
-### 🏛️ ATLAS v3.6.3 — Glassmorphic Precision • Enterprise Scale • 2026 Roadmaps
+### 🏛️ ATLAS v3.6.4 — Glassmorphic Precision • Enterprise Scale • 2026 Roadmaps
 
 **[🚀 Get Started](#quick-start)** • **[📚 Documentation](./docs)** • **[🐛 Report Issues](https://github.com/darshil0/atlas-strategic-agent/issues)** • **[⭐ Star on GitHub](https://github.com/darshil0/atlas-strategic-agent)**
 
