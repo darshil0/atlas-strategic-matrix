@@ -1,85 +1,87 @@
 # Changelog
 
-All notable changes to the ATLAS Strategic Matrix project will be documented in this file.
+All notable changes to the ATLAS Strategic Matrix project are documented below. This project adheres to Semantic Versioning.
 
 ## [3.6.4] - 2026-05-20
+
 ### Fixed
-- **Task Synchronization**: Standardized Task ID regex to `/\233\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/` to support 4-part strategic task IDs in GitHub and Jira integrations.
-- **A2UI Protocol**: Expanded protocol to support advanced UI components including Charts, Stats, Inputs, Checkboxes, and Selects for richer agent-to-user interactions.
-- **Persistence Layer**: Implemented `Mutex` class in `PersistenceService` to manage atomic asynchronous plan saves and prevent `localStorage` race conditions.
-- **Type Definitions**: Unified and expanded core types for `SyncResult`, `GithubIssueResult`, and `JiraTicketResult`.
+
+* **Task Synchronization:** Fixed Task ID regex pattern to `/\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/` to support standard 4-part strategic IDs across GitHub and Jira integrations.
+* **A2UI Protocol:** Added support for native UI primitives (Charts, Stats, Inputs, Checkboxes, Selects) within agent-to-user interaction frames.
+* **Persistence Layer:** Introduced an asynchronous `Mutex` lock mechanism in `PersistenceService` to prevent `localStorage` write race conditions during concurrent saves.
+* **Type Definitions:** Unified return signatures for `SyncResult`, `GithubIssueResult`, and `JiraTicketResult`.
 
 ### Changed
-- **Tailwind v4 Migration**: Complete migration to Tailwind CSS v4 utilizing the new CSS-first configuration and `@theme` engine.
-- **Project Configuration**: Unified and optimized `tsconfig.json`, `vite.config.ts`, and `vitest.config.ts` for improved developer experience and path alias resolution.
-- **Agent Orchestration**: Enhanced `MissionControl` loop with improved feedback passing between Analyst, Critic, and Strategist agents.
+
+* **Tailwind v4 Migration:** Upgraded frontend to Tailwind CSS v4, replacing legacy configuration files with the new CSS-first `@theme` engine.
+* **Project Build System:** Consolidated environment configs across `tsconfig.json`, `vite.config.ts`, and `vitest.config.ts` to resolve absolute path alias conflicts.
+* **Agent Orchestration:** Refined telemetry collection and payload handoffs inside the `MissionControl` loop during agent cross-talk.
 
 ---
 
 ## [3.6.3] - 2026-05-10
+
 ### Fixed
-- **Type Safety**: Fixed `A2UIMessage` interface to properly include required `timestamp` field
-- **Path Aliases**: Complete tsconfig.json and vitest.config.ts path alias configuration (@services, @data, @lib, @components, @adk)
-- **Imports**: Fixed missing `AnalystResult` and `CriticResult` imports in orchestrator.ts
-- **Circular Dependencies**: Resolved circular import risk in src/config/index.ts by separating createAtlasMission function
-- **Persistence Mutex**: Improved null safety in PersistenceService getSecret/setSecret methods with proper error handling
-- **Test Setup**: Fixed vi.mocked() wrapper usage in integration tests for proper PersistenceService mocking
-- **Modal Validation**: Added proper `type` attribute to SettingsModal input fields for password field handling
-- **Agent Types**: Exported `AnalystResult` from types/index.ts for proper agent feedback typing
 
-### Changed
-- **Documentation**: Updated README.md with production deployment guidance and architecture diagram
-- **Test Reliability**: Enhanced mock setup in vitest configuration to prevent test race conditions
-- **Type Exports**: Reorganized AgentExecutionContext to include `analysis?: AnalystResult` field
+* **Type Safety:** Enforced requirement of the `timestamp` field in the `A2UIMessage` schema.
+* **Path Aliases:** Corrected tsconfig resolution paths for key directories (`@services`, `@data`, `@lib`, `@components`, `@adk`) across both build and test environments.
+* **Module Imports:** Restored missing `AnalystResult` and `CriticResult` exports in `orchestrator.ts`.
+* **Circular Dependencies:** Extracted `createAtlasMission` from `src/config/index.ts` to break a critical circular initialization loop.
+* **Persistence Layer:** Added null-safety checks to `PersistenceService` credential retrieval methods.
+* **Test Isolation:** Replaced flaky environment mocks with explicit `vi.mocked()` wrappers in integration suites.
 
-### Verified
-- ✅ All path aliases working across src/, vitest, and TypeScript compilation
-- ✅ A2UI protocol v1.1 glassmorphic message validation
-- ✅ PersistenceService encryption/decryption with proper secret management
-- ✅ MissionControl pipeline with 3-iteration critic feedback loop
-- ✅ GitHub/Jira integration retry logic with exponential backoff
-- ✅ Failure cascade simulation with proper DAG traversal
-- ✅ Test coverage maintained at 85%+ threshold
+### Verified Baseline
+
+* Path alias resolution functional across compilation pipelines.
+* Real-time multi-agent processing with 3-iteration loop ceiling.
+* Exponential backoff and retry limits on all upstream enterprise API calls.
+* 85% statement, branch, and function test coverage threshold maintained.
 
 ---
 
 ## [3.6.2] - 2026-05-05
+
 ### Added
-- TaskBank filtering by theme (AI, Cyber, ESG, Global, Infra, People)
-- AgentConstellation component for real-time neural activity visualization
-- Formal dependency tracking system with transitive closure validation
+
+* Categorized TaskBank filtering by enterprise theme parameters (AI, Cyber, ESG, Global, Infra, People).
+* Built `<AgentConstellation/>` UI component to track active neural agent telemetry.
+* Implemented formal DAG tracking system with transitive closure verification.
 
 ### Fixed
-- CRT scanline effect rendering in glassmorphic containers
-- ReactFlow memory leaks with proper cleanup in useEffect dependencies
-- Firestore race conditions using atomic functional state updates
+
+* Optimized backdrop filters on glassmorphic container components to eliminate render-stutter.
+* Resolved memory leaks in `@xyflow/react` instances by binding strict cleanup functions within internal hooks.
+* Mitigated database write conflicts via atomic functional state updates in Firestore.
 
 ---
 
 ## [3.6.1] - 2026-04-28
+
 ### Added
-- Multi-pass agent collaboration (Strategist → Analyst → Critic)
-- Stress testing framework for failure cascade modeling
-- What-If Mode toggle for contingency planning
+
+* Multi-pass sequential generation chain: Strategist $\rightarrow$ Analyst $\rightarrow$ Critic.
+* Deterministic failure cascade simulation engine for stress-testing planned task dependencies.
+* **What-If Mode** toggle for interactive risk modeling.
 
 ### Fixed
-- Gemini API timeout handling with proper Promise.race() pattern
-- Firestore validation rules preventing denial-of-wallet attacks
-- ReactFlow node positioning with toposorting algorithm
+
+* Wrapped Gemini LLM invocations in a `Promise.race()` wrapper to enforce strict network timeouts.
+* Hardened Firestore security rules to protect database endpoints against denial-of-wallet vectors.
+* Integrated a topological sorting algorithm to calculate node layouts dynamically.
 
 ---
 
 ## [3.6.0] - 2026-04-20
+
 ### Major Release
-- 🏛️ **ATLAS Strategic Matrix v3.6** - Production-ready enterprise roadmap orchestration
-- **Multi-Agent Swarm**: Strategist, Analyst, Critic agents with autonomous collaboration
-- **Glassmorphic UI**: Premium frosted-glass design system with CRT effects
-- **ReactFlow Integration**: Interactive dependency visualization with D3-style force-directed layout
-- **Firestore Persistence**: Real-time multi-user plan sync with encryption
+
+* **Engine:** Initial production release of the core enterprise multi-agent swarm platform.
+* **UI Architecture:** Launched responsive glassmorphic layout featuring interactive `@xyflow/react` topological graph views.
+* **Persistence:** Deployed real-time multi-user document state synchronization backed by Firestore.
 
 ---
 
-## [1.0.0] - Initial Release
-- Core ATLAS Strategic Matrix functionality
-- Executive prompt-to-roadmap synthesis
-- Glassmorphism UI design foundation
+## [1.0.0] - Historical Initial Release
+
+* Core ATLAS proof of concept.
+* Basic prompt-to-roadmap serialization framework.
