@@ -85,3 +85,5 @@ All notable changes to the ATLAS Strategic Matrix project are documented below. 
 
 * Core ATLAS proof of concept.
 * Basic prompt-to-roadmap serialization framework.
+
+Note: Version history between 1.0.0 and 3.6.0 represents rapid internal prototyping iterations and baseline stability testing. Documented change history begins with production-ready release branches.
