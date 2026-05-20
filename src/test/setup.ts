@@ -130,6 +130,38 @@ vi.mock("@config", () => ({
 
 // Mock PersistenceService
 vi.mock("@services/core/persistence", () => ({
+  default: {
+    getPlan: vi.fn(() => mockState.plan),
+    savePlan: vi.fn((plan) => {
+      mockState.plan = plan;
+    }),
+    getSecret: vi.fn((key) => mockState.secrets[key]),
+    saveSecret: vi.fn((key, val) => { mockState.secrets[key] = val; }),
+    getMessages: vi.fn(() => mockState.messages),
+    saveMessages: vi.fn((msgs) => { mockState.messages = msgs; }),
+    getSettings: vi.fn().mockReturnValue({}),
+    saveSettings: vi.fn(),
+    getGithubConfig: vi.fn().mockReturnValue(null),
+    saveGithubConfig: vi.fn(),
+    getJiraConfig: vi.fn().mockReturnValue(null),
+    saveJiraConfig: vi.fn(),
+    saveWorkflow: vi.fn(),
+    getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002, remaining: 5242780 }),
+    clearAll: vi.fn(() => {
+      mockState.plan = null;
+      mockState.secrets = {};
+      mockState.messages = [];
+    }),
+    getGithubApiKey: vi.fn(() => mockState.secrets["github_api_key_enc_v3.2"]),
+    saveGithubApiKey: vi.fn((key) => { mockState.secrets["github_api_key_enc_v3.2"] = key; }),
+    getJiraApiKey: vi.fn(() => mockState.secrets["jira_api_key_enc_v3.2"]),
+    saveJiraApiKey: vi.fn((key) => { mockState.secrets["jira_api_key_enc_v3.2"] = key; }),
+    getJiraDomain: vi.fn(),
+    getJiraEmail: vi.fn(),
+    getJiraProjectKey: vi.fn(),
+    getGithubOwner: vi.fn(),
+    getGithubRepo: vi.fn(),
+  },
   PersistenceService: {
     getPlan: vi.fn(() => mockState.plan),
     savePlan: vi.fn((plan) => {
@@ -146,7 +178,7 @@ vi.mock("@services/core/persistence", () => ({
     getJiraConfig: vi.fn().mockReturnValue(null),
     saveJiraConfig: vi.fn(),
     saveWorkflow: vi.fn(),
-    getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002 }),
+    getStorageStats: vi.fn().mockReturnValue({ used: 100, quota: 5242880, percent: 0.002, remaining: 5242780 }),
     clearAll: vi.fn(() => {
       mockState.plan = null;
       mockState.secrets = {};
@@ -166,6 +198,34 @@ vi.mock("@services/core/persistence", () => ({
 
 // Mock AtlasService
 vi.mock("@services/ai/gemini", () => ({
+  default: {
+    generatePlan: vi.fn().mockResolvedValue({
+      projectName: "Test Project",
+      goal: "AI Transformation Q1 2026",
+      tasks: [
+        {
+          id: "AI-26-Q1-001",
+          description: "Deploy Multi-Modal Agent Orchestration",
+          status: "PENDING",
+          priority: "HIGH",
+          category: "2026 Q1",
+          theme: "AI",
+          dependencies: [],
+        },
+        {
+          id: "CY-26-Q1-001",
+          description: "Deploy Zero-Trust Identity Fabric",
+          status: "PENDING",
+          priority: "HIGH",
+          category: "2026 Q1",
+          theme: "Cyber",
+          dependencies: ["AI-26-Q1-001"],
+        },
+      ],
+    }),
+    executeSubtask: vi.fn().mockResolvedValue({ text: "Subtask executed" }),
+    summarizeMission: vi.fn().mockResolvedValue("Mission summary"),
+  },
   AtlasService: {
     generatePlan: vi.fn().mockResolvedValue({
       projectName: "Test Project",
@@ -202,52 +262,54 @@ vi.mock("@services/ai/gemini", () => ({
 // NOTE: vi.mock is hoisted to the top of the module by Vitest's transform, so
 // factory functions must be inlined — they cannot reference const variables
 // defined elsewhere in the file.
-vi.mock("@services", () => ({
-  githubService: {
-    createIssue: vi.fn().mockResolvedValue({
-      issueNumber: 123,
-      htmlUrl: "https://github.com/test",
-    }),
-    syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
-  },
-  jiraService: {
-    createTicket: vi
-      .fn()
-      .mockResolvedValue({ success: true, issueKey: "ATLAS-123" }),
-    syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
-  },
-  syncServices: {
-    syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
-    healthCheck: vi.fn().mockResolvedValue([
-      { service: "GitHub", healthy: true },
-      { service: "Jira", healthy: true },
-    ]),
-  },
-}));
+vi.mock("@services", async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@services')>();
+  return {
+    ...actual,
+    githubService: {
+      createIssue: vi.fn().mockResolvedValue({
+        issueNumber: 123,
+        htmlUrl: "https://github.com/test",
+      }),
+      syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
+    },
+    jiraService: {
+      createTicket: vi
+        .fn()
+        .mockResolvedValue({ success: true, issueKey: "ATLAS-123" }),
+      syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
+    },
+    syncServices: {
+      ...actual.syncServices,
+      syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
+    },
+  };
+});
 
 // Also mock the relative path used by App.tsx
-vi.mock("../services", () => ({
-  githubService: {
-    createIssue: vi.fn().mockResolvedValue({
-      issueNumber: 123,
-      htmlUrl: "https://github.com/test",
-    }),
-    syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
-  },
-  jiraService: {
-    createTicket: vi
-      .fn()
-      .mockResolvedValue({ success: true, issueKey: "ATLAS-123" }),
-    syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
-  },
-  syncServices: {
-    syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
-    healthCheck: vi.fn().mockResolvedValue([
-      { service: "GitHub", healthy: true },
-      { service: "Jira", healthy: true },
-    ]),
-  },
-}));
+vi.mock("../services", async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../services')>();
+  return {
+    ...actual,
+    githubService: {
+      createIssue: vi.fn().mockResolvedValue({
+        issueNumber: 123,
+        htmlUrl: "https://github.com/test",
+      }),
+      syncPlan: vi.fn().mockResolvedValue({ created: 5, skipped: 0, failed: [] }),
+    },
+    jiraService: {
+      createTicket: vi
+        .fn()
+        .mockResolvedValue({ success: true, issueKey: "ATLAS-123" }),
+      syncPlan: vi.fn().mockResolvedValue({ created: 3, skipped: 0, failed: [] }),
+    },
+    syncServices: {
+      ...actual.syncServices,
+      syncToAll: vi.fn().mockResolvedValue({ totalCreated: 8 }),
+    },
+  };
+});
 
 beforeEach(() => {
   // Reset localStorage for each test
