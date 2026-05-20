@@ -320,7 +320,7 @@ ${
   }
 
   private parseIssueToSubTask(issue: GitHubIssue): SubTask {
-    const taskIdMatch = issue.title.match(/\[([A-Z]+-\d+-\d+)\]/);
+    const taskIdMatch = issue.title.match(/\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/);
     const taskId = taskIdMatch?.[1] || `GH-${issue.number}`;
 
     return {
