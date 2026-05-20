@@ -1,85 +1,86 @@
 # ATLAS Strategic Matrix v3.6.4
 
-> **Enterprise-grade strategic roadmap orchestration platform powered by autonomous agent swarms**
+Enterprise-grade strategic roadmap orchestration platform powered by autonomous agent swarms.
 
-ATLAS is a production-ready glassmorphic intelligence dashboard that transforms C-level strategic directives into executable 2026 quarterly roadmaps. Leveraging a multi-agent neural constellation (Strategist, Analyst, Critic), ATLAS synthesizes complex enterprise strategies with real-time risk modeling and GitHub/Jira synchronization.
+ATLAS transforms executive strategic directives into executable, topologically sorted quarterly roadmaps for 2026. It utilizes a multi-agent system (Strategist, Analyst, Critic, Architect) to synthesize enterprise goals with real-time risk modeling, dependency validation, and bidirectional GitHub/Jira synchronization.
 
 ---
 
 ## 🎯 Core Capabilities
 
-### **Neural Agent Constellation**
-- **🧠 Strategist Agent**: Decomposes executive goals into hierarchical, topologically-sorted quarterly tasks (Q1-Q4 2026)
-- **📊 Analyst Agent**: Computes feasibility scores, identifies resource bottlenecks, and flags critical-path dependencies
-- **🔍 Critic Agent**: Performs adversarial stress testing, validates acyclic dependency graphs, and suggests optimizations
-- **🏗️ Architect Agent**: Technical design synthesis and infrastructure planning alignment
-
-### **Strategic Synthesis**
-- **3-Iteration Refinement Loop**: Critic feedback automatically triggers Strategist re-planning until quality score ≥ 85
-- **TaskBank Integration**: 90+ production-ready enterprise objectives across 6 strategic themes (AI, Cyber, ESG, Global, Infra, People)
-- **Dependency Modeling**: Full DAG validation with transitive closure analysis and failure cascade simulation
-
-### **Dynamic Visualization**
-- **ReactFlow Dependency Graph**: Interactive topology with D3-force simulation, what-if mode, and impact analysis
-- **TimelineView**: Quarterly milestone timeline with status indicators and phasing awareness
-- **Glassmorphic Dashboard**: Premium frosted-glass UI with real-time status panels and neural activity visualization
-
-### **Enterprise Integration**
-- **GitHub Issues Sync**: Bidirectional sync of strategic tasks as GitHub Issues with project board automation
-- **Jira Cloud REST API v3**: Epic linking, priority mapping, and quarterly milestone tracking
-- **Firestore Persistence**: Real-time multi-user plan synchronization with encryption at rest
+* **Multi-Agent Engine:** Orchestrates four specialized asynchronous agents (Strategist, Analyst, Critic, Architect) running a 3-iteration refinement loop until the roadmap feasibility score reaches $\ge 85\%$.
+* **Dependency Modeling:** Validates Directed Acyclic Graphs (DAGs) using transitive closure analysis to simulate failure cascades and prevent circular blockers.
+* **Interactive Visualizations:** Renders live topological dependency networks using `@xyflow/react` with D3-force simulations alongside responsive quarterly milestone timelines.
+* **Enterprise Sync:** Features native integrations with Firestore (real-time encrypted state), GitHub Issues API, and Jira Cloud REST API v3 (Epic linking and priority mapping).
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** 20+ (LTS) | **npm** 10+ | **TypeScript** 5.8+
-- **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
-- **Firebase Project** (Optional: for Firestore persistence)
+
+* Node.js 20+ (LTS) | npm 10+ | TypeScript 5.8+
+* Google Gemini API Key ([Get API Key](https://ai.google.dev/gemini-api/docs/api-key))
+* Firebase Project (Optional for multi-user sync)
 
 ### Installation
 
 ```bash
-# Clone repository
+# Clone and enter repository
 git clone https://github.com/darshil0/atlas-strategic-agent.git
 cd atlas-strategic-agent
 
-# Install dependencies
+# Install dependencies and configure environment
 npm install
-
-# Configure environment
 cp .env.example .env
-# Edit .env and add:
-# VITE_GEMINI_API_KEY=your_gemini_key_here
-# VITE_DEBUG_MODE=true (optional)
 
-# Run development server
-npm run dev
-# 🏛️ Atlas ready at http://localhost:5173
 ```
 
-### First Mission
+Edit your `.env` file to add your credentials:
 
-1. **Open MissionControl**: Navigate to `http://localhost:5173`
-2. **Enter Strategic Directive**: 
-   ```
-   Design a 2026 AI transformation roadmap for a Fortune 500 financial services firm
-   ```
-3. **Synthesize Roadmap**: Click "Send"
-4. **Review Multi-Pass Generation**: Watch Strategist → Analyst → Critic collaboration
-5. **Inspect Dependency Graph**: Switch to "Network" view to see task relationships
-6. **Run Stress Test**: Toggle "What-If Mode" and click "Simulate Failure" on a critical task
-7. **Export to GitHub/Jira**: Use Settings modal to configure integrations, then sync roadmap
+```env
+VITE_GEMINI_API_KEY=your_gemini_key_here
+
+```
+
+```bash
+# Start development server
+npm run dev
+
+```
+
+The application will be accessible at `http://localhost:5173`.
+
+### Standard Workflow
+
+1. **Input Directive:** MissionControl Dashboard.
+Enter an enterprise goal into the prompt interface (e.g., *“Design a 2026 AI transformation roadmap for a Fortune 500 financial services firm”*).
+
+
+2. **Execute Swarm Refinement:** Multi-Agent Execution.
+Trigger generation. The Strategist decomposes the goal, the Analyst checks resource capacity, and the Critic stress-tests the output.
+
+
+3. **Analyze Topology:** Network View.
+Review the generated task relationships in the interactive graph view to trace critical path dependencies.
+
+
+4. **Simulate Failure:** What-If Mode.
+Toggle **What-If Mode** and click **Simulate Failure** on a primary milestone to view downstream delivery risks.
+
+
+5. **Sync Third-Party Systems:** Enterprise Integration.
+Open the Settings modal, authenticate your corporate integration, and export the roadmap directly to Jira or GitHub.
+
 
 ---
 
-## 📊 Architecture
+## 📊 System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    MissionControl Dashboard                 │
-│         (Glassmorphic React 19 + Tailwind CSS v4)           │
+│                  MissionControl Dashboard                   │
+│          (React 19, Tailwind CSS v4, @xyflow/react)         │
 └────────────────────┬────────────────────────────────────────┘
                      │
         ┌────────────┼────────────┐
@@ -92,271 +93,79 @@ npm run dev
         └────────────┼────────────┘
                      │
         ┌────────────▼────────────┐
-        │   ADK (Agent Dev Kit)   │
-        │  ┌────┬────┬────┐      │
-        │  │Str │Anl │Cri│      │
-        │  └────┴────┴────┘      │
-        │  MissionControl Swarm   │
+        │     Agent Dev Kit       │
+        │  [Str] [Anl] [Cri] [Arc]│
         └────────────┬────────────┘
                      │
         ┌────────────┴────────────┐
-        │                         │
     ┌───▼──────┐         ┌───────▼──┐
     │ Gemini   │         │Firestore │
-    │Flash 1.5 │         │(Real-time)│
+    │Flash 1.5 │         │(Encrypted)│
     └──────────┘         └──────────┘
         │                     │
     ┌───▼──────┬──────────────▼────┐
-    │          │                   │
 ┌───▼──┐ ┌───▼───┐        ┌──────▼──┐
 │GitHub│ │ Jira  │        │Firebase │
 │Issues│ │ Cloud │        │Auth     │
 └──────┘ └───────┘        └─────────┘
+
 ```
 
-### Tech Stack
-- **Frontend**: React 19, Vite 6, Tailwind CSS v4, Motion (Framer)
-- **Graph Visualization**: ReactFlow + XY Flow, D3.js, Mermaid
-- **AI**: Google Gemini Flash 1.5, Search Grounding
-- **Database**: Firestore (real-time) + localStorage (offline-first)
-- **Testing**: Vitest 2, React Testing Library, 85%+ coverage
-- **Deployment**: Cloud Run, GitHub Actions CI/CD
+### Technical Stack
 
----
-
-## 🎨 Glassmorphic Design System
-
-### Color Palette
-- **Primary**: `#3b82f6` (Atlas Blue) + `#6366f1` (Indigo)
-- **Surfaces**: Dual-layer glass (`.glass-1`, `.glass-2`) with backdrop blur
-- **Accents**: Emerald (success), Amber (warning), Rose (critical)
-
-### Component Library
-- **Glass Containers**: 24px blur + 10% white saturation
-- **Status Indicators**: Animated pulse rings with glow effects
-- **Typography**: "Outfit" (display) + "Inter" (body) + "JetBrains Mono" (monospace)
+* **Frontend core:** React 19, Vite 6, Tailwind CSS v4, Motion
+* **Data Visualization:** `@xyflow/react`, D3.js
+* **AI Engine:** Google Gemini Flash 1.5 (with Search Grounding)
+* **Storage & Auth:** Firestore (real-time offline-first layer), Firebase Auth
+* **Quality Assurance:** Vitest 2, React Testing Library ($\ge 85\%$ test coverage target)
 
 ---
 
 ## 🧪 Testing & Quality Assurance
 
-### Run Tests
+All pull requests must pass the zero-warning pipeline baseline (TypeScript, ESLint, and Coverage metrics).
+
 ```bash
-# Watch mode
+# Run complete test suite in watch mode
 npm test
 
-# Coverage report
+# Generate coverage metrics
 npm run test:coverage
 
-# Test UI dashboard
-npm run test:ui
-```
+# Execute end-to-end integration tests explicitly
+npm run test -- src/test/smoke.test.ts
 
-### Quality Thresholds
-- **Lines**: 85%
-- **Functions**: 85%
-- **Branches**: 85%
-- **Statements**: 85%
-- **Zero Warning Baseline**: All TypeScript + ESLint checks must pass
-
-### Integration Test Suite
-```bash
-npm run test -- src/test/smoke.test.ts        # Full stack integration
-npm run test -- src/test/integration.test.tsx # ADK + persistence
-npm run test -- src/test/App.test.tsx         # UI component tests
 ```
 
 ---
 
-## 📚 Documentation
+## 🔒 Security Architecture
 
-### For Users
-- **Getting Started**: [Quick Start](#quick-start) above
-- **Mission Control Guide**: [docs/MISSION_CONTROL.md](./docs/MISSION_CONTROL.md)
-- **Roadmap Examples**: [docs/EXAMPLES.md](./docs/EXAMPLES.md)
-
-### For Developers
-- **Architecture**: [CONTRIBUTING.md](./CONTRIBUTING.md#project-structure)
-- **ADK Development**: [docs/ADK_GUIDE.md](./docs/ADK_GUIDE.md)
-- **Type System**: [src/types/index.ts](./src/types/index.ts)
-- **Prompting Claude**: [docs/PROMPTING.md](./docs/PROMPTING.md)
-
-### For DevOps
-- **Deployment**: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)
-- **Firebase Setup**: [docs/FIREBASE.md](./docs/FIREBASE.md)
-- **CI/CD Pipeline**: [.github/workflows/](./.github/workflows/)
+* **API Key Management:** Gemini API keys are injected via server-side environment variables (`VITE_GEMINI_API_KEY`).
+* **Integration Tokens:** Third-party OAuth tokens must be managed via an enterprise backend proxy or securely isolated in encrypted browser state. Do not use unencrypted local storage for raw production credentials.
+* **Data Isolation:** Firestore Security Rules enforce document-level owner isolation verified by Firebase Authentication tokens.
 
 ---
 
-## 🔄 Multi-Agent Workflow
+## 🎯 Platform Roadmap
 
-### Phase 1: Strategic Decomposition
-```
-User Input: "2026 Q1-Q4 AI transformation roadmap"
-    ↓
-[Strategist Agent]
-    • Parse executive directive
-    • Query TaskBank (90+ objectives)
-    • Generate hierarchical task tree
-    • Sort topologically (no cycles)
-    ↓
-Initial Plan: 15-30 tasks across 4 quarters
-```
+### 2026 Q2 - Q3
 
-### Phase 2: Feasibility Analysis
-```
-[Analyst Agent]
-    • Compute feasibility score (0-100)
-    • Identify resource gaps
-    • Flag critical-path bottlenecks
-    • Q1 capacity validation (max 12 HIGH priority)
-    ↓
-Constraints: "Q1 overloaded, defer 3 tasks to Q2"
-```
+* [ ] Role-Based Access Control (RBAC) and immutable system audit logs.
+* [ ] Multi-workspace data separation for discrete business units.
+* [ ] Forecasting models powered by Monte Carlo timeline simulations.
 
-### Phase 3: Adversarial Review
-```
-[Critic Agent]
-    • Validate DAG (no cycles)
-    • Stress-test with failure cascades
-    • Identify redundant objectives
-    • Suggest optimizations
-    ↓
-Refinement Feedback: Score 78/100 → needs iteration
-```
+### 2026 Q4 - 2027
 
-### Phase 4: Iterative Refinement (up to 3 cycles)
-```
-IF score < 85:
-    Strategist re-plans with Critic feedback
-    Analyst re-scores feasibility
-    Critic re-validates
-    Loop
-ELSE:
-    ✅ Plan Ready for Visualization
-```
+* [ ] Self-healing pipeline state with automated dependency conflict resolution.
+* [ ] Cross-enterprise dependency mapping tracking external vendor networks.
+* [ ] Sovereign infrastructure cluster profiles for strict compliance deployments.
 
 ---
 
-## 🌍 Enterprise Integrations
+## 📄 License & Support
 
-### GitHub Issues Sync
-```typescript
-// Export Q1 roadmap to GitHub
-const result = await githubService.syncPlan(plan.tasks);
-// Creates:
-// - Issues tagged with [AI-26-Q1-001] (TaskBank IDs)
-// - Q1 2026 milestone
-// - "atlas-strategic" label
-// - "glassmorphic-roadmap" project assignment
-```
+ATLAS Strategic Matrix is open-source software licensed under the [MIT License](https://www.google.com/search?q=./LICENSE).
 
-### Jira Cloud Integration
-```typescript
-// Sync to Jira Cloud REST API v3
-const result = await jiraService.syncPlan(plan.tasks);
-// Creates:
-// - Story/Task issues by priority
-// - Q1-Q4 Epics
-// - Component mapping (AI, Cyber, ESG, etc.)
-// - Automatic status transitions
-```
-
-### Firestore Real-Time Sync
-```typescript
-// Multi-user collaborative editing
-PersistenceService.savePlan(updatedPlan);
-// Automatically:
-// - Persists to Firestore
-// - Encrypts at rest
-// - Syncs to all clients
-// - Maintains offline-first capability
-```
-
----
-
-## 🔒 Security
-
-### API Key Management
-- ✅ Gemini API key via `VITE_GEMINI_API_KEY` environment variable
-- ✅ GitHub token encrypted in localStorage (use backend proxy for production)
-- ✅ Jira credentials stored with Base64 obfuscation (not crypto-secure; use Vault in production)
-- ✅ Firestore Security Rules enforce user ownership + email verification
-
-### Production Hardening
-1. **Use Secret Management Service** (AWS Secrets Manager, HashiCorp Vault)
-2. **Enable Firebase Security Rules** (see `firestore.rules`)
-3. **Deploy via Cloud Run** with service account isolation
-4. **Enable HTTPS only** + CORS restrictions
-5. **Implement rate limiting** on API endpoints
-
----
-
-## 🎯 Roadmap
-
-### Near-term (Q2 2026)
-- [ ] Multi-workspace support (separate roadmaps per department)
-- [ ] Role-based access control (RBAC) + audit logging
-- [ ] Advanced forecasting with Monte Carlo simulations
-- [ ] Slack/Teams notifications for milestone updates
-
-### Mid-term (Q3-Q4 2026)
-- [ ] Self-healing roadmaps with automated conflict resolution
-- [ ] Cross-enterprise dependency mapping (supplier, partner networks)
-- [ ] Compliance-aware planning (regulatory deadline tracking)
-- [ ] GraphQL API for programmatic access
-
-### Long-term (2027+)
-- [ ] Sovereign intelligence clusters for government contracts
-- [ ] Multi-modal LLM agents (vision + audio)
-- [ ] Quantum-resistant encryption for sensitive plans
-- [ ] Full autonomous mission planning (no human input)
-
----
-
-## 📞 Support & Contributing
-
-### Getting Help
-- **GitHub Issues**: [Report bugs or request features](https://github.com/darshil0/atlas-strategic-agent/issues)
-- **Discussions**: [Ask questions and discuss ideas](https://github.com/darshil0/atlas-strategic-agent/discussions)
-- **Email**: [contact@darshilshah.com](mailto:contact@darshilshah.com)
-
-### Contributing
-We welcome contributions from developers of all experience levels! See [CONTRIBUTING.md](./CONTRIBUTING.md) for:
-- Code of Conduct
-- Development Workflow
-- Testing Requirements (85% coverage)
-- Commit Guidelines (Conventional Commits)
-- PR Process
-
-### Code of Conduct
-- Be respectful and professional
-- Embrace diverse perspectives
-- Report harassment to contact@darshilshah.com
-- All contributions licensed under MIT
-
----
-
-## 📄 License
-
-ATLAS Strategic Matrix is licensed under the **MIT License**. See [LICENSE](./LICENSE) for details.
-
----
-
-## 🏆 Acknowledgments
-
-Built with ❤️ by [Darshil Shah](https://github.com/darshil0) and the open-source community.
-
-**Technologies**: React, Vite, Tailwind, Google Gemini, Firebase, Framer Motion, ReactFlow
-
-**Inspired by**: Enterprise strategic planning, multi-agent AI orchestration, glassmorphic design
-
----
-
-<div align="center">
-
-### 🏛️ ATLAS v3.6.4 — Glassmorphic Precision • Enterprise Scale • 2026 Roadmaps
-
-**[🚀 Get Started](#quick-start)** • **[📚 Documentation](./docs)** • **[🐛 Report Issues](https://github.com/darshil0/atlas-strategic-agent/issues)** • **[⭐ Star on GitHub](https://github.com/darshil0/atlas-strategic-agent)**
-
-</div>
+* **Technical Issues:** File reports on the [GitHub Issue Tracker](https://github.com/darshil0/atlas-strategic-agent/issues).
+* **Contributions:** Review [CONTRIBUTING.md](https://www.google.com/search?q=./CONTRIBUTING.md) for style guides, testing rules, and the Conventional Commits specification.
