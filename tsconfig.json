@@ -15,6 +15,8 @@
     "moduleDetection": "force",
     "allowJs": true,
     "jsx": "react-jsx",
+    "baseUrl": ".",
+    "types": ["vite/client", "node", "vitest/globals"],
     "paths": {
       "@/*": ["./src/*"],
       "@/components/*": ["./src/components/*"],
@@ -33,12 +35,12 @@
       "@/types": ["./src/types/index.ts"],
       "@types": ["./src/types/index.ts"],
       "@config": ["./src/config/index.ts"],
-      "@data": ["./src/data/taskBank.ts"],
-      "@lib": ["./src/lib"],
+      "@data/*": ["./src/data/*"],
+      "@lib/*": ["./src/lib/*"],
       "@lib/adk": ["./src/lib/adk/index.ts"],
       "@lib/utils": ["./src/lib/utils.ts"],
-      "@services": ["./src/services/index.ts"],
-      "@components": ["./src/components"]
+      "@services/*": ["./src/services/*"],
+      "@components/*": ["./src/components/*"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
