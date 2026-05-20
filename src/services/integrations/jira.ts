@@ -377,7 +377,7 @@ export class JiraService extends RetryableAPIService {
     fields: JiraIssueFields;
     key: string;
   }): SubTask {
-    const taskIdMatch = issue.fields.summary.match(/\[([A-Z]+-\d+-\d+)\]/);
+    const taskIdMatch = issue.fields.summary.match(/\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/);
     return {
       id: taskIdMatch?.[1] || issue.key,
       description: issue.fields.summary.replace(/^\[.*?\]\s*/, "").trim(),
