@@ -2,6 +2,20 @@
 
 All notable changes to the ATLAS Strategic Matrix project will be documented in this file.
 
+## [3.6.4] - 2026-05-20
+### Fixed
+- **Task Synchronization**: Standardized Task ID regex to `/\233\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/` to support 4-part strategic task IDs in GitHub and Jira integrations.
+- **A2UI Protocol**: Expanded protocol to support advanced UI components including Charts, Stats, Inputs, Checkboxes, and Selects for richer agent-to-user interactions.
+- **Persistence Layer**: Implemented `Mutex` class in `PersistenceService` to manage atomic asynchronous plan saves and prevent `localStorage` race conditions.
+- **Type Definitions**: Unified and expanded core types for `SyncResult`, `GithubIssueResult`, and `JiraTicketResult`.
+
+### Changed
+- **Tailwind v4 Migration**: Complete migration to Tailwind CSS v4 utilizing the new CSS-first configuration and `@theme` engine.
+- **Project Configuration**: Unified and optimized `tsconfig.json`, `vite.config.ts`, and `vitest.config.ts` for improved developer experience and path alias resolution.
+- **Agent Orchestration**: Enhanced `MissionControl` loop with improved feedback passing between Analyst, Critic, and Strategist agents.
+
+---
+
 ## [3.6.3] - 2026-05-10
 ### Fixed
 - **Type Safety**: Fixed `A2UIMessage` interface to properly include required `timestamp` field
