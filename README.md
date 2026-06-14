@@ -27,8 +27,8 @@ ATLAS transforms executive strategic directives into executable, topologically s
 
 ```bash
 # Clone and enter repository
-git clone https://github.com/darshil0/atlas-strategic-agent.git
-cd atlas-strategic-agent
+git clone https://github.com/<your-org>/atlas-strategic-matrix.git
+cd atlas-strategic-matrix
 
 # Install dependencies and configure environment
 npm install
@@ -113,9 +113,9 @@ Open the Settings modal, authenticate your corporate integration, and export the
 
 ### Technical Stack
 
-* **Frontend core:** React 19, Vite 6, Tailwind CSS v4, Motion
+* **Frontend core:** React 19, Vite 6, Tailwind CSS v4, `framer-motion`
 * **Data Visualization:** `@xyflow/react`, D3.js
-* **AI Engine:** Google Gemini Flash 1.5 (with Search Grounding)
+* **AI Engine:** Google Gemini 2.0 Flash (with structured output grounding)
 * **Storage & Auth:** Firestore (real-time offline-first layer), Firebase Auth
 * **Quality Assurance:** Vitest 2, React Testing Library ($\ge 85\%$ test coverage target)
 

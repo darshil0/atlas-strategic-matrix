@@ -15,6 +15,7 @@ All notable changes to the ATLAS Strategic Matrix project are documented below. 
 
 * **Tailwind v4 Migration:** Upgraded frontend to Tailwind CSS v4, replacing legacy configuration files with the new CSS-first `@theme` engine.
 * **Project Build System:** Consolidated environment configs across `tsconfig.json`, `vite.config.ts`, and `vitest.config.ts` to resolve absolute path alias conflicts.
+* **Dependencies:** Replaced stale `motion` package references with `framer-motion` and normalized package metadata for consistent build resolution.
 * **Agent Orchestration:** Refined telemetry collection and payload handoffs inside the `MissionControl` loop during agent cross-talk.
 
 ---
