@@ -1,5 +1,5 @@
 /**
- * ATLAS App (v3.6.3) - Glassmorphic Strategic Intelligence Dashboard
+ * ATLAS App (v3.6.4) - Glassmorphic Strategic Intelligence Dashboard
  * Production React app with MissionControl → ReactFlow → GitHub/Jira sync
  *
  * REFACTOR: Logic extracted into modular hooks (src/hooks/)
