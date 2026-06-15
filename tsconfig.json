@@ -16,7 +16,12 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
+    "types": [
+      "vite/client",
+      "node",
+      "vitest/globals"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
@@ -92,7 +97,8 @@
     "noEmit": true
   },
   "include": [
-    "src"
+    "src",
+    "server.ts"
   ],
   "exclude": [
     "node_modules",
