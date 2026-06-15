@@ -53,8 +53,8 @@ Project maintainers have the right and responsibility to remove, edit, or reject
 
 Before you begin contributing, ensure you have the following installed:
 
-- **Node.js** 20 or higher (LTS recommended)
-- **npm** 10 or higher, or **yarn** 1.22 or higher
+- **Node.js** 22 or higher (LTS recommended)
+- **npm** 11 or higher
 - **Git** 2.40 or higher
 - **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
 
@@ -188,7 +188,7 @@ function createTask(props: any) {
 
 ### CSS and Styling
 
-- Use Tailwind utility classes for styling.
+- Use Tailwind v4 utility classes and the CSS-first `@theme` engine.
 - Follow the existing glassmorphic design system.
 - Ensure responsive design with a mobile-first approach.
 - Maintain WCAG AA contrast ratios.
