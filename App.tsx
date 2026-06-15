@@ -52,10 +52,10 @@ const App: React.FC = () => {
   // Hooks Integration
   usePersistence(messages, setMessages, currentPlan, setCurrentPlan);
   const { exportedTasks, handleExportTask } = useExport(currentPlan, addMessage);
-  const [chatEndRef] = useScrollToBottom<HTMLDivElement>([messages, isThinking]);
+  const chatEndRef = useScrollToBottom<HTMLDivElement>([messages, isThinking]);
 
   // UI State
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState<string>("");
   const [sidebarView, setSidebarView] = useState<SidebarViewType>("list");
   const [isTaskBankOpen, setIsTaskBankOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -83,8 +83,12 @@ const App: React.FC = () => {
     try {
       await AtlasService.summarizeMission(currentPlan, "Initiating global sync");
       addMessage("assistant", "🏛️ Roadmap synchronized across enterprise hubs.");
-    } catch {
-      addMessage("assistant", "⚠️ Sync failed.");
+    } catch (error) {
+      console.error("Sync failed:", error);
+      addMessage(
+        "assistant",
+        `⚠️ Sync failed: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     } finally {
       setIsThinking(false);
     }
@@ -96,6 +100,12 @@ const App: React.FC = () => {
       const dep = allTasks.find((t) => t.id === depId);
       return dep && dep.status !== TaskStatus.COMPLETED;
     });
+  };
+
+  const handleSendMessage = async () => {
+    if (!input.trim() || isThinking) return;
+    await handleSend(input);
+    setInput("");
   };
 
   return (
@@ -216,9 +226,18 @@ const App: React.FC = () => {
                       {m.a2ui && (
                         <div className="mt-6">
                           <A2UIRenderer
-                            elements={JSON.parse(m.a2ui).elements}
+                            elements={
+                              (() => {
+                                try {
+                                  return JSON.parse(m.a2ui).elements;
+                                } catch (error) {
+                                  console.error("Failed to parse A2UI:", error);
+                                  return [];
+                                }
+                              })()
+                            }
                             onEvent={(event) => {
-                              if (import.meta.env.DEV) console.debug("A2UI Event:", event);
+                              if (import.meta.env?.DEV) console.debug("A2UI Event:", event);
                             }}
                           />
                         </div>
@@ -262,7 +281,12 @@ const App: React.FC = () => {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend(input).then(() => setInput(""))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
                 placeholder="Enter your strategic directive..."
                 className="flex-1 bg-transparent border-none focus:ring-0 text-lg px-6 placeholder:text-slate-600 font-medium"
               />
@@ -270,12 +294,12 @@ const App: React.FC = () => {
                 <button
                   onClick={handleSyncAll}
                   className="p-4 glass-2 hover:bg-white/10 rounded-2xl border border-white/10 text-slate-400 hover:text-white transition-all shadow-lg active:scale-95"
-                  title="Export to GitHub/Jira"
+                  title="Sync Roadmap Across Enterprise Hubs"
                 >
                   <FileJson className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => handleSend(input).then(() => setInput(""))}
+                  onClick={handleSendMessage}
                   disabled={!input.trim() || isThinking}
                   className="h-14 w-14 bg-atlas-blue text-white rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
                 >
