@@ -17,11 +17,6 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "ignoreDeprecations": "6.0",
-    "types": [
-      "vite/client",
-      "node",
-      "vitest/globals"
-    ],
     "paths": {
       "@/*": [
         "./src/*"
