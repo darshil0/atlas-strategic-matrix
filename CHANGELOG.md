@@ -2,21 +2,24 @@
 
 All notable changes to the ATLAS Strategic Matrix project are documented below. This project adheres to Semantic Versioning.
 
-## [3.6.4] - 2026-05-20
+## [3.6.4] - 2026-06-15
 
 ### Fixed
 
-* **Task Synchronization:** Fixed Task ID regex pattern to `/\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/` to support standard 4-part strategic IDs across GitHub and Jira integrations.
+* **Task Synchronization:** Standardized Task ID regex pattern to `/\[([A-Z]+-\d+-[A-Z0-9]+-\d+)\]/` to support 4-part strategic IDs (e.g., `AI-26-Q1-001`) across GitHub and Jira.
 * **A2UI Protocol:** Added support for native UI primitives (Charts, Stats, Inputs, Checkboxes, Selects) within agent-to-user interaction frames.
 * **Persistence Layer:** Introduced an asynchronous `Mutex` lock mechanism in `PersistenceService` to prevent `localStorage` write race conditions during concurrent saves.
 * **Type Definitions:** Unified return signatures for `SyncResult`, `GithubIssueResult`, and `JiraTicketResult`.
+* **Testing Infrastructure:** Resolved flaky environment mocks and `any` casts in localized mocks; achieved high reliability with a hybrid mocking pattern.
+* **Server Parsing:** Resolved `server.ts` parsing errors and updated `tsconfig` to handle deprecated values.
 
 ### Changed
 
-* **Tailwind v4 Migration:** Upgraded frontend to Tailwind CSS v4, replacing legacy configuration files with the new CSS-first `@theme` engine.
-* **Project Build System:** Consolidated environment configs across `tsconfig.json`, `vite.config.ts`, and `vitest.config.ts` to resolve absolute path alias conflicts.
-* **Dependencies:** Replaced stale `motion` package references with `framer-motion` and normalized package metadata for consistent build resolution.
-* **Agent Orchestration:** Refined telemetry collection and payload handoffs inside the `MissionControl` loop during agent cross-talk.
+* **Tailwind v4 Migration:** Upgraded frontend to Tailwind CSS v4, utilizing a CSS-first `@theme` engine and `@tailwindcss/postcss`.
+* **Zero Warning Baseline:** Achieved a strict "Zero Warning" state across TypeScript, ESLint, and Vitest pipelines.
+* **Project Build System:** Consolidated environment configs and resolved absolute path alias conflicts across `tsconfig.json`, `vite.config.ts`, and `vitest.config.ts`.
+* **Dependencies:** Upgraded to React 19, Vite 6, and Framer Motion 12; pinned `tailwind-merge` to `^3.5.0` for registry alignment.
+* **AI Engine:** Switched to Google Gemini 2.0 Flash as the primary SDK for strategic orchestration.
 
 ---
 
