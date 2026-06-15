@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "atlas-strategic-matrix",
   "private": true,
   "version": "3.6.4",
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "tsx server.ts",
     "build": "vite build",
     "start": "node server.ts",
-    "clean": "rm -rf dist",
+    "clean": "node --input-type=module -e \"import { rm } from 'fs/promises'; await rm('./dist', { recursive: true, force: true });\"",
     "lint": "eslint . && tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"

@@ -16,35 +16,92 @@
     "allowJs": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
-    "types": ["vite/client", "node", "vitest/globals"],
+    "ignoreDeprecations": "6.0",
+    "types": [
+      "vite/client",
+      "node",
+      "vitest/globals"
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/config": ["./src/config/index.ts"],
-      "@/config/*": ["./src/config/*"],
-      "@/data/*": ["./src/data/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/lib/adk": ["./src/lib/adk/index.ts"],
-      "@/lib/adk/*": ["./src/lib/adk/*"],
-      "@/lib/utils": ["./src/lib/utils.ts"],
-      "@/services": ["./src/services/index.ts"],
-      "@/services/*": ["./src/services/*"],
-      "@/styles/*": ["./src/styles/*"],
-      "@/test/*": ["./src/test/*"],
-      "@/types": ["./src/types/index.ts"],
-      "@types": ["./src/types/index.ts"],
-      "@config": ["./src/config/index.ts"],
-      "@data/*": ["./src/data/*"],
-      "@lib/*": ["./src/lib/*"],
-      "@lib/adk": ["./src/lib/adk/index.ts"],
-      "@lib/utils": ["./src/lib/utils.ts"],
-      "@services/*": ["./src/services/*"],
-      "@components/*": ["./src/components/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@/components/*": [
+        "./src/components/*"
+      ],
+      "@/config": [
+        "./src/config/index.ts"
+      ],
+      "@/config/*": [
+        "./src/config/*"
+      ],
+      "@/data/*": [
+        "./src/data/*"
+      ],
+      "@/hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@/lib/*": [
+        "./src/lib/*"
+      ],
+      "@/lib/adk": [
+        "./src/lib/adk/index.ts"
+      ],
+      "@/lib/adk/*": [
+        "./src/lib/adk/*"
+      ],
+      "@/lib/utils": [
+        "./src/lib/utils.ts"
+      ],
+      "@/services": [
+        "./src/services/index.ts"
+      ],
+      "@/services/*": [
+        "./src/services/*"
+      ],
+      "@/styles/*": [
+        "./src/styles/*"
+      ],
+      "@/test/*": [
+        "./src/test/*"
+      ],
+      "@/types": [
+        "./src/types/index.ts"
+      ],
+      "@types": [
+        "./src/types/index.ts"
+      ],
+      "@config": [
+        "./src/config/index.ts"
+      ],
+      "@data/*": [
+        "./src/data/*"
+      ],
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "@lib/adk": [
+        "./src/lib/adk/index.ts"
+      ],
+      "@lib/utils": [
+        "./src/lib/utils.ts"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "build"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build"
+  ]
 }
