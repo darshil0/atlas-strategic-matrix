@@ -16,6 +16,9 @@ Thank you for your interest in contributing to Atlas! We welcome contributions f
 - [Issue Guidelines](#issue-guidelines)
 - [Project Structure](#project-structure)
 - [Recognition](#recognition)
+- [Security Policy](#security-policy)
+- [Code Review Guidelines](#code-review-guidelines)
+- [Documentation Standards](#documentation-standards)
 - [Getting Help](#getting-help)
 
 ---
@@ -53,10 +56,10 @@ Project maintainers have the right and responsibility to remove, edit, or reject
 
 Before you begin contributing, ensure you have the following installed:
 
-- **Node.js** 22 or higher (LTS recommended)
-- **npm** 11 or higher
+- **Node.js** 20 or higher (LTS recommended)
+- **npm** 10 or higher
 - **Git** 2.40 or higher
-- **Google Gemini API Key** ([Get one here](https://ai.google.dev/gemini-api/docs/api-key))
+- **Google Gemini API Key** ([Get one here](https://aistudio.google.com/apikey))
 
 ### Fork and Clone
 
@@ -166,7 +169,7 @@ interface TaskProps {
 }
 
 function createTask(props: TaskProps): Task {
-  return task;
+  return { id: props.id, title: props.title, priority: props.priority };
 }
 ```
 
