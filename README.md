@@ -19,7 +19,7 @@ ATLAS transforms executive strategic directives into executable, topologically s
 
 ### Prerequisites
 
-* Node.js 20+ (LTS) | npm 10+ | TypeScript 5.8+
+* Node.js 22+ (LTS) | npm 11+ | TypeScript 5.8+
 * Google Gemini API Key ([Get API Key](https://ai.google.dev/gemini-api/docs/api-key))
 * Firebase Project (Optional for multi-user sync)
 
@@ -100,7 +100,7 @@ Open the Settings modal, authenticate your corporate integration, and export the
         ┌────────────┴────────────┐
     ┌───▼──────┐         ┌───────▼──┐
     │ Gemini   │         │Firestore │
-    │Flash 1.5 │         │(Encrypted)│
+    │Flash 2.0 │         │(Encrypted)│
     └──────────┘         └──────────┘
         │                     │
     ┌───▼──────┬──────────────▼────┐
@@ -168,4 +168,4 @@ npm run test -- src/test/smoke.test.ts
 ATLAS Strategic Matrix is open-source software licensed under the [MIT License](https://www.google.com/search?q=./LICENSE).
 
 * **Technical Issues:** File reports on the [GitHub Issue Tracker](https://github.com/darshil0/atlas-strategic-agent/issues).
-* **Contributions:** Review [CONTRIBUTING.md](https://www.google.com/search?q=./CONTRIBUTING.md) for style guides, testing rules, and the Conventional Commits specification.
+* **Contributions:** Review [CONTRIBUTING.md](https://www.google.com/search?q=./CONTRIBUTING.md) for style guides, testing rules, and the Zero Warning Baseline.
