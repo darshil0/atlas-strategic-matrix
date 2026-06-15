@@ -19,12 +19,12 @@ export const Root: React.FC = () => {
   const [showLoader, setShowLoader] = useState(true);
 
   const handleReady = useCallback(() => {
-    if (ENV.DEBUG_MODE)
+    if (ENV?.DEBUG_MODE)
       console.debug(
         "🏛️ [Atlas] BootLoader signaled ready. Transitioning in 600ms..."
       );
     setTimeout(() => {
-      if (ENV.DEBUG_MODE)
+      if (ENV?.DEBUG_MODE)
         console.debug("🏛️ [Atlas] Hiding BootLoader, mounting App.");
       setShowLoader(false);
     }, 600);
@@ -33,7 +33,7 @@ export const Root: React.FC = () => {
   return (
     <React.Fragment>
       {showLoader ? (
-        <Suspense fallback={null}>
+        <Suspense fallback={<LocalLoader />}>
           <BootLoader onReady={handleReady} />
         </Suspense>
       ) : (
@@ -56,11 +56,11 @@ const initAtlas = async () => {
 
   const root = createRoot(rootElement);
 
-  if (ENV.DEBUG_MODE) {
-    console.group("🏛️ ATLAS v3.6.3 BOOT SEQUENCE");
+  if (ENV?.DEBUG_MODE) {
+    console.group("🏛️ ATLAS v3.6.4 BOOT SEQUENCE");
     console.debug("• React:", React.version);
-    console.debug("• Environment:", import.meta.env.MODE);
-    console.debug("• App Version:", ENV.APP_VERSION || "3.6.4");
+    console.debug("• Environment:", import.meta.env?.MODE);
+    console.debug("• App Version:", ENV?.APP_VERSION || "3.6.4");
     console.groupEnd();
   }
 
@@ -72,7 +72,7 @@ const initAtlas = async () => {
 };
 
 // === INITIALIZE ATLAS ===
-initAtlas().catch((error) => {
+initAtlas().catch((error: unknown) => {
   console.error("🚨 CRITICAL: Atlas failed to initialize:", error);
   document.body.innerHTML = `
     <div class="min-h-screen bg-slate-950 flex items-center justify-center p-8">
@@ -82,14 +82,15 @@ initAtlas().catch((error) => {
         </div>
         <h2 class="text-3xl font-black text-rose-400 mb-4">CRITICAL FAILURE</h2>
         <p class="text-slate-400 mb-8">Atlas neural core failed to initialize</p>
-        <button onclick="location.reload()" class="btn-critical w-full text-sm py-3">FORCE REBOOT</button>
+        <button onclick="location.reload()" class="w-full text-sm py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-2xl font-bold transition-all">FORCE REBOOT</button>
       </div>
     </div>
   `;
 });
 
-  if (import.meta.env.PROD) {
-  console.groupCollapsed("🏛️ ATLAS v3.6.3 • Production Build");
+// Production logging (moved to proper module-level position)
+if (import.meta.env?.PROD) {
+  console.groupCollapsed("🏛️ ATLAS v3.6.4 • Production Build");
   console.debug("• Status: Neural core online");
   console.debug("• Tasks: 92+ enterprise objectives loaded");
   console.debug("• Agents: Strategist + Analyst + Critic ready");
