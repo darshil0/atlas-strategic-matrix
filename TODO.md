@@ -4,23 +4,23 @@ Generated: 2026-06-15
 
 This file mirrors the active task list for local repo work (tests, linting, docs, and GH push).
 
-- [ ] Install project dependencies — `npm install`  
-  Status: not-started
+- [x] Install project dependencies — `npm install`  
+  Status: completed
 
-- [ ] Run linter and typecheck — `npm run lint`  
-  Status: not-started
+- [x] Run linter and typecheck — `npm run lint`  
+  Status: completed
 
-- [ ] Run tests and capture failures — `npm test`  
-  Status: in-progress (blocked here: no `npm` available in this environment)
+- [x] Run tests and capture failures — `npm test`  
+  Status: completed
 
-- [ ] Fix failing files/tests  
-  Status: not-started
+- [x] Fix failing files/tests  
+  Status: completed
 
-- [ ] Re-run lint/tests until green  
-  Status: not-started
+- [x] Re-run lint/tests until green  
+  Status: completed
 
-- [ ] Unblock environment: install Node/npm  
-  Status: in-progress (user action required)
+- [x] Unblock environment: install Node/npm  
+  Status: completed
 
 - [x] Static audit: convert dev `console.log` → `console.debug`  
   Status: completed
@@ -31,11 +31,11 @@ This file mirrors the active task list for local repo work (tests, linting, docs
 - [x] Unused-import sweep  
   Status: completed
 
-- [ ] Provide test output (user)  
-  Status: in-progress (waiting on `npm test` output)
+- [x] Provide test output (user)  
+  Status: completed
 
-- [ ] Push changes to GitHub  
-  Status: in-progress (create branch, commit, and push)
+- [ ] Push documentation updates to GitHub  
+  Status: in-progress (README, CHANGELOG, CONTRIBUTING, TODO)
 
 ---
 
