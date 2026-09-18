@@ -131,9 +131,7 @@ git checkout -b feature/your-feature-name
 1. Make your changes in your feature branch.
 2. Write or update tests as needed.
 3. Ensure all tests pass: `npm test`.
-4. Run linting: `npm run lint`.
-5. Format code: `npm run format`.
-6. Check TypeScript: `npm run type-check`.
+4. Run linting and type checking: `npm run lint`.
 
 ### Keeping Your Branch Updated
 
@@ -157,7 +155,7 @@ If you encounter conflicts during the rebase, resolve them carefully and continu
 - Avoid `any`; use `unknown` if the type is truly unknown.
 - Avoid non-null assertions (`!`); use proper null checks.
 - Use const assertions where appropriate.
-- **Zero Warning Baseline**: Ensure all code passes `npm run lint` and `npm run type-check` with 0 warnings before submitting.
+- **Zero Warning Baseline**: Ensure all code passes `npm run lint` with 0 warnings before submitting.
 
 **Example:**
 
@@ -325,8 +323,7 @@ Ensure your PR meets these requirements:
 
 - [ ] Code follows project style guidelines
 - [ ] Tests pass locally (`npm test`)
-- [ ] Linting passes (`npm run lint`)
-- [ ] Type checking passes (`npm run type-check`)
+- [ ] Linting and type checking pass (`npm run lint`)
 - [ ] Coverage meets 85% threshold
 - [ ] Documentation is updated if applicable
 - [ ] Commit messages follow guidelines
