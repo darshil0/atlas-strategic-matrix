@@ -50,6 +50,7 @@ interface SidebarProps {
   } | null;
   setSimulationResult: (result: SidebarProps["simulationResult"]) => void;
   onSimulateFailure: (taskId: string) => Promise<void>;
+  onPlanUpdate?: (updatedTasks: SubTask[]) => void;
 
   // Refs
   taskRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
@@ -73,6 +74,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   simulationResult,
   setSimulationResult,
   onSimulateFailure,
+  onPlanUpdate,
   taskRefs,
 }) => {
   return (
@@ -84,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <ShieldCheck className="text-atlas-blue h-6 w-6" />
             </div>
             <h1 className="font-display font-black text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-slate-500">
-              ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">v3.6.3</span>
+              ATLAS STRATEGIC <span className="text-atlas-blue text-xs align-top ml-1 font-mono tracking-widest opacity-80">v3.6.4</span>
             </h1>
           </div>
           <button
@@ -154,6 +156,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               isWhatIfEnabled={isWhatIfEnabled}
               simulationResult={simulationResult}
               onSimulateFailure={onSimulateFailure}
+              onPlanUpdate={onPlanUpdate}
             />
             <div className="absolute top-6 left-6 flex gap-3">
               <button

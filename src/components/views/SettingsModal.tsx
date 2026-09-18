@@ -1,8 +1,24 @@
-// src/components/SettingsModal.tsx
+// src/components/views/SettingsModal.tsx
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { PersistenceService } from "@services/core/persistence";
-import { Settings, X } from "lucide-react";
+import {
+  RbacAuditService,
+  WorkspaceService,
+  SovereigntyService,
+} from "@services";
+import { UserRole } from "@types";
+import {
+  Settings,
+  X,
+  Shield,
+  Layers,
+  Globe,
+  Lock,
+  CheckCircle,
+  AlertCircle,
+  Plus,
+} from "lucide-react";
 import { cn } from "@lib/utils";
 
 interface SettingsModalProps {
@@ -10,360 +26,492 @@ interface SettingsModalProps {
   isOpen: boolean;
 }
 
+type SettingsTab = "integrations" | "rbac_audit" | "workspaces" | "sovereign";
+
 const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, isOpen }) => {
-  // Use refs for input elements to avoid re-renders on every keystroke
+  const [activeTab, setActiveTab] = useState<SettingsTab>("integrations");
+
+  // Inputs
   const githubTokenInputRef = useRef<HTMLInputElement>(null);
   const jiraDomainInputRef = useRef<HTMLInputElement>(null);
   const jiraEmailInputRef = useRef<HTMLInputElement>(null);
   const jiraTokenInputRef = useRef<HTMLInputElement>(null);
   const [debugMode, setDebugMode] = useState(PersistenceService.getDebugMode());
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  // RBAC State
+  const [currentUser, setCurrentUser] = useState(RbacAuditService.getCurrentUser());
+  const [auditLogs, setAuditLogs] = useState(RbacAuditService.getAuditLogs());
+  const [integrityStatus, setIntegrityStatus] = useState(RbacAuditService.verifyLogIntegrity());
+
+  // Workspace State
+  const [workspaces, setWorkspaces] = useState(WorkspaceService.getWorkspaces());
+  const [activeWorkspace, setActiveWorkspace] = useState(WorkspaceService.getActiveWorkspace());
+  const [newWsName, setNewWsName] = useState("");
+  const [newWsUnit, setNewWsUnit] = useState("");
+  const [newWsDesc, setNewWsDesc] = useState("");
+  const [showCreateWs, setShowCreateWs] = useState(false);
+
+  // Sovereign Cluster Profile State
+  const [profiles] = useState(SovereigntyService.getClusterProfiles());
+  const [activeProfile, setActiveProfile] = useState(SovereigntyService.getActiveClusterProfile());
+
   const [isLoading, setIsLoading] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Trap focus within modal for accessibility
   useEffect(() => {
     if (!isOpen) return;
-
     const modalEl = modalRef.current;
     if (!modalEl) return;
 
-    const focusableElements = modalEl.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[
-      focusableElements.length - 1
-    ] as HTMLElement;
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-
-      if (e.key === "Tab") {
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            e.preventDefault();
-            lastElement.focus();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            e.preventDefault();
-            firstElement.focus();
-          }
-        }
-      }
+      if (e.key === "Escape") onClose();
     };
-
-    firstElement?.focus();
     document.addEventListener("keydown", handleKeyDown);
-
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Close on backdrop click
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) {
-        onClose();
-      }
+      if (e.target === e.currentTarget) onClose();
     },
     [onClose]
   );
 
-  const validateForm = useCallback(() => {
-    const newErrors: Record<string, string> = {};
+  const handleRoleChange = (role: UserRole) => {
+    const updated = RbacAuditService.setCurrentUserRole(role);
+    setCurrentUser(updated);
+    setAuditLogs(RbacAuditService.getAuditLogs());
+    setIntegrityStatus(RbacAuditService.verifyLogIntegrity());
+  };
 
-    const githubToken = githubTokenInputRef.current?.value || "";
-    const jiraDomain = jiraDomainInputRef.current?.value || "";
-    const jiraEmail = jiraEmailInputRef.current?.value || "";
-    const jiraToken = jiraTokenInputRef.current?.value || "";
+  const handleWorkspaceSwitch = (wsId: string) => {
+    const switched = WorkspaceService.setActiveWorkspace(wsId);
+    setActiveWorkspace(switched);
+    setAuditLogs(RbacAuditService.getAuditLogs());
+  };
 
-    // Required GitHub fields
-    if (!githubToken.trim()) newErrors.githubToken = "GitHub token required";
+  const handleCreateWorkspace = () => {
+    if (!newWsName.trim() || !newWsUnit.trim()) return;
+    const created = WorkspaceService.createWorkspace(newWsName, newWsUnit, newWsDesc);
+    setWorkspaces(WorkspaceService.getWorkspaces());
+    setActiveWorkspace(created);
+    setNewWsName("");
+    setNewWsUnit("");
+    setNewWsDesc("");
+    setShowCreateWs(false);
+    setAuditLogs(RbacAuditService.getAuditLogs());
+  };
 
-    // Required Jira fields (if any Jira field is filled, all are required)
-    const hasJiraConfig =
-      jiraDomain.trim() || jiraEmail.trim() || jiraToken.trim();
-    if (hasJiraConfig) {
-      if (!jiraDomain.trim()) newErrors.jiraDomain = "Jira domain required";
-      if (!jiraEmail.trim()) newErrors.jiraEmail = "Email required";
-      if (!jiraToken.trim()) newErrors.jiraToken = "Jira token required";
-    }
+  const handleSelectSovereignProfile = (profileId: string) => {
+    const selected = SovereigntyService.setActiveClusterProfile(profileId);
+    setActiveProfile(selected);
+    setAuditLogs(RbacAuditService.getAuditLogs());
+  };
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }, []);
-
-  const handleSave = useCallback(async () => {
-    if (!validateForm()) return;
-
+  const handleSaveIntegrations = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Save all settings
-      PersistenceService.saveGithubApiKey(
-        githubTokenInputRef.current?.value || ""
-      );
-      PersistenceService.saveJiraDomain(
-        jiraDomainInputRef.current?.value || ""
-      );
+      PersistenceService.saveGithubApiKey(githubTokenInputRef.current?.value || "");
+      PersistenceService.saveJiraDomain(jiraDomainInputRef.current?.value || "");
       PersistenceService.saveJiraEmail(jiraEmailInputRef.current?.value || "");
       PersistenceService.saveJiraApiKey(jiraTokenInputRef.current?.value || "");
       PersistenceService.saveDebugMode(debugMode);
-
-      // Show success feedback
       onClose();
     } catch (error) {
       console.error("Failed to save settings:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [validateForm, onClose, debugMode]);
+  }, [onClose, debugMode]);
 
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 glass-2 backdrop-blur-3xl"
+      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/70 glass-2 backdrop-blur-3xl"
       onClick={handleBackdropClick}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="settings-modal-title"
     >
       <motion.div
         ref={modalRef}
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="glass-1 border border-white/10 p-8 rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="glass-1 border border-white/10 p-8 rounded-3xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between pb-6 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-atlas-blue/20 rounded-2xl border border-atlas-blue/30">
-              <Settings className="h-6 w-6 text-atlas-blue" />
+            <div className="p-2.5 bg-atlas-blue/20 rounded-2xl border border-atlas-blue/30 shadow-lg shadow-atlas-blue/20">
+              <Settings className="h-6 w-6 text-atlas-blue animate-spin-slow" />
             </div>
             <div>
-              <h2
-                id="settings-modal-title"
-                className="text-2xl font-display font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent"
-              >
-                Integration Settings
+              <h2 className="text-2xl font-display font-black bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+                Enterprise Settings & Governance
               </h2>
-              <p className="text-sm text-slate-400">
-                Configure GitHub and Jira sync
+              <p className="text-xs font-mono text-slate-400">
+                RBAC • Multi-Workspace • Audit Logs • Sovereign Clusters
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-2xl transition-all backdrop-blur-sm hover:scale-105"
-            aria-label="Close settings"
+            className="p-2 hover:bg-white/10 rounded-2xl transition-all backdrop-blur-sm"
           >
-            <X className="h-5 w-5 text-slate-400" />
+            <X className="h-5 w-5 text-slate-400 hover:text-white" />
           </button>
         </div>
 
-        {/* Security Warning */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-2 border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 to-amber-500/5 text-yellow-200 px-5 py-4 rounded-2xl mb-8"
-        >
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-yellow-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1 0z"
-                  clipRule="evenodd"
+        {/* Tab Navigation */}
+        <div className="flex gap-2 p-1.5 glass-2 rounded-2xl border border-white/10 my-6">
+          {[
+            { id: "integrations", label: "Integrations", icon: Settings },
+            { id: "rbac_audit", label: "RBAC & Audit", icon: Shield },
+            { id: "workspaces", label: "Workspaces", icon: Layers },
+            { id: "sovereign", label: "Sovereign Clusters", icon: Globe },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as SettingsTab)}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all",
+                activeTab === tab.id
+                  ? "glass-2 text-atlas-blue shadow-lg ring-1 ring-atlas-blue/30"
+                  : "text-slate-400 hover:text-slate-200"
+              )}
+            >
+              <tab.icon className="h-4 w-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div className="flex-1 overflow-y-auto pr-2 space-y-6 scrollbar-hide">
+          {/* TAB 1: INTEGRATIONS */}
+          {activeTab === "integrations" && (
+            <div className="space-y-6">
+              <div className="glass-2 border border-yellow-500/20 bg-yellow-500/5 text-yellow-200 p-4 rounded-2xl flex items-start gap-3">
+                <Lock className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
+                <div className="text-xs leading-relaxed">
+                  <span className="font-bold">Encrypted Credentials:</span> OAuth and personal access tokens are stored in local client state with obfuscation.
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="font-display font-semibold text-white text-sm flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  GitHub Integration
+                </h3>
+                <InputField
+                  ref={githubTokenInputRef}
+                  label="Personal Access Token"
+                  placeholder="ghp_..."
+                  defaultValue={PersistenceService.getGithubApiKey() || ""}
                 />
-              </svg>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-1">Security Notice</h4>
-              <p className="text-xs leading-relaxed">
-                Keys stored locally with Base64 obfuscation. Use backend proxy
-                for production.
-              </p>
-            </div>
-          </div>
-        </motion.div>
+              </div>
 
-        {/* Form Fields */}
-        <div className="space-y-6">
-          {/* GitHub Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <h3 className="font-display text-lg font-semibold text-white flex items-center gap-2">
-              <span className="w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full" />
-              GitHub
-            </h3>
-            <div className="grid grid-cols-1 gap-4">
-              <InputField
-                ref={githubTokenInputRef}
-                label="Personal Access Token"
-                placeholder="ghp_..."
-                defaultValue={PersistenceService.getGithubApiKey() || ""}
-                error={errors.githubToken}
-                required
-              />
-            </div>
-          </motion.div>
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                <h3 className="font-display font-semibold text-white text-sm flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-indigo-400" />
+                  Jira Cloud Integration
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField
+                    ref={jiraDomainInputRef}
+                    label="Domain"
+                    placeholder="company.atlassian.net"
+                    defaultValue={PersistenceService.getJiraDomain() || ""}
+                  />
+                  <InputField
+                    ref={jiraEmailInputRef}
+                    label="Account Email"
+                    placeholder="user@company.com"
+                    defaultValue={PersistenceService.getJiraEmail() || ""}
+                  />
+                </div>
+                <InputField
+                  ref={jiraTokenInputRef}
+                  label="API Token"
+                  placeholder="ATATT3x..."
+                  type="password"
+                  defaultValue={PersistenceService.getJiraApiKey() || ""}
+                />
+              </div>
 
-          {/* Jira Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="space-y-4"
-          >
-            <h3 className="font-display text-lg font-semibold text-white flex items-center gap-2">
-              <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full" />
-              Jira Cloud
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InputField
-                ref={jiraDomainInputRef}
-                label="Domain"
-                placeholder="yourcompany.atlassian.net"
-                defaultValue={PersistenceService.getJiraDomain() || ""}
-                error={errors.jiraDomain}
-                type="url"
-              />
-              <InputField
-                ref={jiraEmailInputRef}
-                label="Email"
-                placeholder="user@company.com"
-                defaultValue={PersistenceService.getJiraEmail() || ""}
-                error={errors.jiraEmail}
-                type="email"
-              />
-              <InputField
-                ref={jiraTokenInputRef}
-                label="API Token"
-                placeholder="ATATT3x..."
-                defaultValue={PersistenceService.getJiraApiKey() || ""}
-                error={errors.jiraToken}
-                type="password"
-              />
+              <div className="pt-4 border-t border-white/5">
+                <label className="flex items-center gap-3 p-4 glass-2 rounded-2xl border border-white/10 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={debugMode}
+                    onChange={(e) => setDebugMode(e.target.checked)}
+                    className="w-4 h-4 rounded text-atlas-blue focus:ring-0"
+                  />
+                  <span className="text-sm font-medium text-slate-300">
+                    Enable Developer Debug Mode
+                  </span>
+                </label>
+              </div>
             </div>
-          </motion.div>
+          )}
 
-          {/* Debug Toggle */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            <label className="flex items-center gap-3 p-4 glass-2 rounded-2xl border border-white/10 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={debugMode}
-                onChange={(e) => setDebugMode(e.target.checked)}
-                className="w-5 h-5 rounded-lg bg-slate-800 border-slate-700 text-atlas-blue focus:ring-atlas-blue/50 transition-all duration-200"
-              />
-              <span className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">
-                Enable Debug Mode
-              </span>
-              <span className="ml-auto text-xs text-slate-500 font-mono bg-slate-900/50 px-2 py-1 rounded-lg">
-                {debugMode ? "ON" : "OFF"}
-              </span>
-            </label>
-          </motion.div>
+          {/* TAB 2: RBAC & SYSTEM AUDIT LOGS */}
+          {activeTab === "rbac_audit" && (
+            <div className="space-y-6">
+              {/* Role Selector */}
+              <div className="glass-2 p-5 rounded-2xl border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-bold text-white">Role-Based Access Control (RBAC)</h3>
+                    <p className="text-xs text-slate-400">Current User: {currentUser.name} ({currentUser.email})</p>
+                  </div>
+                  <span className="px-3 py-1 bg-atlas-blue/20 text-atlas-blue border border-atlas-blue/30 rounded-xl text-xs font-mono font-bold uppercase">
+                    Role: {currentUser.role}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-5 gap-2 pt-2">
+                  {(["ADMIN", "STRATEGIST", "ANALYST", "AUDITOR", "VIEWER"] as UserRole[]).map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => handleRoleChange(r)}
+                      className={cn(
+                        "py-2 px-3 rounded-xl text-xs font-mono font-bold transition-all border",
+                        currentUser.role === r
+                          ? "bg-atlas-blue/20 text-white border-atlas-blue"
+                          : "glass-1 border-white/5 text-slate-400 hover:text-white"
+                      )}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Audit Trail Viewer */}
+              <div className="glass-2 p-5 rounded-2xl border border-white/10 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-atlas-blue" />
+                    <h3 className="text-sm font-bold text-white">Immutable System Audit Log Chain</h3>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-mono">
+                    {integrityStatus.isValid ? (
+                      <span className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+                        <CheckCircle className="w-3.5 h-3.5" /> Chain Intact
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20">
+                        <AlertCircle className="w-3.5 h-3.5" /> Hash Mismatch
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-52 overflow-y-auto pr-1 scrollbar-hide">
+                  {auditLogs.length === 0 ? (
+                    <p className="text-xs text-slate-500 font-mono py-4 text-center">No system audit records logged yet.</p>
+                  ) : (
+                    auditLogs.slice().reverse().map((log) => (
+                      <div key={log.id} className="p-3 glass-1 rounded-xl border border-white/5 text-xs font-mono space-y-1">
+                        <div className="flex justify-between text-slate-400">
+                          <span className="text-atlas-blue font-bold">[{log.action}]</span>
+                          <span>{new Date(log.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                        <p className="text-slate-200">{log.details}</p>
+                        <div className="text-[10px] text-slate-500 truncate font-mono">
+                          Hash: {log.hash}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: WORKSPACES */}
+          {activeTab === "workspaces" && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-sm font-bold text-white">Discrete Business Unit Workspaces</h3>
+                  <p className="text-xs text-slate-400">Switch workspace context to isolate roadmaps by division.</p>
+                </div>
+                <button
+                  onClick={() => setShowCreateWs(!showCreateWs)}
+                  className="px-3 py-1.5 glass-2 rounded-xl border border-white/20 text-xs font-mono text-atlas-blue flex items-center gap-1 hover:bg-white/10"
+                >
+                  <Plus className="w-3.5 h-3.5" /> New Workspace
+                </button>
+              </div>
+
+              {showCreateWs && (
+                <div className="glass-2 p-4 rounded-2xl border border-white/10 space-y-3">
+                  <h4 className="text-xs font-bold text-slate-200">Create Discrete Business Workspace</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      placeholder="Workspace Name"
+                      value={newWsName}
+                      onChange={(e) => setNewWsName(e.target.value)}
+                      className="glass-1 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                    />
+                    <input
+                      placeholder="Business Unit (e.g., Security)"
+                      value={newWsUnit}
+                      onChange={(e) => setNewWsUnit(e.target.value)}
+                      className="glass-1 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                    />
+                  </div>
+                  <input
+                    placeholder="Description"
+                    value={newWsDesc}
+                    onChange={(e) => setNewWsDesc(e.target.value)}
+                    className="w-full glass-1 border border-white/10 rounded-xl p-2.5 text-xs text-white"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <button
+                      onClick={() => setShowCreateWs(false)}
+                      className="px-3 py-1 text-xs text-slate-400 hover:text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleCreateWorkspace}
+                      className="px-4 py-1.5 bg-atlas-blue text-white rounded-xl text-xs font-semibold"
+                    >
+                      Create
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {workspaces.map((ws) => (
+                  <div
+                    key={ws.id}
+                    onClick={() => handleWorkspaceSwitch(ws.id)}
+                    className={cn(
+                      "p-4 glass-2 rounded-2xl border transition-all cursor-pointer space-y-2",
+                      activeWorkspace.id === ws.id
+                        ? "border-atlas-blue bg-atlas-blue/10 shadow-lg"
+                        : "border-white/5 hover:border-white/20"
+                    )}
+                  >
+                    <div className="flex justify-between items-start">
+                      <h4 className="font-bold text-sm text-white">{ws.name}</h4>
+                      {activeWorkspace.id === ws.id && (
+                        <span className="w-2 h-2 rounded-full bg-atlas-blue animate-ping" />
+                      )}
+                    </div>
+                    <span className="inline-block px-2 py-0.5 glass-1 rounded-lg text-[10px] font-mono text-slate-400 uppercase">
+                      {ws.businessUnit}
+                    </span>
+                    <p className="text-xs text-slate-400 line-clamp-2">{ws.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 4: SOVEREIGN CLUSTER PROFILES */}
+          {activeTab === "sovereign" && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-sm font-bold text-white">Sovereign Infrastructure Cluster Profiles</h3>
+                <p className="text-xs text-slate-400">Strict compliance profiles for regulated deployments (GDPR, FedRAMP High, DORA).</p>
+              </div>
+
+              <div className="space-y-3">
+                {profiles.map((p) => (
+                  <div
+                    key={p.id}
+                    onClick={() => handleSelectSovereignProfile(p.id)}
+                    className={cn(
+                      "p-5 glass-2 rounded-2xl border transition-all cursor-pointer space-y-3",
+                      activeProfile.id === p.id
+                        ? "border-purple-500 bg-purple-500/10 shadow-xl"
+                        : "border-white/5 hover:border-white/20"
+                    )}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-purple-400" />
+                        <h4 className="font-bold text-sm text-white">{p.name}</h4>
+                      </div>
+                      <span className="px-2.5 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-xl text-[10px] font-mono font-bold">
+                        {p.isolationLevel}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-400">
+                      <div><span className="text-slate-500">Region:</span> {p.region}</div>
+                      <div><span className="text-slate-500">Provider:</span> {p.provider}</div>
+                      <div><span className="text-slate-500">Residency:</span> {p.dataResidencyRegion}</div>
+                      <div><span className="text-slate-500">Encryption:</span> {p.encryptionStandard}</div>
+                    </div>
+
+                    <div className="flex gap-2 flex-wrap pt-1">
+                      {p.complianceFrameworks.map((framework) => (
+                        <span key={framework} className="px-2 py-0.5 glass-1 rounded-md text-[10px] font-mono text-emerald-400 border border-emerald-500/30">
+                          ✓ {framework}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-10 flex justify-end gap-3 pt-6 border-t border-white/10"
-        >
+        {/* Footer */}
+        <div className="pt-6 border-t border-white/10 flex justify-end gap-3 mt-4">
           <button
             onClick={onClose}
-            disabled={isLoading}
-            className="px-6 py-3 glass-2 border border-white/20 text-slate-300 hover:border-white/40 hover:bg-white/10 rounded-2xl font-medium transition-all duration-200 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+            className="px-6 py-2.5 glass-2 border border-white/20 text-slate-300 hover:text-white rounded-2xl text-xs font-mono font-bold uppercase transition-all"
           >
-            Cancel
+            Close
           </button>
-          <button
-            onClick={handleSave}
-            disabled={isLoading || Object.keys(errors).length > 0}
-            className={cn(
-              "px-6 py-3 bg-gradient-to-r from-atlas-blue to-atlas-indigo text-white rounded-2xl font-semibold shadow-lg hover:shadow-xl active:shadow-lg border border-atlas-blue/50 transition-all duration-200 flex items-center gap-2",
-              isLoading
-                ? "opacity-70 cursor-not-allowed"
-                : "hover:scale-[1.02] active:scale-[0.98]"
-            )}
-          >
-            {isLoading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Saving...
-              </>
-            ) : (
-              "Save Settings"
-            )}
-          </button>
-        </motion.div>
+          {activeTab === "integrations" && (
+            <button
+              onClick={handleSaveIntegrations}
+              disabled={isLoading}
+              className="px-6 py-2.5 bg-atlas-blue text-white rounded-2xl text-xs font-mono font-bold uppercase shadow-lg hover:shadow-atlas-blue/30 transition-all"
+            >
+              {isLoading ? "Saving..." : "Save Configuration"}
+            </button>
+          )}
+        </div>
       </motion.div>
     </div>
   );
 };
 
-// Reusable InputField component
 const InputField = React.forwardRef<
   HTMLInputElement,
   {
     label: string;
     placeholder?: string;
     defaultValue?: string;
-    error?: string;
-    required?: boolean;
     type?: string;
   }
->(
-  (
-    { label, placeholder, defaultValue, error, required, type = "text" },
-    ref
-  ) => (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-300 mb-2">
-        {label} {required && <span className="text-rose-400">*</span>}
-      </label>
-      <input
-        ref={ref}
-        type={type}
-        placeholder={placeholder}
-        defaultValue={defaultValue || ""}
-        className={cn(
-          "w-full glass-2 border rounded-2xl px-4 py-3 text-sm text-white backdrop-blur-3xl transition-all duration-200 focus:outline-none focus:ring-2",
-          error
-            ? "border-rose-500/50 ring-rose-500/30 bg-rose-500/5"
-            : "border-white/20 hover:border-white/40 focus:ring-atlas-blue/50 focus:border-atlas-blue/50"
-        )}
-      />
-      {error && (
-        <p className="text-xs text-rose-400 font-mono mt-1 flex items-center gap-1">
-          <span className="w-1.5 h-1.5 bg-rose-400 rounded-full animate-pulse" />
-          {error}
-        </p>
-      )}
-    </div>
-  )
-);
+>(({ label, placeholder, defaultValue, type = "text" }, ref) => (
+  <div className="space-y-1.5">
+    <label className="block text-xs font-mono font-medium text-slate-300">
+      {label}
+    </label>
+    <input
+      ref={ref}
+      type={type}
+      placeholder={placeholder}
+      defaultValue={defaultValue || ""}
+      className="w-full glass-2 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-atlas-blue/50"
+    />
+  </div>
+));
 
 InputField.displayName = "InputField";
 

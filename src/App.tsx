@@ -120,6 +120,9 @@ const App: React.FC = () => {
         simulationResult={simulationResult}
         setSimulationResult={setSimulationResult}
         onSimulateFailure={handleFailureSimulation}
+        onPlanUpdate={(updatedTasks) =>
+          setCurrentPlan(currentPlan ? { ...currentPlan, tasks: updatedTasks } : null)
+        }
         taskRefs={taskRefs}
       />
 
