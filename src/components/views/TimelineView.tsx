@@ -1,8 +1,9 @@
-// src/components/TimelineView.tsx
-import React from "react";
-import { motion } from "framer-motion";
-import { Plan, SubTask, TaskStatus } from "@types";
-import { CheckCircle2, Clock, ArrowRight } from "lucide-react";
+// src/components/views/TimelineView.tsx
+import React, { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Plan, SubTask, TaskStatus, MonteCarloResult } from "@types";
+import { MonteCarloService } from "@services";
+import { CheckCircle2, Clock, ArrowRight, BarChart3, TrendingUp, X } from "lucide-react";
 import { cn } from "@lib/utils";
 
 interface TimelineViewProps {
@@ -11,13 +12,22 @@ interface TimelineViewProps {
 }
 
 const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
-  const sortedTasks = React.useMemo(
+  const [showForecast, setShowForecast] = useState(false);
+  const [mcResult, setMcResult] = useState<MonteCarloResult | null>(null);
+
+  const sortedTasks = useMemo(
     () =>
       [...plan.tasks].sort((a: SubTask, b: SubTask) =>
         a.id.localeCompare(b.id)
       ),
     [plan.tasks]
   );
+
+  const handleRunForecast = () => {
+    const result = MonteCarloService.runSimulation(plan, 2000);
+    setMcResult(result);
+    setShowForecast(true);
+  };
 
   const getStatusColor = (task: SubTask) => {
     const isBlocked =
@@ -44,11 +54,66 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-full overflow-y-auto overflow-x-hidden p-8 glass-2 rounded-3xl border border-white/10 backdrop-blur-3xl no-scrollbar shadow-2xl"
+      className="h-full overflow-y-auto overflow-x-hidden p-8 glass-2 rounded-3xl border border-white/10 backdrop-blur-3xl no-scrollbar shadow-2xl relative"
       role="region"
       aria-label="Strategic timeline"
       tabIndex={-1}
     >
+      {/* Top Bar with Monte Carlo Trigger */}
+      <div className="flex justify-between items-center mb-8 pb-4 border-b border-white/10">
+        <div className="flex items-center gap-2">
+          <Clock className="w-5 h-5 text-atlas-blue" />
+          <h2 className="text-lg font-display font-bold text-white">Roadmap Timeline & Schedule</h2>
+        </div>
+        <button
+          onClick={handleRunForecast}
+          className="px-4 py-2 glass-2 rounded-2xl border border-white/15 text-xs font-mono font-bold uppercase text-atlas-blue hover:text-white hover:border-atlas-blue/50 transition-all flex items-center gap-2 shadow-lg"
+        >
+          <BarChart3 className="w-4 h-4" /> Monte Carlo Forecast
+        </button>
+      </div>
+
+      {/* Monte Carlo Forecast Drawer */}
+      <AnimatePresence>
+        {showForecast && mcResult && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-8 p-6 glass-1 rounded-3xl border border-atlas-blue/30 space-y-4 shadow-2xl relative overflow-hidden"
+          >
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-atlas-blue" />
+                <h3 className="font-display font-bold text-white text-base">Monte Carlo Timeline Simulation ({mcResult.iterations} Iterations)</h3>
+              </div>
+              <button onClick={() => setShowForecast(false)} className="p-1 text-slate-400 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-4 gap-3">
+              {[
+                { label: "P50 Confidence", value: `${mcResult.p50Days} Days`, color: "text-emerald-400" },
+                { label: "P75 Confidence", value: `${mcResult.p75Days} Days`, color: "text-atlas-blue" },
+                { label: "P90 Confidence", value: `${mcResult.p90Days} Days`, color: "text-amber-400" },
+                { label: "P99 Worst Case", value: `${mcResult.p99Days} Days`, color: "text-rose-400" },
+              ].map((stat, i) => (
+                <div key={i} className="p-3.5 glass-2 rounded-2xl border border-white/10 text-center space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 block">{stat.label}</span>
+                  <span className={cn("text-lg font-mono font-bold", stat.color)}>{stat.value}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 text-xs font-mono text-slate-400 flex justify-between items-center">
+              <span>Standard Deviation: ±{mcResult.stdDevDays} days</span>
+              <span>Top Critical Path Bottleneck: #{mcResult.criticalPathTasks[0] || "None"}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="relative min-h-full">
         {/* Timeline connector */}
         <div
@@ -107,7 +172,6 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                     )}
                   </div>
 
-                  {/* Connector to next item */}
                   {!isLast && (
                     <div
                       className="absolute left-1/2 top-full -translate-x-1/2 w-px h-12 bg-gradient-to-b from-slate-800/50 to-transparent"
@@ -119,7 +183,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                 {/* Task content */}
                 <motion.article
                   className={cn(
-                    "flex-1 p-8 rounded-3xl border backdrop-blur-3xl transition-all duration-500 shadow-2xl group-hover:shadow-3xl flex-1 max-w-4xl",
+                    "flex-1 p-8 rounded-3xl border backdrop-blur-3xl transition-all duration-500 shadow-2xl group-hover:shadow-3xl max-w-4xl",
                     isActive
                       ? "glass-1 border-atlas-blue/50 shadow-[0_0_60px_rgba(59,130,246,0.15)] ring-2 ring-atlas-blue/30"
                       : "glass-2 border-white/10 hover:border-white/30 hover:shadow-3xl"
@@ -140,11 +204,7 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                       <span className="tracking-normal px-3 bg-slate-800/50 rounded-xl font-bold">
                         •
                       </span>
-                      <span
-                        aria-label={`Category: ${task.category || "Strategic"}`}
-                      >
-                        {task.category || "Strategic"}
-                      </span>
+                      <span>{task.category || "Strategic"}</span>
                     </div>
 
                     <motion.span
@@ -158,8 +218,6 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                             : "border-slate-800/50 bg-slate-900/50 text-slate-400 shadow-slate/20"
                       )}
                       role="status"
-                      aria-live="polite"
-                      animate={isActive ? { scale: 1.05 } : { scale: 1 }}
                     >
                       {task.status.replace("-", " ").toUpperCase()}
                     </motion.span>
@@ -169,7 +227,6 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                   <motion.h3
                     id={`task-title-${task.id}`}
                     className="font-display text-2xl font-bold text-white mb-6 leading-tight line-clamp-3 group-hover:text-white/95 drop-shadow-lg"
-                    animate={isActive ? { scale: 1.02 } : { scale: 1 }}
                   >
                     {task.description}
                   </motion.h3>
@@ -180,11 +237,9 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       className="glass-2 mt-8 pt-6 border-t border-white/20 backdrop-blur-3xl rounded-2xl p-6"
-                      role="list"
-                      aria-label={`${task.dependencies.length} dependencies`}
                     >
                       <div className="font-mono text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-4">
-                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                        <ArrowRight className="w-4 h-4" />
                         Dependencies ({task.dependencies.length})
                       </div>
                       <ul className="flex flex-wrap gap-3" role="list">
@@ -194,20 +249,12 @@ const TimelineView: React.FC<TimelineViewProps> = ({ plan, activeTaskId }) => {
                               className="font-mono text-sm font-black text-atlas-blue bg-atlas-blue/10 hover:bg-atlas-blue/20 px-4 py-2.5 rounded-2xl border border-atlas-blue/30 hover:border-atlas-blue/50 transition-all backdrop-blur-xl inline-flex items-center gap-2 shadow-lg hover:shadow-xl group"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              aria-label={`Dependency task ${depId}`}
                             >
-                              <span aria-hidden="true">#</span>
+                              <span>#</span>
                               {depId}
                             </motion.span>
                           </li>
                         ))}
-                        {task.dependencies.length > 8 && (
-                          <li>
-                            <span className="font-mono text-sm text-slate-500 px-5 py-2.5 bg-glass-2 rounded-2xl border border-white/20 backdrop-blur-xl shadow-lg">
-                              +{task.dependencies.length - 8} more
-                            </span>
-                          </li>
-                        )}
                       </ul>
                     </motion.div>
                   )}

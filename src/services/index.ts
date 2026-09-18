@@ -1,21 +1,42 @@
 /**
- * Atlas Integration Hub (v3.6.3) - Glassmorphic Sync Orchestrator
- * Single import for GitHub Issues + Jira Tickets bidirectional sync
+ * Atlas Integration Hub (v3.6.4) - Glassmorphic Sync Orchestrator & Enterprise Core Services
+ * Single import for GitHub Issues + Jira Sync, RBAC Audit, Workspaces, Monte Carlo, Self-Healing, Vendor Networks & Sovereignty
  */
 
 import { GithubService } from "@services/integrations/github";
 import { JiraService } from "@services/integrations/jira";
 import { PersistenceService } from "@services/core/persistence";
 import { AtlasService } from "@services/ai/gemini";
+import { RbacAuditService } from "@services/core/rbacAuditService";
+import { WorkspaceService } from "@services/core/workspaceService";
+import { MonteCarloService } from "@services/core/monteCarloService";
+import { SelfHealingService } from "@services/core/selfHealingService";
+import { VendorNetworkService } from "@services/core/vendorNetworkService";
+import { SovereigntyService } from "@services/core/sovereigntyService";
 import { Plan, SyncResult } from "@types";
 
 export const githubService = new GithubService();
 export const jiraService = new JiraService();
 export const persistenceService = PersistenceService;
 export const atlasService = AtlasService;
+export const rbacAuditService = RbacAuditService;
+export const workspaceService = WorkspaceService;
+export const monteCarloService = MonteCarloService;
+export const selfHealingService = SelfHealingService;
+export const vendorNetworkService = VendorNetworkService;
+export const sovereigntyService = SovereigntyService;
+
+export {
+  RbacAuditService,
+  WorkspaceService,
+  MonteCarloService,
+  SelfHealingService,
+  VendorNetworkService,
+  SovereigntyService,
+};
 
 /**
- * Enterprise Synchronization Services (v3.6.3)
+ * Enterprise Synchronization Services (v3.6.4)
  * Orchestrates cross-platform strategic roadmap consistency
  */
 export const syncServices = {
@@ -87,7 +108,7 @@ export const syncServices = {
 };
 
 /**
- * Enterprise Strategic Workflows (v3.6.3)
+ * Enterprise Strategic Workflows (v3.6.4)
  * Presets for common executive orchestration pipelines
  */
 export const WORKFLOW_PRESETS = [
@@ -127,7 +148,7 @@ jobs:
   sync-jira:
     runs-on: ubuntu-latest
     steps:
-      - uses: atlas-corp/atlas-sync-action@v3.6.3
+      - uses: atlas-corp/atlas-sync-action@v3.6.4
         with:
           jira-project: ATLAS2026
 `;

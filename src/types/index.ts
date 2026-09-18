@@ -1,7 +1,7 @@
 /**
- * ATLAS Core Types (v3.6.3) - Production Type System
- * Comprehensive typing for MissionControl ADK, ReactFlow, GitHub/Jira sync
- * Enterprise-grade 2026 strategic planning with glassmorphic A2UI protocol
+ * ATLAS Core Types (v3.6.4) - Production Type System
+ * Comprehensive typing for MissionControl ADK, ReactFlow, GitHub/Jira sync,
+ * RBAC Audit, Multi-Workspace, Monte Carlo, Self-Healing DAG, Vendor Networks & Sovereign Clusters
  */
 
 export enum TaskStatus {
@@ -43,6 +43,8 @@ export interface SubTask {
   labels?: string[]; // ["atlas-strategic", "q1-critical"]
   quarter?: "Q1" | "Q2" | "Q3" | "Q4"; // 2026 quarters
   estimatedEffort?: number; // story points
+  vendorIds?: string[]; // External vendor dependencies
+  sovereignProfileId?: string; // Sovereign Cluster profile alignment
 }
 
 export interface Plan {
@@ -52,6 +54,7 @@ export interface Plan {
   goal: string;
   tasks: SubTask[];
   groundingData?: string[];
+  workspaceId?: string; // Business unit workspace ID
   metadata?: {
     created: number;
     updated: number;
@@ -406,6 +409,153 @@ export interface PersistenceConfig {
     projectKey: string;
     email: string;
   } | null;
+}
+
+// === RBAC & AUDIT LOG TYPES (2026 Q2-Q3) ===
+export type UserRole = "ADMIN" | "STRATEGIST" | "ANALYST" | "AUDITOR" | "VIEWER";
+
+export type Permission =
+  | "plan:create"
+  | "plan:edit"
+  | "plan:delete"
+  | "workspace:manage"
+  | "audit:read"
+  | "cluster:configure"
+  | "simulation:run"
+  | "pipeline:heal";
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  workspaceIds: string[];
+}
+
+export type AuditAction =
+  | "PLAN_CREATE"
+  | "PLAN_UPDATE"
+  | "ROLE_CHANGE"
+  | "WORKSPACE_SWITCH"
+  | "SIMULATION_RUN"
+  | "PIPELINE_HEAL"
+  | "CLUSTER_DEPLOY";
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: number;
+  userId: string;
+  userRole: UserRole;
+  action: AuditAction;
+  resource: string;
+  details: string;
+  hash: string;
+  previousHash: string;
+}
+
+// === MULTI-WORKSPACE DATA SEPARATION TYPES (2026 Q2-Q3) ===
+export interface Workspace {
+  id: string;
+  name: string;
+  businessUnit: string;
+  description: string;
+  createdAt: number;
+  activePlanId?: string;
+  isDefault?: boolean;
+}
+
+// === MONTE CARLO TIMELINE FORECASTING TYPES (2026 Q2-Q3) ===
+export interface MonteCarloTrial {
+  trialIndex: number;
+  totalDurationDays: number;
+  completionDate: string;
+}
+
+export interface MonteCarloResult {
+  iterations: number;
+  p50Days: number;
+  p75Days: number;
+  p90Days: number;
+  p99Days: number;
+  minDays: number;
+  maxDays: number;
+  meanDays: number;
+  stdDevDays: number;
+  criticalPathTasks: string[];
+  riskDistribution: { durationBucket: string; count: number }[];
+}
+
+// === SELF-HEALING PIPELINE STATE TYPES (2026 Q4-2027) ===
+export type GraphIssueType =
+  | "CIRCULAR_DEPENDENCY"
+  | "ORPHANED_NODE"
+  | "DEADLOCK"
+  | "INVALID_REFERENCE";
+
+export interface GraphIssue {
+  id: string;
+  type: GraphIssueType;
+  severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+  taskIds: string[];
+  description: string;
+}
+
+export interface HealingResolution {
+  issueId: string;
+  actionTaken: string;
+  removedDependencies?: [string, string][];
+  addedDependencies?: [string, string][];
+  status: "RESOLVED" | "MANUAL_INTERVENTION_REQUIRED";
+}
+
+export interface SelfHealingResult {
+  timestamp: number;
+  initialHealthScore: number;
+  healedHealthScore: number;
+  resolvedIssues: HealingResolution[];
+  remainingIssues: GraphIssue[];
+}
+
+// === CROSS-ENTERPRISE VENDOR NETWORK TYPES (2026 Q4-2027) ===
+export type VendorRiskLevel = "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+
+export interface VendorDependency {
+  id: string;
+  vendorName: string;
+  serviceType: string;
+  slaThreshold: string;
+  riskLevel: VendorRiskLevel;
+  contactEmail?: string;
+  dependencyType: "API" | "INFRASTRUCTURE" | "COMPLIANCE" | "DATA";
+  impactedTasks: string[];
+}
+
+// === SOVEREIGN INFRASTRUCTURE CLUSTER PROFILES TYPES (2026 Q4-2027) ===
+export type ComplianceFramework =
+  | "GDPR"
+  | "HIPAA"
+  | "FedRAMP_HIGH"
+  | "SOC2_TYPE_II"
+  | "ISO27001"
+  | "DORA";
+
+export type IsolationLevel =
+  | "AIR_GAPPED"
+  | "SOVEREIGN_CLOUD"
+  | "HYBRID_PRIVATE"
+  | "MULTI_TENANT_ISOLATED";
+
+export interface SovereignClusterProfile {
+  id: string;
+  name: string;
+  region: string;
+  provider: string;
+  complianceFrameworks: ComplianceFramework[];
+  isolationLevel: IsolationLevel;
+  encryptionStandard: string;
+  dataResidencyRegion: string;
+  isActive: boolean;
+  maxSensitivityLevel: "PUBLIC" | "INTERNAL" | "RESTRICTED" | "TOP_SECRET";
 }
 
 // === UTILITY TYPES ===

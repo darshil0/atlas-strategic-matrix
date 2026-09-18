@@ -86,6 +86,9 @@
       "@lib/utils": [
         "./src/lib/utils.ts"
       ],
+      "@services": [
+        "./src/services/index.ts"
+      ],
       "@services/*": [
         "./src/services/*"
       ],

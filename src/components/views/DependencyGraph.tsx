@@ -1,7 +1,6 @@
-// src/components/DependencyGraph.tsx
-// FIX v3.6.3: Removed locally-duplicated `cn` helper; now imports from `@lib/utils`.
-import { useMemo, useEffect } from "react";
-import { motion } from "framer-motion";
+// src/components/views/DependencyGraph.tsx
+import { useMemo, useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ReactFlow,
   type Node,
@@ -18,8 +17,10 @@ import {
   type NodeProps,
   type NodeTypes,
 } from "@xyflow/react";
-import { SubTask, TaskStatus, Priority } from "@types";
+import { SubTask, TaskStatus, Priority, SelfHealingResult } from "@types";
+import { SelfHealingService, VendorNetworkService } from "@services";
 import { cn } from "@lib/utils";
+import { Network, Wrench, CheckCircle } from "lucide-react";
 import "@xyflow/react/dist/style.css";
 
 /** Custom node typings */
@@ -30,6 +31,7 @@ interface TaskNodeData {
   onNodeClick: (id: string) => void;
   isWhatIfEnabled: boolean;
   isInCascade: boolean;
+  showVendorOverlay: boolean;
   [key: string]: unknown;
 }
 
@@ -43,6 +45,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
     onNodeClick,
     isWhatIfEnabled,
     isInCascade,
+    showVendorOverlay,
   } = data;
 
   const getStatusStyles = () => {
@@ -88,7 +91,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
         }
       }}
       className={cn(
-        "flex rounded-2xl border text-[10px] w-52 overflow-hidden transition-all duration-500 select-none relative group",
+        "flex rounded-2xl border text-[10px] w-56 overflow-hidden transition-all duration-500 select-none relative group",
         getStatusStyles(),
         isActive
           ? "ring-2 ring-atlas-blue/70 ring-offset-4 ring-offset-slate-950/50 scale-110 z-50 shadow-[0_0_50px_rgba(59,130,246,0.4)]"
@@ -98,7 +101,7 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
       whileTap={{ scale: 0.98 }}
     >
       <div className={cn("w-1.5 shrink-0", getPriorityAccent())} />
-      <div className="flex-1 px-4 py-4 relative">
+      <div className="flex-1 px-4 py-3.5 relative">
         <Handle type="target" position={Position.Top} className="!opacity-0" />
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center opacity-60 font-mono text-[7px] tracking-[0.2em] uppercase">
@@ -119,6 +122,15 @@ const TaskNode = ({ data }: NodeProps<TaskNodeType>) => {
           >
             {task.description}
           </p>
+
+          {/* Vendor Network Overlay Indicator */}
+          {showVendorOverlay && task.vendorIds && task.vendorIds.length > 0 && (
+            <div className="flex items-center gap-1 font-mono text-[8px] text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
+              <Network className="w-2.5 h-2.5" />
+              <span>Vendors: {task.vendorIds.length}</span>
+            </div>
+          )}
+
           <div className="flex items-center justify-between mt-1">
             <div className="flex items-center gap-1.5">
               <span
@@ -158,6 +170,7 @@ interface DependencyGraphProps {
   isWhatIfEnabled?: boolean;
   simulationResult?: { cascade: string[]; riskScore: number } | null;
   onSimulateFailure?: (id: string) => void;
+  onPlanUpdate?: (updatedTasks: SubTask[]) => void;
 }
 
 const DependencyGraph = ({
@@ -168,7 +181,44 @@ const DependencyGraph = ({
   isWhatIfEnabled = false,
   simulationResult = null,
   onSimulateFailure,
+  onPlanUpdate,
 }: DependencyGraphProps) => {
+  const [showVendorOverlay, setShowVendorOverlay] = useState(false);
+  const [healingResult, setHealingResult] = useState<SelfHealingResult | null>(null);
+  const [isHealing, setIsHealing] = useState(false);
+
+  const graphDiagnosis = useMemo(() => {
+    return SelfHealingService.diagnosePipeline({
+      projectName: "Active Roadmap",
+      goal: "DAG Health Check",
+      tasks,
+    });
+  }, [tasks]);
+
+  const vendorRiskAnalysis = useMemo(() => {
+    return VendorNetworkService.analyzeVendorRisk({
+      projectName: "Active Roadmap",
+      goal: "Vendor Analysis",
+      tasks,
+    });
+  }, [tasks]);
+
+  const handleTriggerSelfHealing = () => {
+    setIsHealing(true);
+    setTimeout(() => {
+      const { healedPlan, result } = SelfHealingService.healPipeline({
+        projectName: "Active Roadmap",
+        goal: "Self-Healing DAG Repair",
+        tasks,
+      });
+      setHealingResult(result);
+      if (onPlanUpdate) {
+        onPlanUpdate(healedPlan.tasks);
+      }
+      setIsHealing(false);
+    }, 600);
+  };
+
   const { initialNodes, initialEdges } = useMemo(() => {
     const depths: Record<string, number> = {};
 
@@ -202,7 +252,7 @@ const DependencyGraph = ({
       const depth = depths[task.id] ?? 0;
       const group = depthGroups[depth] ?? [];
       const i = group.indexOf(task.id);
-      const offset = (i - (group.length - 1) / 2) * 260;
+      const offset = (i - (group.length - 1) / 2) * 270;
 
       return {
         id: task.id,
@@ -218,6 +268,7 @@ const DependencyGraph = ({
               : onTaskSelect,
           isWhatIfEnabled,
           isInCascade: (simulationResult?.cascade ?? []).includes(task.id),
+          showVendorOverlay,
         },
       };
     });
@@ -256,6 +307,7 @@ const DependencyGraph = ({
     isWhatIfEnabled,
     simulationResult,
     onSimulateFailure,
+    showVendorOverlay,
   ]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>(
@@ -274,6 +326,73 @@ const DependencyGraph = ({
       animate={{ opacity: 1 }}
       className="h-full min-h-[500px] w-full glass-1 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-3xl relative shadow-2xl group"
     >
+      {/* Top Floating Control Bar */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        {/* Vendor Overlay Toggle */}
+        <button
+          onClick={() => setShowVendorOverlay(!showVendorOverlay)}
+          className={cn(
+            "px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 backdrop-blur-xl border shadow-lg",
+            showVendorOverlay
+              ? "bg-amber-500/20 text-amber-300 border-amber-500/40"
+              : "glass-2 text-slate-400 border-white/10 hover:text-white"
+          )}
+        >
+          <Network className="w-3.5 h-3.5" />
+          Vendors ({vendorRiskAnalysis.totalVendorDependencies})
+        </button>
+
+        {/* Self-Healing Trigger Button */}
+        <button
+          onClick={handleTriggerSelfHealing}
+          disabled={isHealing}
+          className={cn(
+            "px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 backdrop-blur-xl border shadow-lg",
+            graphDiagnosis.healthScore === 100
+              ? "glass-2 text-emerald-400 border-emerald-500/30"
+              : "bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30"
+          )}
+        >
+          <Wrench className={cn("w-3.5 h-3.5", isHealing && "animate-spin")} />
+          DAG Health: {graphDiagnosis.healthScore}%
+        </button>
+      </div>
+
+      {/* Self-Healing Log Drawer */}
+      <AnimatePresence>
+        {healingResult && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="absolute top-16 right-4 z-30 w-80 glass-2 p-4 rounded-2xl border border-white/15 shadow-2xl space-y-3"
+          >
+            <div className="flex justify-between items-center border-b border-white/10 pb-2">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-400">
+                <CheckCircle className="w-4 h-4" /> Self-Healing Executed
+              </div>
+              <button
+                onClick={() => setHealingResult(null)}
+                className="text-xs text-slate-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="text-xs font-mono text-slate-300 space-y-1">
+              <div>Score: {healingResult.initialHealthScore}% → {healingResult.healedHealthScore}%</div>
+              <div>Resolutions ({healingResult.resolvedIssues.length}):</div>
+              <div className="max-h-32 overflow-y-auto space-y-1 pr-1 text-[10px] text-slate-400">
+                {healingResult.resolvedIssues.map((r, idx) => (
+                  <div key={idx} className="p-1.5 glass-1 rounded border border-white/5">
+                    • {r.actionTaken}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
