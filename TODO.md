@@ -34,8 +34,8 @@ This file mirrors the active task list for local repo work (tests, linting, docs
 - [x] Provide test output (user)  
   Status: completed
 
-- [ ] Push documentation updates to GitHub  
-  Status: in-progress (README, CHANGELOG, CONTRIBUTING, TODO)
+- [x] Push documentation updates to GitHub
+  Status: completed (README, CHANGELOG, CONTRIBUTING, TODO)
 
 ---
 

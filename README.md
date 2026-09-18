@@ -167,7 +167,7 @@ npm run test -- src/test/smoke.test.ts
 
 ## 📄 License & Support
 
-ATLAS Strategic Matrix is open-source software licensed under the [MIT License](https://www.google.com/search?q=./LICENSE).
+ATLAS Strategic Matrix is open-source software licensed under the [MIT License](LICENSE).
 
 * **Technical Issues:** File reports on the [GitHub Issue Tracker](https://github.com/darshil0/atlas-strategic-agent/issues).
-* **Contributions:** Review [CONTRIBUTING.md](https://www.google.com/search?q=./CONTRIBUTING.md) for style guides, testing rules, and the Zero Warning Baseline.
+* **Contributions:** Review [CONTRIBUTING.md](CONTRIBUTING.md) for style guides, testing rules, and the Zero Warning Baseline.
